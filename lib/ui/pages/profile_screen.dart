@@ -1,10 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:gymandfood/model/exercise.dart';
 import 'package:gymandfood/model/meal.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  List<Exercise> monday = [];
+  List<Exercise> tuesday = [];
+  List<Exercise> wednesday = [];
+  List<Exercise> thursday = [];
+  List<Exercise> friday = [];
+  List<Exercise> saturday = [];
+  List<Exercise> sunday = [];
+
+  @override
+  void initState() {
+    for (int i = 0; i < exercises.length; i++) {
+      if (exercises[i].exerciseDayofweek == "1") {
+        monday.add(exercises[i]);
+      } else if (exercises[i].exerciseDayofweek == "2") {
+        tuesday.add(exercises[i]);
+      } else if (exercises[i].exerciseDayofweek == "3") {
+        wednesday.add(exercises[i]);
+      } else if (exercises[i].exerciseDayofweek == "4") {
+        thursday.add(exercises[i]);
+      } else if (exercises[i].exerciseDayofweek == "5") {
+        friday.add(exercises[i]);
+      } else if (exercises[i].exerciseDayofweek == "6") {
+        saturday.add(exercises[i]);
+      } else if (exercises[i].exerciseDayofweek == "7") {
+        sunday.add(exercises[i]);
+      }
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: const Color(0xFFE9E9E9),
         bottomNavigationBar: ClipRRect(
@@ -13,11 +50,11 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: BottomNavigationBar(
             currentIndex: 1,
-            iconSize: 30,
+            iconSize: 22,
             showSelectedLabels: false,
             showUnselectedLabels: false,
-            //selectedIconTheme: IconThemeData(color: const Color(0xFF200087)),
-            //unselectedIconTheme: IconThemeData(color: Colors.black45),
+            selectedFontSize: 0,
+            unselectedFontSize: 0,
             selectedItemColor: const Color(0xFF200087),
             unselectedItemColor: Colors.black45,
             selectedLabelStyle: TextStyle(
@@ -28,6 +65,7 @@ class ProfileScreen extends StatelessWidget {
               color: Colors.yellow,
               fontSize: 14,
             ),
+            selectedIconTheme: IconThemeData(size: 28),
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -44,60 +82,222 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              height: height * 0.33,
-              left: 0,
-              right: 0,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  bottom: const Radius.circular(40),
-                ),
-                child: Container(
-                  color: Colors.white,
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(bottom: 10),
+                height: height * 0.4,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: const Radius.circular(40),
+                  ),
+                  child: Container(
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-                top: height * 0.35,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  height: height * 0.7,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "MEALS FOR TODAY",
-                        style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18),
-                      ),
-                      SizedBox(height: height / 150),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              for (int i = 0; i < foods.length; i++)
-                                _FoodCard(food: foods[i]),
-                            ],
-                          ),
+              Container(
+                height: height * 0.3,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "MEALS FOR TODAY",
+                      style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16),
+                    ),
+                    SizedBox(height: height / 150),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            for (int i = 0; i < foods.length; i++)
+                              _FoodCard(food: foods[i]),
+                          ],
                         ),
                       ),
-                      Expanded(
-                          child: Container(
-                        color: Colors.blueAccent,
-                      ))
-                    ],
-                  ),
-                ))
-          ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                height: height * 1.6,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Your Weakly Workouts",
+                      style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16),
+                    ),
+                    SizedBox(height: height / 100),
+                    dayCards("Monday", height, width, Color(0xFF6448FE),
+                        Color(0xFF5FC6FF), monday),
+                    SizedBox(height: height / 50),
+                    dayCards("Tuesday", height, width, Color(0xFFD76D77),
+                        Color(0xFFFFAF7B), tuesday),
+                    SizedBox(height: height / 50),
+                    dayCards("Wednesday", height, width, Color(0xFF155799),
+                        Color(0xFF159957), wednesday),
+                    SizedBox(height: height / 50),
+                    dayCards("Thursday", height, width, Color(0xFFFFA738),
+                        Color(0xFFFFE130), thursday),
+                    SizedBox(height: height / 50),
+                    dayCards("Friday", height, width, Color(0xFFFE6197),
+                        Color(0xFFFFB463), friday),
+                    SizedBox(height: height / 50),
+                    dayCards("Saturday", height, width, Color(0xFF6190E8),
+                        Color(0xFFA7BFE8), saturday),
+                    SizedBox(height: height / 50),
+                    dayCards("Sunday", height, width, Color(0xFFf83600),
+                        Color(0xFFfe8c00), friday),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ));
+  }
+
+  Widget dayCards(String dayName, double height, double width, Color color1,
+      Color color2, List<Exercise> dayExercises) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      height: 150,
+      width: width,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+            colors: [color1, color2]),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 2,
+            offset: Offset(5, 5), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                dayName,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22),
+              ),
+              IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                  onPressed: null)
+            ],
+          ),
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.horizontal,
+          //   child: Row(
+          //     children: [
+          //       for (int i = 0; i < 6; i++)
+          //         Container(
+          //           padding: EdgeInsets.only(right: 10),
+          //           child: ClipOval(
+          //             child: Material(
+          //               //color: Colors.blue, // button color
+          //               child: InkWell(
+          //                 //splashColor: Colors.red, // inkwell color
+          //                 child: SizedBox(
+          //                     width: 50,
+          //                     height: 50,
+          //                     child: Image.asset(sunday[0].exercisePic)),
+          //                 onTap: () {
+          //                   print(sunday[0].exerciseName);
+          //                 },
+          //               ),
+          //             ),
+          //           ),
+          //         )
+          //     ],
+          //   ),
+          // )
+
+          SingleChildScrollView(
+            //scrollDirection: Axis.horizontal,
+            child: Container(
+                height: 60,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: dayExercises.length,
+                    itemBuilder: (context, i) {
+                      return Container(
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                dayExercises[i].exercisePic,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(width: 10)
+                          ],
+                        ),
+                      );
+                    })),
+          )
+
+          // Container(
+          //     height: 50,
+          //     child: ListView.builder(
+          //         itemCount: dayExercises.length,
+          //         shrinkWrap: true,
+          //         scrollDirection: Axis.horizontal,
+          //         itemBuilder: (context, i) {
+          //           return ClipOval(
+          //             child: Material(
+          //               //color: Colors.blue, // button color
+          //               child: InkWell(
+          //                 //splashColor: Colors.red, // inkwell color
+          //                 child: SizedBox(
+          //                     width: 50,
+          //                     height: 50,
+          //                     child: Image.asset("assets/leg1.jpg")),
+          //                 onTap: () {
+          //                   print(sunday[0].exerciseName);
+          //                 },
+          //               ),
+          //             ),
+          //           );
+          //         }))
+        ],
+      ),
+    );
   }
 }
 
@@ -125,7 +325,7 @@ class _FoodCard extends StatelessWidget {
                       ),
                       child: Image.network(
                         food.foodPic,
-                        width: 140,
+                        width: 120,
                         fit: BoxFit.cover,
                       ))),
               Flexible(
@@ -133,7 +333,7 @@ class _FoodCard extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.only(
                       left: 8,
-                      top: 10,
+                      top: 5,
                       right: 5,
                     ),
                     child: Column(
@@ -141,11 +341,11 @@ class _FoodCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          food.foodName.length > 18
-                              ? food.foodName.substring(0, 18) + "..."
+                          food.foodName.length > 16
+                              ? food.foodName.substring(0, 16) + "..."
                               : food.foodName,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
