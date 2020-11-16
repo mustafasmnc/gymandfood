@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/exercise.dart';
 import 'package:gymandfood/model/meal.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -42,6 +44,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    var now = DateTime.now();
+    var formattedDate = DateFormat('EEE, d MMM').format(now);
     return Scaffold(
         backgroundColor: const Color(0xFFE9E9E9),
         bottomNavigationBar: ClipRRect(
@@ -95,6 +99,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   child: Container(
                     color: Colors.white,
+                    padding: EdgeInsets.only(
+                        top: 32, left: 16, right: 16, bottom: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          title: Text(
+                            formattedDate,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w400),
+                          ),
+                          subtitle: Text(
+                            "Hello, Eric",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          trailing: CircleAvatar(
+                            radius: 30.0,
+                            backgroundImage: NetworkImage(
+                                'https://i.pinimg.com/originals/36/43/e7/3643e7e8dab9b88b3972ee1c9f909dea.jpg'),
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: _CalorieProgress(
+                              width: height * 0.18, height: height * 0.18),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -217,87 +253,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: null)
             ],
           ),
-          // SingleChildScrollView(
-          //   scrollDirection: Axis.horizontal,
-          //   child: Row(
-          //     children: [
-          //       for (int i = 0; i < 6; i++)
-          //         Container(
-          //           padding: EdgeInsets.only(right: 10),
-          //           child: ClipOval(
-          //             child: Material(
-          //               //color: Colors.blue, // button color
-          //               child: InkWell(
-          //                 //splashColor: Colors.red, // inkwell color
-          //                 child: SizedBox(
-          //                     width: 50,
-          //                     height: 50,
-          //                     child: Image.asset(sunday[0].exercisePic)),
-          //                 onTap: () {
-          //                   print(sunday[0].exerciseName);
-          //                 },
-          //               ),
-          //             ),
-          //           ),
-          //         )
-          //     ],
-          //   ),
-          // )
-
-          SingleChildScrollView(
-            //scrollDirection: Axis.horizontal,
-            child: Container(
-                height: 60,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: dayExercises.length,
-                    itemBuilder: (context, i) {
-                      return Container(
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                dayExercises[i].exercisePic,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
+          Container(
+              height: 60,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: dayExercises.length,
+                  itemBuilder: (context, i) {
+                    return Container(
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              dayExercises[i].exercisePic,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
                             ),
-                            SizedBox(width: 10)
-                          ],
-                        ),
-                      );
-                    })),
-          )
-
-          // Container(
-          //     height: 50,
-          //     child: ListView.builder(
-          //         itemCount: dayExercises.length,
-          //         shrinkWrap: true,
-          //         scrollDirection: Axis.horizontal,
-          //         itemBuilder: (context, i) {
-          //           return ClipOval(
-          //             child: Material(
-          //               //color: Colors.blue, // button color
-          //               child: InkWell(
-          //                 //splashColor: Colors.red, // inkwell color
-          //                 child: SizedBox(
-          //                     width: 50,
-          //                     height: 50,
-          //                     child: Image.asset("assets/leg1.jpg")),
-          //                 onTap: () {
-          //                   print(sunday[0].exerciseName);
-          //                 },
-          //               ),
-          //             ),
-          //           );
-          //         }))
+                          ),
+                          SizedBox(width: 10)
+                        ],
+                      ),
+                    );
+                  }))
         ],
       ),
     );
+  }
+}
+
+class _CalorieProgress extends StatelessWidget {
+  final double height, width;
+
+  const _CalorieProgress({this.height, this.width});
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      child: Container(
+        height: height,
+        width: width,
+      ),
+      painter: _ProgressPainter(progress: 0.7),
+    );
+  }
+}
+
+class _ProgressPainter extends CustomPainter {
+  final double progress;
+
+  _ProgressPainter({this.progress});
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..strokeWidth = 8
+      ..color = Color(0xFF200087)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    Offset center = Offset(size.height / 2, size.width / 2);
+    double relativeProgress= 360*progress;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: size.width / 2),
+        math.radians(-90), math.radians(-relativeProgress), false, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    //throw UnimplementedError();
+    return true;
   }
 }
 
