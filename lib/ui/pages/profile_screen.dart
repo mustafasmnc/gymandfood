@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     var now = DateTime.now();
-    var formattedDate = DateFormat('EEE, d MMM').format(now);
+    var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
         backgroundColor: const Color(0xFFE9E9E9),
         bottomNavigationBar: ClipRRect(
@@ -126,8 +126,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
-                          child: _CalorieProgress(
-                              width: height * 0.18, height: height * 0.18),
+                          child: Row(
+                            children: [
+                              _CalorieProgress(
+                                width: width * 0.35,
+                                height: width * 0.35,
+                                progress: 0.7,
+                              ),
+                              SizedBox(width: 20),
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _IngredientProgress(
+                                    width: width * 0.30,
+                                    ingredient: "Protein",
+                                    progress: 0.3,
+                                    progressColor: Colors.green,
+                                    leftAmount: 72,
+                                  ),
+                                  _IngredientProgress(
+                                    width: width * 0.30,
+                                    ingredient: "Carbs",
+                                    progress: 0.5,
+                                    progressColor: Colors.red,
+                                    leftAmount: 110,
+                                  ),
+                                  _IngredientProgress(
+                                    width: width * 0.30,
+                                    ingredient: "Fat",
+                                    progress: 0.7,
+                                    progressColor: Colors.yellow,
+                                    leftAmount: 27,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -283,16 +320,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class _CalorieProgress extends StatelessWidget {
-  final double height, width;
+class _IngredientProgress extends StatelessWidget {
+  final String ingredient;
+  final int leftAmount;
+  final double progress, width;
+  final Color progressColor;
 
-  const _CalorieProgress({this.height, this.width});
+  const _IngredientProgress(
+      {this.ingredient,
+      this.leftAmount,
+      this.progress,
+      this.progressColor,
+      this.width});
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          ingredient.toUpperCase(),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        SizedBox(height: 2),
+        Row(
+          children: [
+            Container(
+              height: 10,
+              width: width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  color: progressColor),
+            ),
+            Text("${leftAmount}g left")
+          ],
+        ),
+        SizedBox(height: 6),
+      ],
+    );
+  }
+}
+
+class _CalorieProgress extends StatelessWidget {
+  final double height, width, progress;
+
+  const _CalorieProgress({this.height, this.width, this.progress});
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       child: Container(
         height: height,
         width: width,
+        child: Center(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(children: [
+              TextSpan(
+                  text: "1731",
+                  style: TextStyle(
+                    color: Color(0xFF200087),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  )),
+              TextSpan(text: "\n"),
+              TextSpan(
+                  text: "kcal",
+                  style: TextStyle(
+                    color: Color(0xFF200087),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ))
+            ]),
+          ),
+        ),
       ),
       painter: _ProgressPainter(progress: 0.7),
     );
@@ -311,7 +413,7 @@ class _ProgressPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     Offset center = Offset(size.height / 2, size.width / 2);
-    double relativeProgress= 360*progress;
+    double relativeProgress = 360 * progress;
     canvas.drawArc(Rect.fromCircle(center: center, radius: size.width / 2),
         math.radians(-90), math.radians(-relativeProgress), false, paint);
   }
