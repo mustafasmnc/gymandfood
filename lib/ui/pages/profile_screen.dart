@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/exercise.dart';
 import 'package:gymandfood/model/meal.dart';
@@ -207,7 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Colors.white,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                height: height * 1.6,
+                height: height * 1.85,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,71 +251,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget dayCards(String dayName, double height, double width, Color color1,
       Color color2, List<Exercise> dayExercises) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      height: 150,
-      width: width,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.centerRight,
-            end: Alignment.centerLeft,
-            colors: [color1, color2]),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 2,
-            offset: Offset(5, 5), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                dayName,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22),
-              ),
-              IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
-                  onPressed: null)
-            ],
-          ),
-          Container(
-              height: 60,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: dayExercises.length,
-                  itemBuilder: (context, i) {
-                    return Container(
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              dayExercises[i].exercisePic,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) => WorkoutScreen(dayExercises)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WorkoutScreen(dayExercises)));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        height: 150,
+        width: width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.centerRight,
+              end: Alignment.centerLeft,
+              colors: [color1, color2]),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 2,
+              offset: Offset(5, 5), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  dayName,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22),
+                ),
+                IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                    ),
+                    onPressed: null)
+              ],
+            ),
+            Container(
+                height: 60,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: dayExercises.length,
+                    itemBuilder: (context, i) {
+                      return Container(
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                dayExercises[i].exercisePic,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10)
-                        ],
-                      ),
-                    );
-                  }))
-        ],
+                            SizedBox(width: 10)
+                          ],
+                        ),
+                      );
+                    }))
+          ],
+        ),
       ),
     );
   }
@@ -347,13 +358,25 @@ class _IngredientProgress extends StatelessWidget {
         SizedBox(height: 2),
         Row(
           children: [
-            Container(
-              height: 10,
-              width: width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  color: progressColor),
+            Stack(
+              children: [
+                Container(
+                  height: 10,
+                  width: width,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      color: Colors.grey[300]),
+                ),
+                Container(
+                  height: 10,
+                  width: width * progress,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      color: progressColor),
+                )
+              ],
             ),
+            SizedBox(width: 5),
             Text("${leftAmount}g left")
           ],
         ),
