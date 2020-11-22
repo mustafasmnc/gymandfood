@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
@@ -251,82 +252,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget dayCards(String dayName, double height, double width, Color color1,
       Color color2, List<Exercise> dayExercises) {
-    return GestureDetector(
-      onTap: () {
-        // Navigator.of(context)
-        //     .push(MaterialPageRoute(builder: (context) => WorkoutScreen(dayExercises)));
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => WorkoutScreen(dayExercises)));
+    return OpenContainer(
+      closedElevation: 0,
+      transitionDuration: const Duration(milliseconds: 1500),
+      openShape: const ContinuousRectangleBorder(),
+      transitionType: ContainerTransitionType.fade,
+      closedColor: Color(0xFFE9E9E9),
+      openBuilder: (context, _) {
+        return WorkoutScreen(dayExercises);
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        height: 150,
-        width: width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.centerRight,
-              end: Alignment.centerLeft,
-              colors: [color1, color2]),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 2,
-              offset: Offset(5, 5), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  dayName,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22),
+      closedBuilder: (context, VoidCallback openContainer) {
+        return GestureDetector(
+          // onTap: () {
+          //   Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //           builder: (context) => WorkoutScreen(dayExercises)));
+          // },
+          onTap: openContainer,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            height: 150,
+            width: width,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft,
+                  colors: [color1, color2]),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset(5, 5), // changes position of shadow
                 ),
-                IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                    ),
-                    onPressed: null)
               ],
             ),
-            Container(
-                height: 60,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: dayExercises.length,
-                    itemBuilder: (context, i) {
-                      return Container(
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                dayExercises[i].exercisePic,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(width: 10)
-                          ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      dayName,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.white,
                         ),
-                      );
-                    }))
-          ],
-        ),
-      ),
+                        onPressed: null)
+                  ],
+                ),
+                Container(
+                    height: 60,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: dayExercises.length,
+                        itemBuilder: (context, i) {
+                          return Container(
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset(
+                                    dayExercises[i].exercisePic,
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(width: 10)
+                              ],
+                            ),
+                          );
+                        }))
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -12,7 +12,6 @@ class WorkoutScreen extends StatefulWidget {
 class _WorkoutScreenState extends State<WorkoutScreen> {
   @override
   Widget build(BuildContext context) {
-    print(widget.workouts[0].exerciseName);
     var now = DateTime.now();
     var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
