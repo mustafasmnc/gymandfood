@@ -1,9 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:gymandfood/ui/pages/food_detail_screen.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/exercise.dart';
-import 'package:gymandfood/model/meal.dart';
+import 'package:gymandfood/model/food.dart';
 import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -469,81 +470,87 @@ class _FoodCard extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Container(
       margin: const EdgeInsets.only(right: 10, bottom: 10),
-      child: Material(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          elevation: 4,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Flexible(
-                  fit: FlexFit.tight,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        const Radius.circular(20),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => FoodDetailScreen(food: food)));
+        },
+        child: Material(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            elevation: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Flexible(
+                    fit: FlexFit.tight,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.all(
+                          const Radius.circular(20),
+                        ),
+                        child: Image.network(
+                          food.foodPic,
+                          width: 120,
+                          fit: BoxFit.cover,
+                        ))),
+                Flexible(
+                    fit: FlexFit.tight,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        left: 8,
+                        top: 5,
+                        right: 5,
                       ),
-                      child: Image.network(
-                        food.foodPic,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ))),
-              Flexible(
-                  fit: FlexFit.tight,
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      left: 8,
-                      top: 5,
-                      right: 5,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          food.foodName.length > 16
-                              ? food.foodName.substring(0, 16) + "..."
-                              : food.foodName,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            food.foodName.length > 16
+                                ? food.foodName.substring(0, 16) + "..."
+                                : food.foodName,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            maxLines: 1,
                           ),
-                          maxLines: 1,
-                        ),
-                        //SizedBox(height: height / 150),
-                        Text(
-                          "Calorie: " + food.foodCal,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
+                          //SizedBox(height: height / 150),
+                          Text(
+                            "Calorie: " + food.foodCal,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.blueGrey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
                           ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          "Protein: " + food.foodProtein,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
+                          Text(
+                            "Protein: " + food.foodProtein,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.blueGrey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
                           ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          "Fat: " + food.foodFat,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
+                          Text(
+                            "Fat: " + food.foodFat,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.blueGrey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
                           ),
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: height / 100),
-                      ],
-                    ),
-                  )),
-            ],
-          )),
+                          SizedBox(height: height / 100),
+                        ],
+                      ),
+                    )),
+              ],
+            )),
+      ),
     );
   }
 }
