@@ -20,6 +20,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            snap: true,
+            floating: true,
             backgroundColor: const Color(0xFF200087),
             expandedHeight: 250,
             shape: RoundedRectangleBorder(
@@ -80,6 +82,22 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ],
                       ),
                     ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 32,
+                  ),
+                  child: Text(
+                    widget.food.foodDesc,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black54,
+                    ),
                   ),
                 )
               ],

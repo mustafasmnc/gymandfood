@@ -497,7 +497,7 @@ class _FoodCard extends StatelessWidget {
                     fit: FlexFit.tight,
                     child: Container(
                       padding: EdgeInsets.only(
-                        left: 8,
+                        left: 5,
                         top: 5,
                         right: 5,
                       ),
@@ -507,10 +507,10 @@ class _FoodCard extends StatelessWidget {
                         children: [
                           Text(
                             food.foodName.length > 16
-                                ? food.foodName.substring(0, 16) + "..."
+                                ? food.foodName.substring(0, 16) + ".."
                                 : food.foodName,
                             style: const TextStyle(
-                              fontSize: 15,
+                              fontSize: 14,
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
                             ),
@@ -520,7 +520,7 @@ class _FoodCard extends StatelessWidget {
                           Text(
                             "Calorie: " + food.foodCal,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: Colors.blueGrey,
                               fontWeight: FontWeight.w500,
                             ),
@@ -529,7 +529,7 @@ class _FoodCard extends StatelessWidget {
                           Text(
                             "Protein: " + food.foodProtein,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: Colors.blueGrey,
                               fontWeight: FontWeight.w500,
                             ),
@@ -538,7 +538,7 @@ class _FoodCard extends StatelessWidget {
                           Text(
                             "Fat: " + food.foodFat,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: Colors.blueGrey,
                               fontWeight: FontWeight.w500,
                             ),
