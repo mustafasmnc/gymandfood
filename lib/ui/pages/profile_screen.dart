@@ -470,21 +470,26 @@ class _FoodCard extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Container(
       margin: const EdgeInsets.only(right: 10, bottom: 10),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => FoodDetailScreen(food: food)));
-        },
-        child: Material(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            elevation: 4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Flexible(
-                    fit: FlexFit.tight,
-                    child: ClipRRect(
+      child: Material(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          elevation: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Flexible(
+                fit: FlexFit.tight,
+                child: OpenContainer(
+                  closedShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  transitionDuration: const Duration(milliseconds: 1500),
+                  openBuilder: (context, _) {
+                    return FoodDetailScreen(food: food);
+                  },
+                  closedBuilder: (context, openContainer) {
+                    return GestureDetector(
+                      onTap: openContainer,
+                      child: ClipRRect(
                         borderRadius: BorderRadius.all(
                           const Radius.circular(20),
                         ),
@@ -492,65 +497,69 @@ class _FoodCard extends StatelessWidget {
                           food.foodPic,
                           width: 120,
                           fit: BoxFit.cover,
-                        ))),
-                Flexible(
-                    fit: FlexFit.tight,
-                    child: Container(
-                      padding: EdgeInsets.only(
-                        left: 5,
-                        top: 5,
-                        right: 5,
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            food.foodName.length > 16
-                                ? food.foodName.substring(0, 16) + ".."
-                                : food.foodName,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            maxLines: 1,
+                    );
+                  },
+                ),
+              ),
+              Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      left: 5,
+                      top: 5,
+                      right: 5,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          food.foodName.length > 16
+                              ? food.foodName.substring(0, 16) + ".."
+                              : food.foodName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
                           ),
-                          //SizedBox(height: height / 150),
-                          Text(
-                            "Calorie: " + food.foodCal,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.blueGrey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
+                          maxLines: 1,
+                        ),
+                        //SizedBox(height: height / 150),
+                        Text(
+                          "Calorie: " + food.foodCal,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.w500,
                           ),
-                          Text(
-                            "Protein: " + food.foodProtein,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.blueGrey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          "Protein: " + food.foodProtein,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.w500,
                           ),
-                          Text(
-                            "Fat: " + food.foodFat,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.blueGrey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          "Fat: " + food.foodFat,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.w500,
                           ),
-                          SizedBox(height: height / 100),
-                        ],
-                      ),
-                    )),
-              ],
-            )),
-      ),
+                          maxLines: 1,
+                        ),
+                        SizedBox(height: height / 100),
+                      ],
+                    ),
+                  )),
+            ],
+          )),
     );
   }
 }
