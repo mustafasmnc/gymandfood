@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymandfood/ui/pages/app.dart';
 import 'package:gymandfood/ui/pages/profile_screen.dart';
 
 void main() {
@@ -15,6 +16,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: ProfileScreen());
+        home: App());
   }
 }

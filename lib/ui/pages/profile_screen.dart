@@ -51,44 +51,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
         backgroundColor: const Color(0xFFE9E9E9),
-        bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadius.vertical(
-            top: const Radius.circular(40),
-          ),
-          child: BottomNavigationBar(
-            currentIndex: 1,
-            iconSize: 22,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            selectedFontSize: 0,
-            unselectedFontSize: 0,
-            selectedItemColor: const Color(0xFF200087),
-            unselectedItemColor: Colors.black45,
-            selectedLabelStyle: TextStyle(
-              color: Colors.pink,
-              fontSize: 16,
-            ),
-            unselectedLabelStyle: TextStyle(
-              color: Colors.yellow,
-              fontSize: 14,
-            ),
-            selectedIconTheme: IconThemeData(size: 28),
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: "Home",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: "Search",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: "Profile",
-              ),
-            ],
-          ),
-        ),
+        // bottomNavigationBar: ClipRRect(
+        //   borderRadius: BorderRadius.vertical(
+        //     top: const Radius.circular(40),
+        //   ),
+        //   child: BottomNavigationBar(
+        //     currentIndex: 1,
+        //     iconSize: 22,
+        //     showSelectedLabels: false,
+        //     showUnselectedLabels: false,
+        //     selectedFontSize: 0,
+        //     unselectedFontSize: 0,
+        //     selectedItemColor: const Color(0xFF200087),
+        //     unselectedItemColor: Colors.black45,
+        //     selectedLabelStyle: TextStyle(
+        //       color: Colors.pink,
+        //       fontSize: 16,
+        //     ),
+        //     unselectedLabelStyle: TextStyle(
+        //       color: Colors.yellow,
+        //       fontSize: 14,
+        //     ),
+        //     selectedIconTheme: IconThemeData(size: 28),
+        //     items: [
+        //       BottomNavigationBarItem(
+        //         icon: Icon(Icons.home),
+        //         label: "Home",
+        //       ),
+        //       BottomNavigationBarItem(
+        //         icon: Icon(Icons.search),
+        //         label: "Search",
+        //       ),
+        //       BottomNavigationBarItem(
+        //         icon: Icon(Icons.person),
+        //         label: "Profile",
+        //       ),
+        //     ],
+        //   ),
+        // ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(

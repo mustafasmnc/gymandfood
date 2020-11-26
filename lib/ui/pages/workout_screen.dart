@@ -15,19 +15,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     var now = DateTime.now();
     var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
-      backgroundColor: const Color(0xFF200087),
+      //backgroundColor: const Color(0xFF200087),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        padding: const EdgeInsets.only(top: 32, right: 16, left: 16, bottom: 0),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: IconButton(
-                  icon: Icon(Icons.close, color: Colors.white, size: 30),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 8.0),
+            //   child: IconButton(
+            //       icon: Icon(Icons.close, color: Colors.black, size: 30),
+            //       onPressed: () {
+            //         Navigator.of(context).pop();
+            //       }),
+            // ),
             SizedBox(height: 5),
             ListTile(
               title: Text(
@@ -35,7 +35,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               subtitle: Text(
@@ -43,7 +43,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               trailing: Padding(
@@ -54,12 +54,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.access_time, color: Colors.white),
+                        Icon(Icons.access_time, color: Colors.black),
                         SizedBox(width: 5),
                         Text(
                           "60 mins",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),
@@ -86,7 +86,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     return Padding(
                       padding: EdgeInsets.only(bottom: 5),
                       child: Card(
-                        color: Color(0xFF200087).withOpacity(.2),
+                        color: Color(0xFF26547C).withOpacity(.5),
                         child: ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
