@@ -14,12 +14,12 @@ class AppState extends State<App> {
   final List<TabItem> tabs = [
     TabItem(
       tabName: "Profile",
-      icon: Icons.home,
+      icon: Icons.person,
       page: ProfileScreen(),
     ),
     TabItem(
       tabName: "Food Category",
-      icon: Icons.settings,
+      icon: Icons.restaurant_menu,
       page: FoodCategory(),
     ),
   ];
