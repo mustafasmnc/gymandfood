@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymandfood/model/bottomNavigation.dart';
 import 'package:gymandfood/model/tabItem.dart';
+import 'package:gymandfood/ui/pages/body_parts.dart';
 import 'package:gymandfood/ui/pages/food_category.dart';
 import 'package:gymandfood/ui/pages/profile_screen.dart';
 
@@ -10,17 +11,23 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  static int currentTab = 0;
+  static int currentTab = 2;
   final List<TabItem> tabs = [
+    
     TabItem(
-      tabName: "Profile",
-      icon: Icons.person,
-      page: ProfileScreen(),
+      tabName: "Workout",
+      icon: Icons.fitness_center,
+      page: BodyParts(),
     ),
     TabItem(
       tabName: "Food Category",
       icon: Icons.restaurant_menu,
       page: FoodCategory(),
+    ),
+    TabItem(
+      tabName: "Profile",
+      icon: Icons.person,
+      page: ProfileScreen(),
     ),
   ];
   AppState() {

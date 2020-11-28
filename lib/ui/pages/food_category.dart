@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:gymandfood/model/food_category.dart';
+import 'package:gymandfood/ui/pages/food_list.dart';
 
 class FoodCategory extends StatefulWidget {
   @override
@@ -64,8 +65,8 @@ class CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => PlayQuiz(quizId: foodCategoryId)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => FoodList(foodCatId: foodCategoryId,)));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 5),
