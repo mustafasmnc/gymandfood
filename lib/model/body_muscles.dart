@@ -29,17 +29,22 @@ final bodyMuscles = [
       bodyMuscleDesc: "Shoulder Desc"),
   BodyMuscles(
       bodyMuscleId: "4",
-      bodyMuscleName: "Arm",
-      bodyMuscleImage: "assets/arm.jpg",
-      bodyMuscleDesc: "Arm Desc"),
+      bodyMuscleName: "Biceps",
+      bodyMuscleImage: "assets/biceps.jpg",
+      bodyMuscleDesc: "Biceps Desc"),
   BodyMuscles(
       bodyMuscleId: "5",
+      bodyMuscleName: "Triceps",
+      bodyMuscleImage: "assets/triceps.jpg",
+      bodyMuscleDesc: "Triceps Desc"),
+  BodyMuscles(
+      bodyMuscleId: "6",
       bodyMuscleName: "Leg",
       bodyMuscleImage: "assets/leg1.jpg",
       bodyMuscleDesc: "Leg Desc"),
   BodyMuscles(
-      bodyMuscleId: "6",
-      bodyMuscleName: "Abdominal",
+      bodyMuscleId: "7",
+      bodyMuscleName: "Abs",
       bodyMuscleImage: "assets/abdominal.jpg",
-      bodyMuscleDesc: "Abdominal Desc"),
+      bodyMuscleDesc: "Abs Desc"),
 ];

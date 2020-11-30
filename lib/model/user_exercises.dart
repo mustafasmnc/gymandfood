@@ -1,149 +1,149 @@
-class Exercise {
+class UserExercises {
   final String exerciseId,
       exerciseName,
       exerciseSetRepeat,
       exercisePic,
-      exerciseZone,
-      exerciseZoneId,
+      exerciseMuscle,
+      exerciseMuscleId,
       exerciseDayofweek;
 
-  Exercise(
+  UserExercises(
       {this.exerciseId,
       this.exerciseName,
       this.exerciseSetRepeat,
       this.exercisePic,
-      this.exerciseZone,
-      this.exerciseZoneId,
+      this.exerciseMuscle,
+      this.exerciseMuscleId,
       this.exerciseDayofweek});
 }
 
-final exercises = [
-  Exercise(
+final user_exercises = [
+  UserExercises(
       exerciseId: "1",
       exerciseName: "Barbell Chest Press",
       exerciseSetRepeat: "4 Set - 10 Repeat",
       exercisePic: "assets/chest.jpg",
-      exerciseZone: "Chest",
-      exerciseZoneId: "1",
+      exerciseMuscle: "Chest",
+      exerciseMuscleId: "1",
       exerciseDayofweek: "1"),
-  Exercise(
+  UserExercises(
       exerciseId: "2",
       exerciseName: "Dumbell Fly",
       exerciseSetRepeat: "3 Set - 15 Repeat",
       exercisePic: "assets/chest.jpg",
-      exerciseZone: "Chest",
-      exerciseZoneId: "1",
+      exerciseMuscle: "Chest",
+      exerciseMuscleId: "1",
       exerciseDayofweek: "1"),
-  Exercise(
+  UserExercises(
       exerciseId: "3",
       exerciseName: "Pull-Up",
       exerciseSetRepeat: "4 Set - 10 Repeat",
       exercisePic: "assets/back1.jpg",
-      exerciseZone: "Back",
-      exerciseZoneId: "2",
+      exerciseMuscle: "Back",
+      exerciseMuscleId: "2",
       exerciseDayofweek: "1"),
-  Exercise(
+  UserExercises(
       exerciseId: "5",
       exerciseName: "Dumbbell Shoulder Press",
       exerciseSetRepeat: "4 Set - 12 Repeat",
       exercisePic: "assets/shoulder.jpg",
-      exerciseZone: "Shoulder",
-      exerciseZoneId: "3",
+      exerciseMuscle: "Shoulder",
+      exerciseMuscleId: "3",
       exerciseDayofweek: "1"),
-  Exercise(
+  UserExercises(
       exerciseId: "7",
       exerciseName: "Dumbbell Curl",
       exerciseSetRepeat: "4 Set - 15 Repeat",
-      exercisePic: "assets/arm.jpg",
-      exerciseZone: "Arm",
-      exerciseZoneId: "4",
+      exercisePic: "assets/biceps.jpg",
+      exerciseMuscle: "Biceps",
+      exerciseMuscleId: "4",
       exerciseDayofweek: "1"),
-  Exercise(
+  UserExercises(
       exerciseId: "0",
       exerciseName: "Rest",
       exerciseSetRepeat: "1 Day",
       exercisePic: "assets/rest.png",
-      exerciseZone: "",
-      exerciseZoneId: "0",
+      exerciseMuscle: "",
+      exerciseMuscleId: "0",
       exerciseDayofweek: "1"),
-  Exercise(
+  UserExercises(
       exerciseId: "3",
       exerciseName: "Pull-Up",
       exerciseSetRepeat: "3 Set - 8 Repeat",
       exercisePic: "assets/back1.jpg",
-      exerciseZone: "Back",
-      exerciseZoneId: "2",
+      exerciseMuscle: "Back",
+      exerciseMuscleId: "2",
       exerciseDayofweek: "2"),
-  Exercise(
+  UserExercises(
       exerciseId: "4",
       exerciseName: "Lat Pull-Down",
       exerciseSetRepeat: "4 Set - 12 Repeat",
       exercisePic: "assets/back1.jpg",
-      exerciseZone: "Back",
-      exerciseZoneId: "2",
+      exerciseMuscle: "Back",
+      exerciseMuscleId: "2",
       exerciseDayofweek: "2"),
-  Exercise(
+  UserExercises(
       exerciseId: "5",
       exerciseName: "Dumbbell Shoulder Press",
       exerciseSetRepeat: "4 Set - 12 Repeat",
       exercisePic: "assets/shoulder.jpg",
-      exerciseZone: "Shoulder",
-      exerciseZoneId: "3",
+      exerciseMuscle: "Shoulder",
+      exerciseMuscleId: "3",
       exerciseDayofweek: "3"),
-  Exercise(
+  UserExercises(
       exerciseId: "6",
       exerciseName: "Dumbbell Lateral Raise",
       exerciseSetRepeat: "4 Set - 15 Repeat",
       exercisePic: "assets/shoulder.jpg",
-      exerciseZone: "Shoulder",
-      exerciseZoneId: "3",
+      exerciseMuscle: "Shoulder",
+      exerciseMuscleId: "3",
       exerciseDayofweek: "3"),
-  Exercise(
+  UserExercises(
       exerciseId: "7",
       exerciseName: "Dumbbell Curl",
       exerciseSetRepeat: "4 Set - 12 Repeat",
-      exercisePic: "assets/arm.jpg",
-      exerciseZone: "Arm",
-      exerciseZoneId: "4",
+      exercisePic: "assets/triceps.jpg",
+      exerciseMuscle: "Triceps",
+      exerciseMuscleId: "5",
       exerciseDayofweek: "4"),
-  Exercise(
+  UserExercises(
       exerciseId: "8",
       exerciseName: "Rope Pushdown",
       exerciseSetRepeat: "4 Set - 12 Repeat",
-      exercisePic: "assets/arm.jpg",
-      exerciseZone: "Arm",
-      exerciseZoneId: "4",
+      exercisePic: "assets/triceps.jpg",
+      exerciseMuscle: "Triceps",
+      exerciseMuscleId: "5",
       exerciseDayofweek: "4"),
-  Exercise(
+  UserExercises(
       exerciseId: "9",
       exerciseName: "Squat",
       exerciseSetRepeat: "3 Set - 15 Repeat",
       exercisePic: "assets/leg1.jpg",
-      exerciseZone: "Leg",
-      exerciseZoneId: "5",
+      exerciseMuscle: "Leg",
+      exerciseMuscleId: "6",
       exerciseDayofweek: "5"),
-  Exercise(
+  UserExercises(
       exerciseId: "10",
       exerciseName: "Leg extension",
       exerciseSetRepeat: "4 Set - 10 Repeat",
       exercisePic: "assets/leg1.jpg",
-      exerciseZone: "Leg",
-      exerciseZoneId: "5",
+      exerciseMuscle: "Leg",
+      exerciseMuscleId: "6",
       exerciseDayofweek: "5"),
-  Exercise(
+  UserExercises(
       exerciseId: "0",
       exerciseName: "Rest",
       exerciseSetRepeat: "1 Day",
       exercisePic: "assets/rest.png",
-      exerciseZone: "",
-      exerciseZoneId: "0",
+      exerciseMuscle: "",
+      exerciseMuscleId: "0",
       exerciseDayofweek: "6"),
-  Exercise(
+  UserExercises(
       exerciseId: "0",
       exerciseName: "Rest",
       exerciseSetRepeat: "1 Day",
       exercisePic: "assets/rest.png",
-      exerciseZone: "",
-      exerciseZoneId: "0",
+      exerciseMuscle: "",
+      exerciseMuscleId: "0",
       exerciseDayofweek: "7"),
 ];

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymandfood/ui/pages/food_detail_screen.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
-import 'package:gymandfood/model/exercise.dart';
+import 'package:gymandfood/model/user_exercises.dart';
 import 'package:gymandfood/model/food.dart';
 import 'package:intl/intl.dart';
 
@@ -13,31 +13,31 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<Exercise> monday = [];
-  List<Exercise> tuesday = [];
-  List<Exercise> wednesday = [];
-  List<Exercise> thursday = [];
-  List<Exercise> friday = [];
-  List<Exercise> saturday = [];
-  List<Exercise> sunday = [];
+  List<UserExercises> monday = [];
+  List<UserExercises> tuesday = [];
+  List<UserExercises> wednesday = [];
+  List<UserExercises> thursday = [];
+  List<UserExercises> friday = [];
+  List<UserExercises> saturday = [];
+  List<UserExercises> sunday = [];
 
   @override
   void initState() {
-    for (int i = 0; i < exercises.length; i++) {
-      if (exercises[i].exerciseDayofweek == "1") {
-        monday.add(exercises[i]);
-      } else if (exercises[i].exerciseDayofweek == "2") {
-        tuesday.add(exercises[i]);
-      } else if (exercises[i].exerciseDayofweek == "3") {
-        wednesday.add(exercises[i]);
-      } else if (exercises[i].exerciseDayofweek == "4") {
-        thursday.add(exercises[i]);
-      } else if (exercises[i].exerciseDayofweek == "5") {
-        friday.add(exercises[i]);
-      } else if (exercises[i].exerciseDayofweek == "6") {
-        saturday.add(exercises[i]);
-      } else if (exercises[i].exerciseDayofweek == "7") {
-        sunday.add(exercises[i]);
+    for (int i = 0; i < user_exercises.length; i++) {
+      if (user_exercises[i].exerciseDayofweek == "1") {
+        monday.add(user_exercises[i]);
+      } else if (user_exercises[i].exerciseDayofweek == "2") {
+        tuesday.add(user_exercises[i]);
+      } else if (user_exercises[i].exerciseDayofweek == "3") {
+        wednesday.add(user_exercises[i]);
+      } else if (user_exercises[i].exerciseDayofweek == "4") {
+        thursday.add(user_exercises[i]);
+      } else if (user_exercises[i].exerciseDayofweek == "5") {
+        friday.add(user_exercises[i]);
+      } else if (user_exercises[i].exerciseDayofweek == "6") {
+        saturday.add(user_exercises[i]);
+      } else if (user_exercises[i].exerciseDayofweek == "7") {
+        sunday.add(user_exercises[i]);
       }
     }
     super.initState();
@@ -252,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget dayCards(String dayName, double height, double width, Color color1,
-      Color color2, List<Exercise> dayExercises) {
+      Color color2, List<UserExercises> dayExercises) {
     return OpenContainer(
       closedElevation: 0,
       transitionDuration: const Duration(milliseconds: 1500),

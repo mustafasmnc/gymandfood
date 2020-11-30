@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gymandfood/model/exercise.dart';
+import 'package:gymandfood/model/user_exercises.dart';
 import 'package:intl/intl.dart';
 
 class WorkoutScreen extends StatefulWidget {
-  List<Exercise> workouts = [];
+  List<UserExercises> workouts = [];
   WorkoutScreen(this.workouts);
   @override
   _WorkoutScreenState createState() => _WorkoutScreenState();
