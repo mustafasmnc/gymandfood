@@ -46,10 +46,12 @@ class _ExercisesState extends State<Exercises> {
           itemCount: filteredExercises.length,
           itemBuilder: (context, index) {
             return ExerciseTile(
-              bodyMuscleImage: filteredExercises[index].exercisePic,
-              bodyMuscleName: filteredExercises[index].exerciseName,
-              bodyMuscleDesc: filteredExercises[index].exerciseDesc,
-              bodyMuscleId: filteredExercises[index].exerciseId,
+              exerciseId: filteredExercises[index].exerciseId,
+              exercisePic: filteredExercises[index].exercisePic,
+              exerciseName: filteredExercises[index].exerciseName,
+              exerciseDesc: filteredExercises[index].exerciseDesc,
+              exerciseMuscleId:filteredExercises[index].exerciseMuscleId,
+              exerciseMuscle:filteredExercises[index].exerciseMuscle,
             );
           }),
     );

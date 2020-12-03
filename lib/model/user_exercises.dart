@@ -1,5 +1,5 @@
 class UserExercises {
-  final String exerciseId,
+   String exerciseId,
       exerciseName,
       exerciseSetRepeat,
       exercisePic,
@@ -17,7 +17,7 @@ class UserExercises {
       this.exerciseDayofweek});
 }
 
-final user_exercises = [
+List user_exercises = [
   UserExercises(
       exerciseId: "1",
       exerciseName: "Barbell Chest Press",

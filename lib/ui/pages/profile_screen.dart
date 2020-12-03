@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/ui/pages/food_detail_screen.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
@@ -114,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 16, fontWeight: FontWeight.w400),
                           ),
                           subtitle: Text(
-                            "Hello, Eric",
+                            "Hello, ${user.userName}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
@@ -123,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           trailing: CircleAvatar(
                             radius: 30.0,
                             backgroundImage: NetworkImage(
-                                'https://i.pinimg.com/originals/36/43/e7/3643e7e8dab9b88b3972ee1c9f909dea.jpg'),
+                                user.userPhoto),
                             backgroundColor: Colors.transparent,
                           ),
                         ),
