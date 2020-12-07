@@ -1,10 +1,10 @@
 import 'package:gymandfood/ui/pages/food_category.dart';
 
 class FoodCategory {
-  final String foodCategoryId;
-  final String foodCategoryName;
-  final String foodCategoryImage;
-  final String foodCategoryDesc;
+   String foodCategoryId;
+   String foodCategoryName;
+   String foodCategoryImage;
+   String foodCategoryDesc;
 
   FoodCategory(
       {this.foodCategoryId,

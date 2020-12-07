@@ -1,7 +1,8 @@
 class UserExercises {
-   String exerciseId,
+  String exerciseId,
       exerciseName,
-      exerciseSetRepeat,
+      exerciseSet,
+      exerciseRepeat,
       exercisePic,
       exerciseMuscle,
       exerciseMuscleId,
@@ -10,7 +11,8 @@ class UserExercises {
   UserExercises(
       {this.exerciseId,
       this.exerciseName,
-      this.exerciseSetRepeat,
+      this.exerciseSet,
+      this.exerciseRepeat,
       this.exercisePic,
       this.exerciseMuscle,
       this.exerciseMuscleId,
@@ -21,7 +23,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "1",
       exerciseName: "Barbell Chest Press",
-      exerciseSetRepeat: "4 Set - 10 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/chest.jpg",
       exerciseMuscle: "Chest",
       exerciseMuscleId: "1",
@@ -29,7 +32,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "2",
       exerciseName: "Dumbell Fly",
-      exerciseSetRepeat: "3 Set - 15 Repeat",
+      exerciseSet: "3",
+      exerciseRepeat: "12",
       exercisePic: "assets/chest.jpg",
       exerciseMuscle: "Chest",
       exerciseMuscleId: "1",
@@ -37,7 +41,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "3",
       exerciseName: "Pull-Up",
-      exerciseSetRepeat: "4 Set - 10 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/back1.jpg",
       exerciseMuscle: "Back",
       exerciseMuscleId: "2",
@@ -45,7 +50,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "5",
       exerciseName: "Dumbbell Shoulder Press",
-      exerciseSetRepeat: "4 Set - 12 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/shoulder.jpg",
       exerciseMuscle: "Shoulder",
       exerciseMuscleId: "3",
@@ -53,7 +59,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "7",
       exerciseName: "Dumbbell Curl",
-      exerciseSetRepeat: "4 Set - 15 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/biceps.jpg",
       exerciseMuscle: "Biceps",
       exerciseMuscleId: "4",
@@ -61,7 +68,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "0",
       exerciseName: "Rest",
-      exerciseSetRepeat: "1 Day",
+      exerciseSet: "1",
+      exerciseRepeat: "1",
       exercisePic: "assets/rest.png",
       exerciseMuscle: "",
       exerciseMuscleId: "0",
@@ -69,7 +77,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "3",
       exerciseName: "Pull-Up",
-      exerciseSetRepeat: "3 Set - 8 Repeat",
+      exerciseSet: "3",
+      exerciseRepeat: "10",
       exercisePic: "assets/back1.jpg",
       exerciseMuscle: "Back",
       exerciseMuscleId: "2",
@@ -77,7 +86,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "4",
       exerciseName: "Lat Pull-Down",
-      exerciseSetRepeat: "4 Set - 12 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/back1.jpg",
       exerciseMuscle: "Back",
       exerciseMuscleId: "2",
@@ -85,7 +95,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "5",
       exerciseName: "Dumbbell Shoulder Press",
-      exerciseSetRepeat: "4 Set - 12 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/shoulder.jpg",
       exerciseMuscle: "Shoulder",
       exerciseMuscleId: "3",
@@ -93,7 +104,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "6",
       exerciseName: "Dumbbell Lateral Raise",
-      exerciseSetRepeat: "4 Set - 15 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/shoulder.jpg",
       exerciseMuscle: "Shoulder",
       exerciseMuscleId: "3",
@@ -101,7 +113,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "7",
       exerciseName: "Dumbbell Curl",
-      exerciseSetRepeat: "4 Set - 12 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/triceps.jpg",
       exerciseMuscle: "Triceps",
       exerciseMuscleId: "5",
@@ -109,7 +122,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "8",
       exerciseName: "Rope Pushdown",
-      exerciseSetRepeat: "4 Set - 12 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/triceps.jpg",
       exerciseMuscle: "Triceps",
       exerciseMuscleId: "5",
@@ -117,7 +131,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "9",
       exerciseName: "Squat",
-      exerciseSetRepeat: "3 Set - 15 Repeat",
+      exerciseSet: "3",
+      exerciseRepeat: "12",
       exercisePic: "assets/leg1.jpg",
       exerciseMuscle: "Leg",
       exerciseMuscleId: "6",
@@ -125,7 +140,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "10",
       exerciseName: "Leg extension",
-      exerciseSetRepeat: "4 Set - 10 Repeat",
+      exerciseSet: "4",
+      exerciseRepeat: "10",
       exercisePic: "assets/leg1.jpg",
       exerciseMuscle: "Leg",
       exerciseMuscleId: "6",
@@ -133,7 +149,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "0",
       exerciseName: "Rest",
-      exerciseSetRepeat: "1 Day",
+      exerciseSet: "1",
+      exerciseRepeat: "1",
       exercisePic: "assets/rest.png",
       exerciseMuscle: "",
       exerciseMuscleId: "0",
@@ -141,7 +158,8 @@ List user_exercises = [
   UserExercises(
       exerciseId: "0",
       exerciseName: "Rest",
-      exerciseSetRepeat: "1 Day",
+      exerciseSet: "1",
+      exerciseRepeat: "1",
       exercisePic: "assets/rest.png",
       exerciseMuscle: "",
       exerciseMuscleId: "0",

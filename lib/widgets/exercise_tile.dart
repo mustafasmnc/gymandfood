@@ -20,7 +20,14 @@ class ExerciseTile extends StatelessWidget {
       this.exerciseMuscle})
       : super(key: key);
   @override
+  saveExercise(
+      TextEditingController exerciseSet, TextEditingController exerciseRepeat) {
+    print(exerciseSet.text);
+  }
+
   Widget build(BuildContext context) {
+    final exerciseSet = TextEditingController();
+    final exerciseRepeat = TextEditingController();
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
@@ -91,17 +98,79 @@ class ExerciseTile extends StatelessWidget {
                                         bottom: 32,
                                         left: 10,
                                         right: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                    child: Column(
                                       children: [
-                                        dayButton("Mon"),
-                                        dayButton("Tue"),
-                                        dayButton("Wed"),
-                                        dayButton("Thu"),
-                                        dayButton("Fri"),
-                                        dayButton("Sat"),
-                                        dayButton("Sun"),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                              "Set:",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  4,
+                                              child: TextField(
+                                                controller: exerciseSet,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              "Repeat:",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  4,
+                                              child: TextField(
+                                                controller: exerciseRepeat,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 20),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            dayButton("Mon", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                            dayButton("Tue", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                            dayButton("Wed", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                            dayButton("Thu", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                            dayButton("Fri", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                            dayButton("Sat", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                            dayButton("Sun", exerciseSet.text,
+                                                exerciseRepeat.text),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -127,13 +196,15 @@ class ExerciseTile extends StatelessWidget {
     );
   }
 
-  Widget dayButton(String dayName) {
+  Widget dayButton(String dayName, String exerciseSet, String exerciseRepeat) {
     UserExercises userExercises = UserExercises();
     return GestureDetector(
         onTap: () {
+          print("Set: $exerciseSet, Repeat: $exerciseRepeat");
           userExercises.exerciseId = exerciseId;
           userExercises.exerciseName = exerciseName;
-          userExercises.exerciseSetRepeat = "4 Set - 10 Repeat";
+          userExercises.exerciseSet = exerciseSet;
+          userExercises.exerciseRepeat=exerciseRepeat;
           userExercises.exercisePic = exerciseMuscleId == "1"
               ? "assets/chest.jpg"
               : exerciseMuscleId == "2"
@@ -165,7 +236,7 @@ class ExerciseTile extends StatelessWidget {
                                   ? "6"
                                   : "7";
           user_exercises.add(userExercises);
-          print(userExercises.exercisePic);
+          //print(userExercises.exercisePic);
         },
         child: Container(
           decoration: BoxDecoration(

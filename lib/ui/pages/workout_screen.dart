@@ -105,11 +105,22 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                               fontSize: 18,
                             ),
                           ),
-                          subtitle: Text(
-                            widget.workouts[i].exerciseSetRepeat,
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                          subtitle: Row(
+                            children: [
+                              Text(
+                                "Set: ${widget.workouts[i].exerciseSet}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Repeat: ${widget.workouts[i].exerciseRepeat}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                           // trailing: ClipRRect(
                           //   borderRadius: BorderRadius.circular(10),

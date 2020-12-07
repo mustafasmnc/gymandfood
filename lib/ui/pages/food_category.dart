@@ -1,55 +1,75 @@
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/model/food_category.dart';
+import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/food_list.dart';
 
-class FoodCategory extends StatefulWidget {
+class FoodCategoryPage extends StatefulWidget {
   @override
-  _FoodCategoryState createState() => _FoodCategoryState();
+  _FoodCategoryPageState createState() => _FoodCategoryPageState();
 }
 
-class _FoodCategoryState extends State<FoodCategory> {
+class _FoodCategoryPageState extends State<FoodCategoryPage> {
+  DatabaseService databaseService = DatabaseService();
+  //QuerySnapshot foodCategorySnapshot;
+
+  @override
+  void initState() {
+    // databaseService.getFoodCategory().then((value) {
+    //   foodCategorySnapshot = value;
+    //   setState(() {});
+    // });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding:
-            const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Food Categories",
-              style: TextStyle(fontSize: 26, color: Colors.black54),
-            ),
-            Divider(color: Colors.black),
-            foodCategoryList(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget foodCategoryList() {
-    return Expanded(
-          child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: foodCategories.length,
-          itemBuilder: (context, index) {
-            return CategoryTile(
-              foodCategoryImg: foodCategories[index].foodCategoryImage,
-              foodCategoryTitle: foodCategories[index].foodCategoryName,
-              foodCategoryDesc: foodCategories[index].foodCategoryDesc,
-              foodCategoryId: foodCategories[index].foodCategoryId,
+      // child: foodCategorySnapshot == null
+      //     ? Container(
+      //         child: Center(child: CircularProgressIndicator()),
+      //       )
+      //     : foodCategoryList(),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: databaseService.getFoodCategorySnapshot(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
             );
-          }),
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              //child: Expanded(
+                //child: RefreshIndicator(
+                //  key: _refreshIndicatorKey,
+                // onRefresh: refreshList,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot fcs = snapshot.data.docs[index];
+                      return CategoryTile(
+                        foodCategoryImg: fcs["food_category_pic"],
+                        foodCategoryTitle: fcs["food_category_name"],
+                        foodCategoryDesc: fcs["food_category_desc"],
+                        foodCategoryId: fcs["food_category_id"],
+                      );
+                    }),
+                //),
+              //),
+            );
+          }
+        },
+      ),
     );
   }
 }
 
-class CategoryTile extends StatelessWidget {
+class CategoryTile extends StatefulWidget {
   final String foodCategoryImg;
   final String foodCategoryTitle;
   final String foodCategoryDesc;
@@ -60,13 +80,25 @@ class CategoryTile extends StatelessWidget {
       @required this.foodCategoryTitle,
       @required this.foodCategoryDesc,
       @required this.foodCategoryId});
+  // final FoodCategory foodCategory;
 
+  // const CategoryTile({Key key, this.foodCategory}) : super(key: key);
+
+  @override
+  _CategoryTileState createState() => _CategoryTileState();
+}
+
+class _CategoryTileState extends State<CategoryTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => FoodList(foodCatId: foodCategoryId,)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FoodList(
+                      foodCatId: widget.foodCategoryId,
+                    )));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 5),
@@ -76,7 +108,7 @@ class CategoryTile extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                foodCategoryImg,
+                widget.foodCategoryImg,
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.cover,
               ),
@@ -91,7 +123,7 @@ class CategoryTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    foodCategoryTitle,
+                    widget.foodCategoryTitle,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -100,7 +132,7 @@ class CategoryTile extends StatelessWidget {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height / 80),
                   Text(
-                    foodCategoryDesc,
+                    widget.foodCategoryDesc,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,

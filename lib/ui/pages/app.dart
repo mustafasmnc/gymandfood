@@ -22,7 +22,7 @@ class AppState extends State<App> {
     TabItem(
       tabName: "Food Category",
       icon: Icons.restaurant_menu,
-      page: FoodCategory(),
+      page: FoodCategoryPage(),
     ),
     TabItem(
       tabName: "Profile",
