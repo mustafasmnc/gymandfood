@@ -13,7 +13,7 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   DatabaseService databaseService = DatabaseService();
-  var catName;
+  //var catName;
   // var healthString=widget.food.foodHealth;
   // var health=int.parse(healthString);
   // int val =int.tryParse(widget.food.foodHealth);
@@ -30,14 +30,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               );
             } else {
               DocumentSnapshot items = snapshot.data.docs[0];
-              var catNameSnapshot =
-                  databaseService.getFoodCategoryName(items["food_cat_id"]);
-              catNameSnapshot.then((querySnapshot) {
-                querySnapshot.docs.forEach((result) {
-                  catName = result["food_category_name"];
-                });
-              });
-              //print(categoryName);
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
@@ -64,7 +56,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         //SizedBox(height: 10),
                         ListTile(
                           title: Text(
-                            catName,
+                            items["food_cat_name"],
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w400,

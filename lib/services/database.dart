@@ -35,12 +35,5 @@ class DatabaseService {
         .snapshots();
   }
 
-  getFoodCategoryName(String foodCatId) {
-    return FirebaseFirestore.instance
-        .collection("food")
-        .doc("food_category")
-        .collection("food_categories")
-        .where("food_category_id", isEqualTo: foodCatId)
-        .get();
-  }
+  
 }
