@@ -1,5 +1,5 @@
 class Food {
-  final String foodId,
+  String foodId,
       foodCat,
       foodCatId,
       foodName,

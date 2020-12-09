@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  getFoodCategory() async {
-    return await FirebaseFirestore.instance
-        .collection("food")
-        .doc("food_category")
-        .collection("food_categories")
-        .get();
-  }
+  // getFoodCategory() async {
+  //   return await FirebaseFirestore.instance
+  //       .collection("food")
+  //       .doc("food_category")
+  //       .collection("food_categories")
+  //       .get();
+  // }
 
   getFoodCategorySnapshot() {
     return FirebaseFirestore.instance
@@ -15,5 +15,32 @@ class DatabaseService {
         .doc("food_category")
         .collection("food_categories")
         .snapshots();
+  }
+
+  getFilteredFoods(String foodCatId) {
+    return FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_list")
+        .collection("food_info")
+        .where("food_cat_id", isEqualTo: foodCatId)
+        .snapshots();
+  }
+
+  getFoodDetail(String foodId) {
+    return FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_list")
+        .collection("food_info")
+        .where("food_id", isEqualTo: foodId)
+        .snapshots();
+  }
+
+  getFoodCategoryName(String foodCatId) {
+    return FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_category")
+        .collection("food_categories")
+        .where("food_category_id", isEqualTo: foodCatId)
+        .get();
   }
 }

@@ -485,7 +485,7 @@ class _FoodCard extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(20))),
                   transitionDuration: const Duration(milliseconds: 1500),
                   openBuilder: (context, _) {
-                    return FoodDetailScreen(food: food);
+                    //return FoodDetailScreen(food: food);
                   },
                   closedBuilder: (context, openContainer) {
                     return GestureDetector(
