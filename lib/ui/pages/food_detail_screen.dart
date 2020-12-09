@@ -32,12 +32,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               DocumentSnapshot items = snapshot.data.docs[0];
               var catNameSnapshot =
                   databaseService.getFoodCategoryName(items["food_cat_id"]);
-              catNameSnapshot
-                ..then((querySnapshot) {
-                  querySnapshot.docs.forEach((result) {
-                    catName = result["food_category_name"];
-                  });
+              catNameSnapshot.then((querySnapshot) {
+                querySnapshot.docs.forEach((result) {
+                  catName = result["food_category_name"];
                 });
+              });
               //print(categoryName);
               return CustomScrollView(
                 slivers: [
