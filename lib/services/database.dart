@@ -35,5 +35,14 @@ class DatabaseService {
         .snapshots();
   }
 
+  getBodyMuscles(){
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("body_muscles")
+        .collection("body_muscle_info")
+        .orderBy("muscle_id")
+        .snapshots();
+  }
+
   
 }

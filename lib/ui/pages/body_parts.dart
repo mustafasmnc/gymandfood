@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/model/body_muscles.dart';
 import 'package:gymandfood/widgets/body_muscle_tile.dart';
+import 'package:gymandfood/services/database.dart';
 
 class BodyParts extends StatefulWidget {
   @override
@@ -8,36 +10,35 @@ class BodyParts extends StatefulWidget {
 }
 
 class _BodyPartsState extends State<BodyParts> {
+  DatabaseService databaseService = DatabaseService();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Body Muscles",
-            style: TextStyle(fontSize: 26, color: Colors.black54),
-          ),
-          Divider(color: Colors.black),
-          bodyMusclesList(),
-        ],
-      ),
-    );
-  }
-
-  Widget bodyMusclesList() {
-    return Expanded(
-      child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: bodyMuscles.length,
-          itemBuilder: (context, index) {
-            return BodyMuscleTile(
-              bodyMuscleImage: bodyMuscles[index].bodyMuscleImage,
-              bodyMuscleName: bodyMuscles[index].bodyMuscleName,
-              bodyMuscleDesc: bodyMuscles[index].bodyMuscleDesc,
-              bodyMuscleId: bodyMuscles[index].bodyMuscleId,
-            );
+      child: StreamBuilder<QuerySnapshot>(
+          stream: databaseService.getBodyMuscles(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot bms = snapshot.data.docs[index];
+                      return BodyMuscleTile(
+                        bodyMuscleImage: bms["muscle_pic"],
+                        bodyMuscleName: bms["muscle_name"],
+                        bodyMuscleDesc: bms["muscle_desc"],
+                        bodyMuscleId: bms["muscle_id"],
+                      );
+                    }),
+              );
+            }
           }),
     );
   }

@@ -72,7 +72,7 @@ class BodyMuscleTile extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(45),
                 child: Image(
-                  image: AssetImage(
+                  image: NetworkImage(
                     bodyMuscleImage,
                   ),
                   height: 90,

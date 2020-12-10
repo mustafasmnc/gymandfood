@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gymandfood/model/food_category.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/food_list.dart';
 
