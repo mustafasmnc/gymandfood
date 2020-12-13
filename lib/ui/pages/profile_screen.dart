@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       transitionType: ContainerTransitionType.fade,
       closedColor: Color(0xFFE9E9E9),
       openBuilder: (context, _) {
-        return WorkoutScreen(dayExercises);
+        return WorkoutScreen(dayExercises,color1);
       },
       closedBuilder: (context, VoidCallback openContainer) {
         return GestureDetector(

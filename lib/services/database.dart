@@ -35,7 +35,7 @@ class DatabaseService {
         .snapshots();
   }
 
-  getBodyMuscles(){
+  getBodyMuscles() {
     return FirebaseFirestore.instance
         .collection("exercise")
         .doc("body_muscles")
@@ -44,5 +44,13 @@ class DatabaseService {
         .snapshots();
   }
 
-  
+  getExercises(String muscleId) {
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("exercise_list")
+        .collection("exercise_info")
+        .where("exercise_muscle_id", isEqualTo: muscleId)
+        //.orderBy("exercise_id")
+        .snapshots();
+  }
 }

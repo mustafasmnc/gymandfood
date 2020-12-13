@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gymandfood/model/user_exercises.dart';
+import 'package:readmore/readmore.dart';
 
 class ExerciseTile extends StatelessWidget {
   final String exerciseId;
@@ -48,7 +49,7 @@ class ExerciseTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 200,
+              height: 150,
               width: MediaQuery.of(context).size.width,
               child: Image.network(
                 exercisePic,
@@ -62,7 +63,7 @@ class ExerciseTile extends StatelessWidget {
                 Text(
                   exerciseName,
                   style: TextStyle(
-                    color: Colors.black54,
+                    color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -183,13 +184,18 @@ class ExerciseTile extends StatelessWidget {
                     })
               ],
             ),
-            //SizedBox(height: 7),
-            Text(exerciseDesc,
-                textAlign: TextAlign.justify,
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 17,
-                )),
+            ReadMoreText(
+              exerciseDesc,
+              trimLines: 2,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: 'Read',
+              trimExpandedText: 'Less',
+              colorClickableText: Colors.red,
+              textAlign: TextAlign.justify,
+              style: TextStyle(
+                fontSize: 17,
+              ),
+            )
           ],
         ),
       ),
@@ -204,7 +210,7 @@ class ExerciseTile extends StatelessWidget {
           userExercises.exerciseId = exerciseId;
           userExercises.exerciseName = exerciseName;
           userExercises.exerciseSet = exerciseSet;
-          userExercises.exerciseRepeat=exerciseRepeat;
+          userExercises.exerciseRepeat = exerciseRepeat;
           userExercises.exercisePic = exerciseMuscleId == "1"
               ? "assets/chest.jpg"
               : exerciseMuscleId == "2"

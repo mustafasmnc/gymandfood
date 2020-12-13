@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gymandfood/model/body_muscles.dart';
 import 'package:gymandfood/widgets/body_muscle_tile.dart';
 import 'package:gymandfood/services/database.dart';
 
