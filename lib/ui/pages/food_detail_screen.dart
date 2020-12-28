@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gymandfood/model/food.dart';
 import 'package:gymandfood/services/database.dart';
 
@@ -13,6 +14,7 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   DatabaseService databaseService = DatabaseService();
+  bool dialVisible = true;
   //var catName;
   // var healthString=widget.food.foodHealth;
   // var health=int.parse(healthString);
@@ -120,6 +122,39 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               );
             }
           }),
+      floatingActionButton: buildSpeedDial(),
+    );
+  }
+
+  SpeedDial buildSpeedDial() {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      // child: Icon(Icons.add),
+      onOpen: () => print('OPENING DIAL'),
+      onClose: () => print('DIAL CLOSED'),
+      visible: dialVisible,
+      curve: Curves.bounceIn,
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.favorite, color: Colors.white),
+          backgroundColor: Colors.red,
+          onTap: () => print('Add Favorite'),
+          label: 'Add Favorite',
+          labelStyle:
+              TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+          labelBackgroundColor: Colors.red,
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.add, color: Colors.white),
+          backgroundColor: Colors.green,
+          onTap: () => print("Add Today's Meal"),
+          label: "Add Today's Meal",
+          labelStyle:
+              TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+          labelBackgroundColor: Colors.green,
+        ),
+      ],
     );
   }
 }

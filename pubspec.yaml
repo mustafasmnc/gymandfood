@@ -33,6 +33,7 @@ dependencies:
   firebase_core: ^0.5.3
   cloud_firestore: ^0.14.4
   readmore: ^1.0.1
+  flutter_speed_dial: ^1.2.5
 
 dev_dependencies:
   flutter_test:
