@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gymandfood/model/food.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:gymandfood/services/favorite_database.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final String foodId;
@@ -14,11 +15,22 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   DatabaseService databaseService = DatabaseService();
+  FavoriteDatabase favoriteDatabase = FavoriteDatabase();
   bool dialVisible = true;
+  String food_id;
   //var catName;
   // var healthString=widget.food.foodHealth;
   // var health=int.parse(healthString);
   // int val =int.tryParse(widget.food.foodHealth);
+
+  @override
+  void initState() {
+    favoriteDatabase.initializeDatabase().then((value) {
+      print('------database intialized');
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +44,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               );
             } else {
               DocumentSnapshot items = snapshot.data.docs[0];
+              food_id = items['food_id'];
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
@@ -148,7 +161,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         SpeedDialChild(
           child: Icon(Icons.add, color: Colors.white),
           backgroundColor: Colors.green,
-          onTap: () => print("Add Today's Meal"),
+          onTap: () {
+            favoriteDatabase.addFavoriteFood(food_id);
+          },
           label: "Add Today's Meal",
           labelStyle:
               TextStyle(fontWeight: FontWeight.w500, color: Colors.white),

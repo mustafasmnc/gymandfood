@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/model/user.dart';
-import 'package:gymandfood/ui/pages/food_detail_screen.dart';
+import 'package:gymandfood/services/favorite_database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/user_exercises.dart';
@@ -21,6 +21,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<UserExercises> friday = [];
   List<UserExercises> saturday = [];
   List<UserExercises> sunday = [];
+  List favoriteFoodsId;
+
+  FavoriteDatabase favoriteDatabase = FavoriteDatabase();
 
   @override
   void initState() {
@@ -41,7 +44,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         sunday.add(user_exercises[i]);
       }
     }
+
+    favoriteDatabase.initializeDatabase().then((value) {
+      print('------database intialized');
+    });
+
     super.initState();
+  }
+
+  getFoodsId(){
+    favoriteDatabase.getFavoriteFoods().then((value){
+      favoriteFoodsId=value;
+    });
+    print("1: "+favoriteFoodsId[0]);
+    print("2: "+favoriteFoodsId[1]);
   }
 
   @override
@@ -121,11 +137,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600),
                           ),
-                          trailing: CircleAvatar(
-                            radius: 30.0,
-                            backgroundImage: NetworkImage(
-                                user.userPhoto),
-                            backgroundColor: Colors.transparent,
+                          trailing: GestureDetector(onTap: (){getFoodsId();},
+                                                      child: CircleAvatar(
+                              radius: 30.0,
+                              backgroundImage: NetworkImage(user.userPhoto),
+                              backgroundColor: Colors.transparent,
+                            ),
                           ),
                         ),
                         Padding(
@@ -261,7 +278,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       transitionType: ContainerTransitionType.fade,
       closedColor: Color(0xFFE9E9E9),
       openBuilder: (context, _) {
-        return WorkoutScreen(dayExercises,color1);
+        return WorkoutScreen(dayExercises, color1);
       },
       closedBuilder: (context, VoidCallback openContainer) {
         return GestureDetector(
