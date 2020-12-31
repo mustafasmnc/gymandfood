@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymandfood/ui/pages/app.dart';
 import 'package:gymandfood/ui/pages/profile_screen.dart';
+import 'package:gymandfood/ui/pages/signin.dart';
+
+import 'helper/functions.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,7 +13,25 @@ void main() async{
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _isUserLoggedIn = false;
+  @override
+  void initState() {
+    checkUserLoggedInStatus();
+    super.initState();
+  }
+  checkUserLoggedInStatus() async {
+    HelperFunctions.getUserLoggedInDetails().then((value){
+      setState(() {
+        _isUserLoggedIn=!value;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
   SystemChrome.setPreferredOrientations([
@@ -24,6 +45,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: App());
+        home: (_isUserLoggedIn ?? false) ? App() : SignIn(),);
   }
 }

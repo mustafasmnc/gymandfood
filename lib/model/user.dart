@@ -1,11 +1,11 @@
-class User {
-  final String userId;
-  final String userName;
-  final String userEmail;
-  final String userPhoto;
-  final String userType;
+class UserModel {
+   String userId;
+   String userName;
+   String userEmail;
+   String userPhoto;
+   String userType;
 
-  User(
+  UserModel(
       {this.userId,
       this.userName,
       this.userEmail,
@@ -13,7 +13,7 @@ class User {
       this.userType});
 }
 
-final user = User(
+final user = UserModel(
     userId: "0",
     userName: "Smnc",
     userEmail: "mustafasmnc@gmail.com",

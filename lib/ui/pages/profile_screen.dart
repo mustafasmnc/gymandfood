@@ -1,14 +1,21 @@
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/user.dart';
+import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/services/favorite_database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
+import 'package:gymandfood/widgets/favorite_food.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/user_exercises.dart';
 import 'package:gymandfood/model/food.dart';
 import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
+  String userId;
+
+  ProfileScreen({Key key, this.userId}) : super(key: key);
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -22,11 +29,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<UserExercises> saturday = [];
   List<UserExercises> sunday = [];
   List favoriteFoodsId;
+  String userName;
 
   FavoriteDatabase favoriteDatabase = FavoriteDatabase();
+  DatabaseService databaseService = DatabaseService();
+
+  getUserName() {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(widget.userId)
+        .snapshots();
+
+    //  .then((value) {
+    // print("VALUEE: " + value.data()["userName"]);
+    // setState(() {
+    //   userName = value.data()["userName"];
+    // });
+    //});
+  }
 
   @override
   void initState() {
+    HelperFunctions.getUserLoggedInID().then((value) {
+      setState(() {
+        widget.userId = value;
+      });
+    });
+    getUserName();
+
     for (int i = 0; i < user_exercises.length; i++) {
       if (user_exercises[i].exerciseDayofweek == "1") {
         monday.add(user_exercises[i]);
@@ -45,19 +75,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
 
-    favoriteDatabase.initializeDatabase().then((value) {
-      print('------database intialized');
-    });
-
     super.initState();
   }
 
-  getFoodsId(){
-    favoriteDatabase.getFavoriteFoods().then((value){
-      favoriteFoodsId=value;
+  getFoodsId() {
+    favoriteDatabase.getFavoriteFoods().then((value) {
+      favoriteFoodsId = value;
     });
-    print("1: "+favoriteFoodsId[0]);
-    print("2: "+favoriteFoodsId[1]);
+    favoriteFoodsId = favoriteFoodsId.toSet().toList();
+    print("11111: " + favoriteFoodsId[0]);
+    print("22222: " + favoriteFoodsId[1]);
   }
 
   @override
@@ -130,15 +157,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w400),
                           ),
-                          subtitle: Text(
-                            "Hello, ${user.userName}",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600),
+                          subtitle: StreamBuilder(
+                            stream: getUserName(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text("");
+                              } else {
+                                return Text(
+                                  "Hello, " + snapshot.data['userName'],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600),
+                                );
+                              }
+                            },
                           ),
-                          trailing: GestureDetector(onTap: (){getFoodsId();},
-                                                      child: CircleAvatar(
+                          trailing: GestureDetector(
+                            onTap: () {
+                              //getFoodsId();
+                              getUserName();
+                            },
+                            child: CircleAvatar(
                               radius: 30.0,
                               backgroundImage: NetworkImage(user.userPhoto),
                               backgroundColor: Colors.transparent,
@@ -192,34 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              Container(
-                height: height * 0.3,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "MEALS FOR TODAY",
-                      style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                    ),
-                    SizedBox(height: height / 150),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            for (int i = 0; i < foods.length; i++)
-                              _FoodCard(food: foods[i]),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              FavoriteFood(foodsId: favoriteFoodsId),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -476,108 +490,5 @@ class _ProgressPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     //throw UnimplementedError();
     return true;
-  }
-}
-
-class _FoodCard extends StatelessWidget {
-  final Food food;
-
-  const _FoodCard({@required this.food});
-  @override
-  Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    return Container(
-      margin: const EdgeInsets.only(right: 10, bottom: 10),
-      child: Material(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          elevation: 4,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Flexible(
-                fit: FlexFit.tight,
-                child: OpenContainer(
-                  closedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  transitionDuration: const Duration(milliseconds: 1500),
-                  openBuilder: (context, _) {
-                    //return FoodDetailScreen(food: food);
-                  },
-                  closedBuilder: (context, openContainer) {
-                    return GestureDetector(
-                      onTap: openContainer,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          const Radius.circular(20),
-                        ),
-                        child: Image.network(
-                          food.foodPic,
-                          width: 120,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Flexible(
-                  fit: FlexFit.tight,
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      left: 5,
-                      top: 5,
-                      right: 5,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          food.foodName.length > 16
-                              ? food.foodName.substring(0, 16) + ".."
-                              : food.foodName,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          maxLines: 1,
-                        ),
-                        //SizedBox(height: height / 150),
-                        Text(
-                          "Calorie: " + food.foodCal,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          "Protein: " + food.foodProtein,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          "Fat: " + food.foodFat,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: height / 100),
-                      ],
-                    ),
-                  )),
-            ],
-          )),
-    );
   }
 }
