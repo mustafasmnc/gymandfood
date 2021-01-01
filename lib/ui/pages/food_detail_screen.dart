@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:gymandfood/model/food.dart';
+import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
-import 'package:gymandfood/services/favorite_database.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final String foodId;
@@ -15,20 +14,35 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   DatabaseService databaseService = DatabaseService();
-  FavoriteDatabase favoriteDatabase = FavoriteDatabase();
   bool dialVisible = true;
-  String food_id;
-  //var catName;
-  // var healthString=widget.food.foodHealth;
-  // var health=int.parse(healthString);
-  // int val =int.tryParse(widget.food.foodHealth);
+  String foodName, foodPic, foodProtein, foodCal, foodFat;
+  String userId;
+  bool isLiked = false;
 
   @override
   void initState() {
-    favoriteDatabase.initializeDatabase().then((value) {
-      print('------database intialized');
+    HelperFunctions.getUserLoggedInID().then((value) {
+      setState(() {
+        userId = value;
+        checkIfLikedOrNot(value);
+      });
     });
+
     super.initState();
+  }
+
+  checkIfLikedOrNot(String userId) {
+    FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("favorite_foods")
+        .doc(widget.foodId)
+        .get()
+        .then((value) {
+      setState(() {
+        isLiked = value.exists;
+      });
+    });
   }
 
   @override
@@ -44,7 +58,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               );
             } else {
               DocumentSnapshot items = snapshot.data.docs[0];
-              food_id = items['food_id'];
+              foodName = items['food_name'];
+              foodPic = items['food_pic'];
+              foodProtein = items['food_protein'];
+              foodCal = items['food_cal'];
+              foodFat = items['food_fat'];
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
@@ -150,10 +168,24 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       curve: Curves.bounceIn,
       children: [
         SpeedDialChild(
-          child: Icon(Icons.favorite, color: Colors.white),
-          backgroundColor: Colors.red,
-          onTap: () => print('Add Favorite'),
-          label: 'Add Favorite',
+          child: Icon(Icons.favorite,
+              color: isLiked == true ? Colors.red : Colors.white),
+          backgroundColor: Colors.red[200],
+          onTap: () {
+            if (isLiked == false) {
+              databaseService.addFavoriteFood(userId, widget.foodId, foodName,
+                  foodPic, foodCal, foodProtein, foodFat);
+              setState(() {
+                isLiked = true;
+              });
+            } else {
+              databaseService.removeFavoriteFood(userId, widget.foodId);
+              setState(() {
+                isLiked = false;
+              });
+            }
+          },
+          label: isLiked == true ? 'Remove Favorite' : 'Add Favorite',
           labelStyle:
               TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
           labelBackgroundColor: Colors.red,
@@ -162,7 +194,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           child: Icon(Icons.add, color: Colors.white),
           backgroundColor: Colors.green,
           onTap: () {
-            favoriteDatabase.addFavoriteFood(food_id);
+            print("Add Today's Meal");
           },
           label: "Add Today's Meal",
           labelStyle:

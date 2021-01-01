@@ -18,7 +18,6 @@ class _FoodListState extends State<FoodList> {
   @override
   void initState() {
     super.initState();
-    //_filteredFoods =foods.where((i) => i.foodCatId == widget.foodCatId).toList();
   }
 
   @override

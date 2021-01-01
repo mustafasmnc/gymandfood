@@ -54,5 +54,62 @@ class DatabaseService {
         .snapshots();
   }
 
-  
+  getUserName(String userId) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .snapshots();
+
+    //  .then((value) {
+    // print("VALUEE: " + value.data()["userName"]);
+    // setState(() {
+    //   userName = value.data()["userName"];
+    // });
+    //});
+  }
+
+  Future addFavoriteFood(
+      String userId,
+      String foodId,
+      String foodName,
+      String foodPic,
+      String foodCal,
+      String foodProtein,
+      String foodFat) async {
+    Map<String, String> userData = {
+      "foodId": foodId,
+      "foodName": foodName,
+      "foodPic": foodPic,
+      "foodCal": foodCal,
+      "foodProtein": foodProtein,
+      "foodFat": foodFat,
+    };
+
+    return await FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection('favorite_foods')
+        .doc(foodId)
+        .set(userData)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getFavoriteFoods(String userId) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("favorite_foods")
+        .snapshots();
+  }
+
+  removeFavoriteFood(String userId, String foodId) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("favorite_foods")
+        .doc(foodId)
+        .delete();
+  }
 }

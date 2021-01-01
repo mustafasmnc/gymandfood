@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/services/database.dart';
-import 'package:gymandfood/services/favorite_database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:gymandfood/widgets/favorite_food.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/user_exercises.dart';
-import 'package:gymandfood/model/food.dart';
 import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -31,22 +29,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List favoriteFoodsId;
   String userName;
 
-  FavoriteDatabase favoriteDatabase = FavoriteDatabase();
   DatabaseService databaseService = DatabaseService();
 
-  getUserName() {
-    return FirebaseFirestore.instance
-        .collection("user")
-        .doc(widget.userId)
-        .snapshots();
-
-    //  .then((value) {
-    // print("VALUEE: " + value.data()["userName"]);
-    // setState(() {
-    //   userName = value.data()["userName"];
-    // });
-    //});
-  }
+  
 
   @override
   void initState() {
@@ -55,7 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         widget.userId = value;
       });
     });
-    getUserName();
 
     for (int i = 0; i < user_exercises.length; i++) {
       if (user_exercises[i].exerciseDayofweek == "1") {
@@ -76,15 +60,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     super.initState();
-  }
-
-  getFoodsId() {
-    favoriteDatabase.getFavoriteFoods().then((value) {
-      favoriteFoodsId = value;
-    });
-    favoriteFoodsId = favoriteFoodsId.toSet().toList();
-    print("11111: " + favoriteFoodsId[0]);
-    print("22222: " + favoriteFoodsId[1]);
   }
 
   @override
@@ -158,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 16, fontWeight: FontWeight.w400),
                           ),
                           subtitle: StreamBuilder(
-                            stream: getUserName(),
+                            stream: databaseService.getUserName(widget.userId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -177,7 +152,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           trailing: GestureDetector(
                             onTap: () {
                               //getFoodsId();
-                              getUserName();
                             },
                             child: CircleAvatar(
                               radius: 30.0,
@@ -233,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              FavoriteFood(foodsId: favoriteFoodsId),
+              FavoriteFood(userId:widget.userId),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
