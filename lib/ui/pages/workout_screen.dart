@@ -1,22 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/model/user_exercises.dart';
+import 'package:gymandfood/services/database.dart';
 import 'package:intl/intl.dart';
 
 class WorkoutScreen extends StatefulWidget {
-  List<UserExercises> workouts = [];
   Color color;
-  WorkoutScreen(this.workouts, this.color);
+  String userId;
+  String dayId;
+  WorkoutScreen(this.color, this.userId, this.dayId);
   @override
   _WorkoutScreenState createState() => _WorkoutScreenState();
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
+  DatabaseService databaseService = DatabaseService();
   @override
   Widget build(BuildContext context) {
     var now = DateTime.now();
     var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
-      backgroundColor: widget.color,
+      backgroundColor: widget.color.withOpacity(.7),
       body: Padding(
         padding: const EdgeInsets.only(top: 32, right: 16, left: 16, bottom: 0),
         child: Column(
@@ -77,113 +81,136 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
             //   ],
             // )
-            /*Expanded(
-              child: ListView.builder(
-                  //scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  //physics: NeverScrollableScrollPhysics(),
-                  itemCount: widget.workouts.length,
-                  itemBuilder: (context, i) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 5),
-                      child: Card(
-                        color: Color(0xFF26547C).withOpacity(.5),
-                        child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              widget.workouts[i].exercisePic,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          title: Text(
-                            widget.workouts[i].exerciseName,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18,
-                            ),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Text(
-                                "Set: ${widget.workouts[i].exerciseSet}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                "Repeat: ${widget.workouts[i].exerciseRepeat}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          // trailing: ClipRRect(
-                          //   borderRadius: BorderRadius.circular(10),
-                          //   child: Image.asset(
-                          //     widget.workouts[i].exercisePic,
-                          //     width: 50,
-                          //     height: 50,
-                          //     fit: BoxFit.cover,
-                          //   ),
-                          // ),
-                        ),
-                      ),
-                    );
-                  }),
-            )*/
+
             Expanded(
-              child: ReorderableListView(
-                children: List.generate(widget.workouts.length, (index) {
-                  return ListTile(
-                    key: ValueKey("value $index"),
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        widget.workouts[index].exercisePic,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    title: Text(
-                      widget.workouts[index].exerciseName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18,
-                      ),
-                    ),
-                    subtitle: Row(
-                      children: [
-                        Text(
-                          "Set: ${widget.workouts[index].exerciseSet}",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: databaseService.getAddedExercises(
+                      widget.userId, widget.dayId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.data.docs.length == 0) {
+                      return Center(
+                          child: Text(
+                        "Sorry, no exercise found.\nPlease add exercise.",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
                         ),
-                        SizedBox(width: 10),
-                        Text(
-                          "Repeat: ${widget.workouts[index].exerciseRepeat}",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-                onReorder: (int oldIndex, int newIndex) {
-                  setState(() {
-                    _updateMyItems(oldIndex, newIndex);
-                  });
-                },
-              ),
+                      ));
+                    } else {
+                      return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot aue = snapshot.data.docs[index];
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Card(
+                                color: widget.color.withOpacity(.2),
+                                child: ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      aue["exercisePic"],
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    aue["exerciseName"],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  subtitle: Row(
+                                    children: [
+                                      Text(
+                                        "Set: ${aue["exerciseSet"]}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        "Repeat: ${aue["exerciseRepeat"]}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // trailing: ClipRRect(
+                                  //   borderRadius: BorderRadius.circular(10),
+                                  //   child: Image.asset(
+                                  //     widget.workouts[i].exercisePic,
+                                  //     width: 50,
+                                  //     height: 50,
+                                  //     fit: BoxFit.cover,
+                                  //   ),
+                                  // ),
+                                ),
+                              ),
+                            );
+                          });
+                      // return ReorderableListView(
+                      //   children:
+                      //       List.generate(snapshot.data.docs.length, (index) {
+                      //         DocumentSnapshot aue = snapshot.data.docs[index];
+                      //     return ListTile(
+                      //       key: ValueKey("value $index"),
+                      //       leading: ClipRRect(
+                      //         borderRadius: BorderRadius.circular(10),
+                      //         child: Image.network(
+                      //           aue["exercisePic"],
+                      //           width: 50,
+                      //           height: 50,
+                      //           fit: BoxFit.cover,
+                      //         ),
+                      //       ),
+                      //       title: Text(
+                      //         aue["exerciseName"],
+                      //         style: TextStyle(
+                      //           color: Colors.white,
+                      //           fontWeight: FontWeight.w800,
+                      //           fontSize: 18,
+                      //         ),
+                      //       ),
+                      //       subtitle: Row(
+                      //         children: [
+                      //           Text(
+                      //             "Set: ${aue["exerciseSet"]}",
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //             ),
+                      //           ),
+                      //           SizedBox(width: 10),
+                      //           Text(
+                      //             "Repeat: ${aue["exerciseRepeat"]}",
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   }),
+                      //   // onReorder: (int oldIndex, int newIndex) {
+                      //   //   setState(() {
+                      //   //     _updateMyItems(snapshot.data,oldIndex, newIndex);
+                      //   //   });
+                      //   // },
+                      // );
+                    }
+                  }),
             )
           ],
         ),
@@ -191,11 +218,11 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     );
   }
 
-  void _updateMyItems(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-    final UserExercises item = widget.workouts.removeAt(oldIndex);
-    widget.workouts.insert(newIndex, item);
-  }
+  // void _updateMyItems(QuerySnapshot data,int oldIndex, int newIndex) {
+  //   if (newIndex > oldIndex) {
+  //     newIndex -= 1;
+  //   }
+  //   final UserExercises item = data.removeAt(oldIndex);
+  //   widget.workouts.insert(newIndex, item);
+  // }
 }

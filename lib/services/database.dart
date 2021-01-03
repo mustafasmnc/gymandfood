@@ -76,7 +76,7 @@ class DatabaseService {
       String foodCal,
       String foodProtein,
       String foodFat) async {
-    Map<String, String> userData = {
+    Map<String, String> foodData = {
       "foodId": foodId,
       "foodName": foodName,
       "foodPic": foodPic,
@@ -90,7 +90,7 @@ class DatabaseService {
         .doc(userId)
         .collection('favorite_foods')
         .doc(foodId)
-        .set(userData)
+        .set(foodData)
         .catchError((e) {
       print(e.toString());
     });
@@ -111,5 +111,48 @@ class DatabaseService {
         .collection("favorite_foods")
         .doc(foodId)
         .delete();
+  }
+
+  Future addExercise(
+      String userId,
+      String exerciseId,
+      String exerciseName,
+      String exerciseSet,
+      String exerciseRepeat,
+      String exerciseMuscle,
+      String exerciseMuscleId,
+      String exercisePic,
+      String dayNumber) async {
+    String dataId = dayNumber + "|" + exerciseId;
+    Map<String, String> exerciseData = {
+      "exerciseId": exerciseId,
+      "exerciseName": exerciseName,
+      "exerciseSet": exerciseSet,
+      "exerciseRepeat": exerciseRepeat,
+      "exerciseMuscle": exerciseMuscle,
+      "exerciseMuscleId": exerciseMuscleId,
+      "exercisePic": exercisePic,
+      "dayNumber": dayNumber,
+    };
+
+    return await FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection('user_exercises')
+        .doc(dataId)
+        .set(exerciseData)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getAddedExercises(String userId,String dayId) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("user_exercises")
+        .where("dayNumber", isEqualTo: dayId)
+        //.orderBy("exercise_id")
+        .snapshots();
   }
 }

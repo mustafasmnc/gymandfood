@@ -6,6 +6,7 @@ import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 import 'package:gymandfood/widgets/favorite_food.dart';
+import 'package:gymandfood/widgets/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:gymandfood/model/user_exercises.dart';
 import 'package:intl/intl.dart';
@@ -30,8 +31,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userName;
 
   DatabaseService databaseService = DatabaseService();
-
-  
 
   @override
   void initState() {
@@ -207,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              FavoriteFood(userId:widget.userId),
+              FavoriteFood(userId: widget.userId),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -229,124 +228,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontSize: 16),
                     ),
                     SizedBox(height: height / 100),
-                    dayCards("Monday", height, width, Color(0xFF6448FE),
-                        Color(0xFF5FC6FF), monday),
+                    dayCards(widget.userId, "Monday", "1", height, width,
+                        Color(0xFF6448FE), Color(0xFF5FC6FF), monday),
                     SizedBox(height: height / 50),
-                    dayCards("Tuesday", height, width, Color(0xFFD76D77),
-                        Color(0xFFFFAF7B), tuesday),
+                    dayCards(widget.userId, "Tuesday", "2", height, width,
+                        Color(0xFFD76D77), Color(0xFFFFAF7B), tuesday),
                     SizedBox(height: height / 50),
-                    dayCards("Wednesday", height, width, Color(0xFF155799),
-                        Color(0xFF159957), wednesday),
+                    dayCards(widget.userId, "Wednesday", "3", height, width,
+                        Color(0xFF155799), Color(0xFF159957), wednesday),
                     SizedBox(height: height / 50),
-                    dayCards("Thursday", height, width, Color(0xFFFFA738),
-                        Color(0xFFFFE130), thursday),
+                    dayCards(widget.userId, "Thursday", "4", height, width,
+                        Color(0xFFFFA738), Color(0xFFFFE130), thursday),
                     SizedBox(height: height / 50),
-                    dayCards("Friday", height, width, Color(0xFFFE6197),
-                        Color(0xFFFFB463), friday),
+                    dayCards(widget.userId, "Friday", "5", height, width,
+                        Color(0xFFFE6197), Color(0xFFFFB463), friday),
                     SizedBox(height: height / 50),
-                    dayCards("Saturday", height, width, Color(0xFF6190E8),
-                        Color(0xFFA7BFE8), saturday),
+                    dayCards(widget.userId, "Saturday", "6", height, width,
+                        Color(0xFF6190E8), Color(0xFFA7BFE8), saturday),
                     SizedBox(height: height / 50),
-                    dayCards("Sunday", height, width, Color(0xFFf83600),
-                        Color(0xFFfe8c00), friday),
+                    dayCards(widget.userId, "Sunday", "7", height, width,
+                        Color(0xFFf83600), Color(0xFFfe8c00), friday),
                   ],
                 ),
               ),
             ],
           ),
         ));
-  }
-
-  Widget dayCards(String dayName, double height, double width, Color color1,
-      Color color2, List<UserExercises> dayExercises) {
-    return OpenContainer(
-      closedElevation: 0,
-      transitionDuration: const Duration(milliseconds: 1500),
-      openShape: const ContinuousRectangleBorder(),
-      transitionType: ContainerTransitionType.fade,
-      closedColor: Color(0xFFE9E9E9),
-      openBuilder: (context, _) {
-        return WorkoutScreen(dayExercises, color1);
-      },
-      closedBuilder: (context, VoidCallback openContainer) {
-        return GestureDetector(
-          // onTap: () {
-          //   Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //           builder: (context) => WorkoutScreen(dayExercises)));
-          // },
-          onTap: openContainer,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            height: 150,
-            width: width,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
-                  colors: [color1, color2]),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  offset: Offset(5, 5), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      dayName,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22),
-                    ),
-                    IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        ),
-                        onPressed: null)
-                  ],
-                ),
-                Container(
-                    height: 60,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: dayExercises.length,
-                        itemBuilder: (context, i) {
-                          return Container(
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset(
-                                    dayExercises[i].exercisePic,
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                SizedBox(width: 10)
-                              ],
-                            ),
-                          );
-                        }))
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/user_exercises.dart';
+import 'package:gymandfood/services/database.dart';
 import 'package:readmore/readmore.dart';
 
-class ExerciseTile extends StatelessWidget {
+class ExerciseTile extends StatefulWidget {
   final String exerciseId;
   final String exercisePic;
   final String exerciseName;
@@ -20,15 +22,29 @@ class ExerciseTile extends StatelessWidget {
       this.exerciseMuscleId,
       this.exerciseMuscle})
       : super(key: key);
+
   @override
-  saveExercise(
-      TextEditingController exerciseSet, TextEditingController exerciseRepeat) {
-    print(exerciseSet.text);
+  _ExerciseTileState createState() => _ExerciseTileState();
+}
+
+class _ExerciseTileState extends State<ExerciseTile> {
+  DatabaseService databaseService = DatabaseService();
+  TextEditingController exerciseSet = TextEditingController();
+  TextEditingController exerciseRepeat = TextEditingController();
+  String userId;
+
+  @override
+  void initState() {
+    HelperFunctions.getUserLoggedInID().then((value) {
+      setState(() {
+        userId = value;
+      });
+    });
+
+    super.initState();
   }
 
   Widget build(BuildContext context) {
-    final exerciseSet = TextEditingController();
-    final exerciseRepeat = TextEditingController();
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
@@ -52,7 +68,7 @@ class ExerciseTile extends StatelessWidget {
               height: 150,
               width: MediaQuery.of(context).size.width,
               child: Image.network(
-                exercisePic,
+                widget.exercisePic,
                 fit: BoxFit.contain,
               ),
             ),
@@ -61,7 +77,7 @@ class ExerciseTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  exerciseName,
+                  widget.exerciseName,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -156,20 +172,209 @@ class ExerciseTile extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            dayButton("Mon", exerciseSet.text,
-                                                exerciseRepeat.text),
-                                            dayButton("Tue", exerciseSet.text,
-                                                exerciseRepeat.text),
-                                            dayButton("Wed", exerciseSet.text,
-                                                exerciseRepeat.text),
-                                            dayButton("Thu", exerciseSet.text,
-                                                exerciseRepeat.text),
-                                            dayButton("Fri", exerciseSet.text,
-                                                exerciseRepeat.text),
-                                            dayButton("Sat", exerciseSet.text,
-                                                exerciseRepeat.text),
-                                            dayButton("Sun", exerciseSet.text,
-                                                exerciseRepeat.text),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "1");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Mon",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "2");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Tue",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "3");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Wed",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "4");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Thu",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "5");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Fri",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "6");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Sat",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                print(
+                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
+                                                databaseService.addExercise(
+                                                    userId,
+                                                    widget.exerciseId,
+                                                    widget.exerciseName,
+                                                    exerciseSet.text,
+                                                    exerciseRepeat.text,
+                                                    widget.exerciseMuscle,
+                                                    widget.exerciseMuscleId,
+                                                    widget.exercisePic,
+                                                    "7");
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.grey[200],
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: Text("Sun",
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -185,7 +390,7 @@ class ExerciseTile extends StatelessWidget {
               ],
             ),
             ReadMoreText(
-              exerciseDesc,
+              widget.exerciseDesc,
               trimLines: 2,
               trimMode: TrimMode.Line,
               trimCollapsedText: 'Read',
@@ -206,28 +411,28 @@ class ExerciseTile extends StatelessWidget {
     UserExercises userExercises = UserExercises();
     return GestureDetector(
         onTap: () {
-          print("Set: $exerciseSet, Repeat: $exerciseRepeat");
-          userExercises.exerciseId = exerciseId;
-          userExercises.exerciseName = exerciseName;
+          print("Day: $dayName, Set: $exerciseSet, Repeat: $exerciseRepeat");
+          userExercises.exerciseId = widget.exerciseId;
+          userExercises.exerciseName = widget.exerciseName;
           userExercises.exerciseSet = exerciseSet;
           userExercises.exerciseRepeat = exerciseRepeat;
-          userExercises.exercisePic = exerciseMuscleId == "1"
+          userExercises.exercisePic = widget.exerciseMuscleId == "1"
               ? "assets/chest.jpg"
-              : exerciseMuscleId == "2"
+              : widget.exerciseMuscleId == "2"
                   ? "assets/back1.jpg"
-                  : exerciseMuscleId == "3"
+                  : widget.exerciseMuscleId == "3"
                       ? "assets/shoulder.jpg"
-                      : exerciseMuscleId == "4"
+                      : widget.exerciseMuscleId == "4"
                           ? "assets/biceps.jpg"
-                          : exerciseMuscleId == "5"
+                          : widget.exerciseMuscleId == "5"
                               ? "assets/triceps.jpg"
-                              : exerciseMuscleId == "6"
+                              : widget.exerciseMuscleId == "6"
                                   ? "assets/leg1.jpg"
-                                  : exerciseMuscleId == "7"
+                                  : widget.exerciseMuscleId == "7"
                                       ? "assets/abdominal.jpg"
                                       : "assets/rest.png";
-          userExercises.exerciseMuscle = exerciseMuscle;
-          userExercises.exerciseMuscleId = exerciseMuscleId;
+          userExercises.exerciseMuscle = widget.exerciseMuscle;
+          userExercises.exerciseMuscleId = widget.exerciseMuscleId;
           userExercises.exerciseDayofweek = dayName == "Mon"
               ? "1"
               : dayName == "Tue"
