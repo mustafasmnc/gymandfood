@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymandfood/ui/pages/app.dart';
-import 'package:gymandfood/ui/pages/profile_screen.dart';
 import 'package:gymandfood/ui/pages/signin.dart';
 
 import 'helper/functions.dart';

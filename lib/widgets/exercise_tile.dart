@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/user_exercises.dart';
 import 'package:gymandfood/services/database.dart';
@@ -42,6 +41,70 @@ class _ExerciseTileState extends State<ExerciseTile> {
     });
 
     super.initState();
+  }
+
+  addExercise(
+      String userId,
+      String exerciseId,
+      String exerciseName,
+      String exerciseSet,
+      String exerciseRepeat,
+      String exerciseMuscle,
+      String exerciseMuscleId,
+      String exercisePic,
+      String dayNumber) async {
+    if (exerciseRepeat == "" || exerciseSet == "") {
+      print("repeattt and set cannot be null");
+
+      showAlertDialog(context, "Error", "Repeat and set cannot be null.");
+    } else {
+      String dataId = dayNumber + "|" + exerciseId;
+      Map<String, String> exerciseData = {
+        "exerciseId": exerciseId,
+        "exerciseName": exerciseName,
+        "exerciseSet": exerciseSet,
+        "exerciseRepeat": exerciseRepeat,
+        "exerciseMuscle": exerciseMuscle,
+        "exerciseMuscleId": exerciseMuscleId,
+        "exercisePic": exercisePic,
+        "dayNumber": dayNumber,
+      };
+      databaseService.addExercise(userId, exerciseData, dataId).then((value) {
+        if (value == "added") {
+          showAlertDialog(context, "Added", "Exercise Added.");
+        }
+        if (value == "updated") {
+          showAlertDialog(context, "Updated", "Exercise Updated.");
+        }
+      });
+    }
+  }
+
+  showAlertDialog(BuildContext context, String title, String content) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   Widget build(BuildContext context) {
@@ -174,9 +237,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                           children: [
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,
@@ -203,9 +264,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,
@@ -232,9 +291,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,
@@ -261,9 +318,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,
@@ -290,9 +345,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,
@@ -319,9 +372,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,
@@ -348,9 +399,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                print(
-                                                    "Set: ${exerciseSet.text}, Repeat: ${exerciseRepeat.text}, ExerciseID: ${widget.exerciseId}");
-                                                databaseService.addExercise(
+                                                addExercise(
                                                     userId,
                                                     widget.exerciseId,
                                                     widget.exerciseName,

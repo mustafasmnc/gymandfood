@@ -1,7 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gymandfood/model/food.dart';
 import 'package:gymandfood/services/database.dart';
 
 DatabaseService databaseService = DatabaseService();

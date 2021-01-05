@@ -35,11 +35,6 @@ class _SignInState extends State<SignIn> {
           );
         }
       });
-
-      Map<String, String> userMap = {
-        "userEmail": email,
-        "userPassword": password
-      };
     }
   }
 
