@@ -54,7 +54,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
       String exercisePic,
       String dayNumber) async {
     if (exerciseRepeat == "" || exerciseSet == "") {
-      print("repeattt and set cannot be null");
+      print("repeat and set cannot be null");
 
       showAlertDialog(context, "Error", "Repeat and set cannot be null.");
     } else {
@@ -81,29 +81,82 @@ class _ExerciseTileState extends State<ExerciseTile> {
   }
 
   showAlertDialog(BuildContext context, String title, String content) {
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pop();
-      },
-    );
+    AlertDialog dialog = new AlertDialog(
+      content: new Container(
+        width: 260.0,
+        height: 150,
+        decoration: new BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: const Color(0xFFFFFF),
+          borderRadius: new BorderRadius.all(new Radius.circular(32.0)),
+        ),
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            // dialog top
+            new Row(
+              children: <Widget>[
+                new Container(
+                  // padding: new EdgeInsets.all(10.0),
+                  decoration: new BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: new Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22.0,
+                      fontFamily: 'helvetica_neue_light',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
 
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: Text(content),
-      actions: [
-        okButton,
-      ],
+            // dialog centre
+            new Container(
+                child: Text(content,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18.0,
+                      fontFamily: 'helvetica_neue_light',
+                    ))),
+
+            // dialog bottom
+            new Container(
+              padding: new EdgeInsets.all(16.0),
+              decoration: new BoxDecoration(
+                  color: const Color(0xFF33b17c),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                child: new Text(
+                  'Okay',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    fontFamily: 'helvetica_neue_light',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
 
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
+      child: dialog,
+      // builder: (BuildContext context) {
+      //   return alert;
+      // },
     );
   }
 

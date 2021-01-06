@@ -113,13 +113,13 @@ class DatabaseService {
         .delete();
   }
 
-  Future addExercise(
-      String userId, Map<String, String> exerciseData, String dataId) async {
+  Future addExercise(String userId, Map<String, String> exerciseData,
+      String addedExerciseId) async {
     return await FirebaseFirestore.instance
         .collection("user")
         .doc(userId)
         .collection("user_exercises")
-        .doc(dataId)
+        .doc(addedExerciseId)
         .get()
         .then((value) {
       if (value.exists == true) {
@@ -127,7 +127,7 @@ class DatabaseService {
             .collection("user")
             .doc(userId)
             .collection('user_exercises')
-            .doc(dataId)
+            .doc(addedExerciseId)
             .set(exerciseData);
         return "updated";
       } else {
@@ -135,7 +135,7 @@ class DatabaseService {
             .collection("user")
             .doc(userId)
             .collection('user_exercises')
-            .doc(dataId)
+            .doc(addedExerciseId)
             .set(exerciseData);
         return "added";
       }
@@ -159,5 +159,23 @@ class DatabaseService {
         .where("dayNumber", isEqualTo: dayId)
         //.orderBy("exercise_id")
         .snapshots();
+  }
+
+  updateAddedExercises(
+    String userId,
+    String addedExerciseId,
+    String exerciseSet,
+    String exerciseRepeat,
+  ) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection('user_exercises')
+        .doc(addedExerciseId)
+        .update(
+          {"exerciseSet": exerciseSet, "exerciseRepeat": exerciseRepeat},
+        )
+        .then((value) => print("Exercise Data Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 }
