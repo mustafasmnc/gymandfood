@@ -56,8 +56,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
     if (exerciseRepeat == "" || exerciseSet == "") {
       print("repeat and set cannot be null");
 
-      showExerciseUpdateScreen(
-          context, "Error", "Repeat and set cannot be null.");
+      showAlertDialog(context, "Error", "Set and repeat cannot be null.");
     } else {
       String dataId = dayNumber + "|" + exerciseId;
       Map<String, String> exerciseData = {
@@ -72,16 +71,16 @@ class _ExerciseTileState extends State<ExerciseTile> {
       };
       databaseService.addExercise(userId, exerciseData, dataId).then((value) {
         if (value == "added") {
-          showExerciseUpdateScreen(context, "Added", "Exercise Added.");
+          showAlertDialog(context, "Added", "Exercise Added.");
         }
         if (value == "updated") {
-          showExerciseUpdateScreen(context, "Updated", "Exercise Updated.");
+          showAlertDialog(context, "Updated", "Exercise Updated.");
         }
       });
     }
   }
 
-  showExerciseUpdateScreen(BuildContext context, String title, String content) {
+  showAlertDialog(BuildContext context, String title, String content) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -150,86 +149,6 @@ class _ExerciseTileState extends State<ExerciseTile> {
             ),
           );
         });
-  }
-
-  showAlertDialog(BuildContext context, String title, String content) {
-    AlertDialog dialog = new AlertDialog(
-      content: new Container(
-        width: 260.0,
-        height: 150,
-        decoration: new BoxDecoration(
-          shape: BoxShape.rectangle,
-          color: const Color(0xFFFFFF),
-          borderRadius: new BorderRadius.all(new Radius.circular(32.0)),
-        ),
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            // dialog top
-            new Row(
-              children: <Widget>[
-                new Container(
-                  // padding: new EdgeInsets.all(10.0),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: new Text(
-                    title,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22.0,
-                      fontFamily: 'helvetica_neue_light',
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-
-            // dialog centre
-            new Container(
-                child: Text(content,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                      fontFamily: 'helvetica_neue_light',
-                    ))),
-
-            // dialog bottom
-            new Container(
-              padding: new EdgeInsets.all(16.0),
-              decoration: new BoxDecoration(
-                  color: const Color(0xFF33b17c),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-                child: new Text(
-                  'Okay',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                    fontFamily: 'helvetica_neue_light',
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      child: dialog,
-      // builder: (BuildContext context) {
-      //   return alert;
-      // },
-    );
   }
 
   Widget build(BuildContext context) {
@@ -579,61 +498,5 @@ class _ExerciseTileState extends State<ExerciseTile> {
         ),
       ),
     );
-  }
-
-  Widget dayButton(String dayName, String exerciseSet, String exerciseRepeat) {
-    UserExercises userExercises = UserExercises();
-    return GestureDetector(
-        onTap: () {
-          print("Day: $dayName, Set: $exerciseSet, Repeat: $exerciseRepeat");
-          userExercises.exerciseId = widget.exerciseId;
-          userExercises.exerciseName = widget.exerciseName;
-          userExercises.exerciseSet = exerciseSet;
-          userExercises.exerciseRepeat = exerciseRepeat;
-          userExercises.exercisePic = widget.exerciseMuscleId == "1"
-              ? "assets/chest.jpg"
-              : widget.exerciseMuscleId == "2"
-                  ? "assets/back1.jpg"
-                  : widget.exerciseMuscleId == "3"
-                      ? "assets/shoulder.jpg"
-                      : widget.exerciseMuscleId == "4"
-                          ? "assets/biceps.jpg"
-                          : widget.exerciseMuscleId == "5"
-                              ? "assets/triceps.jpg"
-                              : widget.exerciseMuscleId == "6"
-                                  ? "assets/leg1.jpg"
-                                  : widget.exerciseMuscleId == "7"
-                                      ? "assets/abdominal.jpg"
-                                      : "assets/rest.png";
-          userExercises.exerciseMuscle = widget.exerciseMuscle;
-          userExercises.exerciseMuscleId = widget.exerciseMuscleId;
-          userExercises.exerciseDayofweek = dayName == "Mon"
-              ? "1"
-              : dayName == "Tue"
-                  ? "2"
-                  : dayName == "Wed"
-                      ? "3"
-                      : dayName == "Thu"
-                          ? "4"
-                          : dayName == "Fri"
-                              ? "5"
-                              : dayName == "Sat"
-                                  ? "6"
-                                  : "7";
-          user_exercises.add(userExercises);
-          //print(userExercises.exercisePic);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.grey[200],
-          ),
-          padding: EdgeInsets.all(10),
-          child: Text(dayName,
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 18,
-              )),
-        ));
   }
 }
