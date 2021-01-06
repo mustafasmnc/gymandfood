@@ -56,7 +56,8 @@ class _ExerciseTileState extends State<ExerciseTile> {
     if (exerciseRepeat == "" || exerciseSet == "") {
       print("repeat and set cannot be null");
 
-      showAlertDialog(context, "Error", "Repeat and set cannot be null.");
+      showExerciseUpdateScreen(
+          context, "Error", "Repeat and set cannot be null.");
     } else {
       String dataId = dayNumber + "|" + exerciseId;
       Map<String, String> exerciseData = {
@@ -71,13 +72,84 @@ class _ExerciseTileState extends State<ExerciseTile> {
       };
       databaseService.addExercise(userId, exerciseData, dataId).then((value) {
         if (value == "added") {
-          showAlertDialog(context, "Added", "Exercise Added.");
+          showExerciseUpdateScreen(context, "Added", "Exercise Added.");
         }
         if (value == "updated") {
-          showAlertDialog(context, "Updated", "Exercise Updated.");
+          showExerciseUpdateScreen(context, "Updated", "Exercise Updated.");
         }
       });
     }
+  }
+
+  showExerciseUpdateScreen(BuildContext context, String title, String content) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            contentPadding: EdgeInsets.only(top: 10.0),
+            content: Container(
+              width: 200.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  new Container(
+                      alignment: Alignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontFamily: 'helvetica_neue_light',
+                              fontSize: 20,
+                              color:
+                                  title == "Error" ? Colors.red : Colors.black,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Divider(color: Colors.black54),
+                          SizedBox(height: 10),
+                          Text(
+                            content,
+                            style: TextStyle(
+                              fontFamily: 'helvetica_neue_light',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      )),
+                  InkWell(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xff00bfa5),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(32.0),
+                              bottomRight: Radius.circular(32.0)),
+                        ),
+                        child: Text(
+                          "Okay",
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   showAlertDialog(BuildContext context, String title, String content) {

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:gymandfood/ui/pages/app.dart';
+import 'package:gymandfood/widgets/full_pic_screen.dart';
 import 'package:intl/intl.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -261,7 +263,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                         aue["exerciseSet"],
                                         aue["exerciseRepeat"]);
                                   },
-                                  onLongPress: () {},
+                                  onLongPress: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (_) {
+                                      return FullPicScreen(
+                                          exercisePic: aue["exercisePic"]);
+                                    }));
+                                  },
                                   child: ListTile(
                                     leading: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
