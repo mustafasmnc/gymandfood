@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:gymandfood/ui/pages/food_detail_screen.dart';
 
 DatabaseService databaseService = DatabaseService();
 
@@ -98,7 +99,7 @@ class _FoodCard extends StatelessWidget {
                                   transitionDuration:
                                       const Duration(milliseconds: 1500),
                                   openBuilder: (context, _) {
-                                    //return FoodDetailScreen(food: food);
+                                    return FoodDetailScreen(foodId: uff['foodId']);
                                   },
                                   closedBuilder: (context, openContainer) {
                                     return GestureDetector(

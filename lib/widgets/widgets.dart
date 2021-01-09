@@ -31,7 +31,7 @@ Widget dayCards(
     double width,
     Color color1,
     Color color2,
-    List<UserExercises> dayExercises) {
+    ) {
   return OpenContainer(
     closedElevation: 0,
     transitionDuration: const Duration(milliseconds: 1500),

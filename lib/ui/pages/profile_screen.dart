@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/user.dart';
@@ -5,57 +6,43 @@ import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/widgets/favorite_food.dart';
 import 'package:gymandfood/widgets/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
-import 'package:gymandfood/model/user_exercises.dart';
 import 'package:intl/intl.dart';
 
-class ProfileScreen extends StatefulWidget {
-  String userId;
+String userId;
+int userDailyCalorie;
+DocumentSnapshot snapshot;
 
-  ProfileScreen({Key key, this.userId}) : super(key: key);
+DatabaseService databaseService = DatabaseService();
+
+class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<UserExercises> monday = [];
-  List<UserExercises> tuesday = [];
-  List<UserExercises> wednesday = [];
-  List<UserExercises> thursday = [];
-  List<UserExercises> friday = [];
-  List<UserExercises> saturday = [];
-  List<UserExercises> sunday = [];
   List favoriteFoodsId;
   String userName;
-
-  DatabaseService databaseService = DatabaseService();
 
   @override
   void initState() {
     HelperFunctions.getUserLoggedInID().then((value) {
       setState(() {
-        widget.userId = value;
+        userId = value;
       });
     });
-
-    for (int i = 0; i < user_exercises.length; i++) {
-      if (user_exercises[i].exerciseDayofweek == "1") {
-        monday.add(user_exercises[i]);
-      } else if (user_exercises[i].exerciseDayofweek == "2") {
-        tuesday.add(user_exercises[i]);
-      } else if (user_exercises[i].exerciseDayofweek == "3") {
-        wednesday.add(user_exercises[i]);
-      } else if (user_exercises[i].exerciseDayofweek == "4") {
-        thursday.add(user_exercises[i]);
-      } else if (user_exercises[i].exerciseDayofweek == "5") {
-        friday.add(user_exercises[i]);
-      } else if (user_exercises[i].exerciseDayofweek == "6") {
-        saturday.add(user_exercises[i]);
-      } else if (user_exercises[i].exerciseDayofweek == "7") {
-        sunday.add(user_exercises[i]);
-      }
-    }
-
+    getData();
     super.initState();
+  }
+
+  void getData() async {
+    FirebaseFirestore.instance.collection("user").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        print(result.data()["userDailyCalorie"]);
+        setState(() {
+          userDailyCalorie = result.data()["userDailyCalorie"];
+        });
+      });
+    });
   }
 
   @override
@@ -66,44 +53,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
         backgroundColor: const Color(0xFFE9E9E9),
-        // bottomNavigationBar: ClipRRect(
-        //   borderRadius: BorderRadius.vertical(
-        //     top: const Radius.circular(40),
-        //   ),
-        //   child: BottomNavigationBar(
-        //     currentIndex: 1,
-        //     iconSize: 22,
-        //     showSelectedLabels: false,
-        //     showUnselectedLabels: false,
-        //     selectedFontSize: 0,
-        //     unselectedFontSize: 0,
-        //     selectedItemColor: const Color(0xFF200087),
-        //     unselectedItemColor: Colors.black45,
-        //     selectedLabelStyle: TextStyle(
-        //       color: Colors.pink,
-        //       fontSize: 16,
-        //     ),
-        //     unselectedLabelStyle: TextStyle(
-        //       color: Colors.yellow,
-        //       fontSize: 14,
-        //     ),
-        //     selectedIconTheme: IconThemeData(size: 28),
-        //     items: [
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.home),
-        //         label: "Home",
-        //       ),
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.search),
-        //         label: "Search",
-        //       ),
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.person),
-        //         label: "Profile",
-        //       ),
-        //     ],
-        //   ),
-        // ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -129,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 16, fontWeight: FontWeight.w400),
                           ),
                           subtitle: StreamBuilder(
-                            stream: databaseService.getUserName(widget.userId),
+                            stream: databaseService.getUserName(userId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -145,15 +94,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               }
                             },
                           ),
-                          trailing: GestureDetector(
-                            onTap: () {
-                              //getFoodsId();
-                            },
-                            child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundImage: NetworkImage(user.userPhoto),
-                              backgroundColor: Colors.transparent,
-                            ),
+                          trailing: CircleAvatar(
+                            radius: 30.0,
+                            backgroundImage: NetworkImage(user.userPhoto),
+                            backgroundColor: Colors.transparent,
                           ),
                         ),
                         Padding(
@@ -203,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              FavoriteFood(userId: widget.userId),
+              FavoriteFood(userId: userId),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -225,26 +169,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontSize: 16),
                     ),
                     SizedBox(height: height / 100),
-                    dayCards(widget.userId, "Monday", "1", height, width,
-                        Color(0xFF6448FE), Color(0xFF5FC6FF), monday),
+                    dayCards(userId, "Monday", "1", height, width,
+                        Color(0xFF6448FE), Color(0xFF5FC6FF)),
                     SizedBox(height: height / 50),
-                    dayCards(widget.userId, "Tuesday", "2", height, width,
-                        Color(0xFFD76D77), Color(0xFFFFAF7B), tuesday),
+                    dayCards(userId, "Tuesday", "2", height, width,
+                        Color(0xFFD76D77), Color(0xFFFFAF7B)),
                     SizedBox(height: height / 50),
-                    dayCards(widget.userId, "Wednesday", "3", height, width,
-                        Color(0xFF155799), Color(0xFF159957), wednesday),
+                    dayCards(userId, "Wednesday", "3", height, width,
+                        Color(0xFF155799), Color(0xFF159957)),
                     SizedBox(height: height / 50),
-                    dayCards(widget.userId, "Thursday", "4", height, width,
-                        Color(0xFFFFA738), Color(0xFFFFE130), thursday),
+                    dayCards(userId, "Thursday", "4", height, width,
+                        Color(0xFFFFA738), Color(0xFFFFE130)),
                     SizedBox(height: height / 50),
-                    dayCards(widget.userId, "Friday", "5", height, width,
-                        Color(0xFFFE6197), Color(0xFFFFB463), friday),
+                    dayCards(userId, "Friday", "5", height, width,
+                        Color(0xFFFE6197), Color(0xFFFFB463)),
                     SizedBox(height: height / 50),
-                    dayCards(widget.userId, "Saturday", "6", height, width,
-                        Color(0xFF6190E8), Color(0xFFA7BFE8), saturday),
+                    dayCards(userId, "Saturday", "6", height, width,
+                        Color(0xFF6190E8), Color(0xFFA7BFE8)),
                     SizedBox(height: height / 50),
-                    dayCards(widget.userId, "Sunday", "7", height, width,
-                        Color(0xFFf83600), Color(0xFFfe8c00), friday),
+                    dayCards(userId, "Sunday", "7", height, width,
+                        Color(0xFFf83600), Color(0xFFfe8c00)),
                   ],
                 ),
               ),
@@ -312,47 +256,61 @@ class _IngredientProgress extends StatelessWidget {
 class _CalorieProgress extends StatelessWidget {
   final double height, width, progress;
 
-  const _CalorieProgress({this.height, this.width, this.progress});
+  _CalorieProgress({this.height, this.width, this.progress});
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      child: Container(
-        height: height,
-        width: width,
-        child: Center(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(children: [
-              TextSpan(
-                  text: "1731",
-                  style: TextStyle(
-                    color: Color(0xFF200087),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  )),
-              TextSpan(text: "\n"),
-              TextSpan(
-                  text: "kcal",
-                  style: TextStyle(
-                    color: Color(0xFF200087),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ))
-            ]),
-          ),
-        ),
-      ),
-      painter: _ProgressPainter(progress: 0.7),
-    );
+    return StreamBuilder(
+        stream: databaseService.getDailyFoods(userId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            var ds = snapshot.data.documents;
+            int sum = 0;
+            for (int i = 0; i < ds.length; i++) sum += (ds[i]['foodCal']);
+            return CustomPaint(
+              child: Container(
+                height: height,
+                width: width,
+                child: Center(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: sum.toString(),
+                          style: TextStyle(
+                            color: Color(0xFF200087),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          )),
+                      TextSpan(text: "\n"),
+                      TextSpan(
+                          text: "kcal",
+                          style: TextStyle(
+                            color: Color(0xFF200087),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ))
+                    ]),
+                  ),
+                ),
+              ),
+              painter: _ProgressPainter(sum: sum),
+            );
+          }
+        });
   }
 }
 
 class _ProgressPainter extends CustomPainter {
-  final double progress;
+  final int sum;
 
-  _ProgressPainter({this.progress});
+  _ProgressPainter({this.sum});
   @override
   void paint(Canvas canvas, Size size) {
+    double progress = (sum/userDailyCalorie); 
     Paint paint = Paint()
       ..strokeWidth = 8
       ..color = Color(0xFF200087)

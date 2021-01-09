@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
-import 'package:gymandfood/model/user_exercises.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:readmore/readmore.dart';
 

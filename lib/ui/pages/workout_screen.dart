@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
-import 'package:gymandfood/ui/pages/app.dart';
 import 'package:gymandfood/widgets/full_pic_screen.dart';
 import 'package:intl/intl.dart';
 
@@ -271,6 +270,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                     }));
                                   },
                                   child: ListTile(
+                                    trailing: GestureDetector(
+                                        onTap: () {
+                                          databaseService.removeAddedExercise(
+                                              widget.userId, aue.id);
+                                        },
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: Colors.white,
+                                        )),
                                     leading: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Image.network(

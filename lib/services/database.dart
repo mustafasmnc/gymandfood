@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseService {
   // getFoodCategory() async {
@@ -60,12 +61,6 @@ class DatabaseService {
         .doc(userId)
         .snapshots();
 
-    //  .then((value) {
-    // print("VALUEE: " + value.data()["userName"]);
-    // setState(() {
-    //   userName = value.data()["userName"];
-    // });
-    //});
   }
 
   Future addFavoriteFood(
@@ -75,6 +70,7 @@ class DatabaseService {
       String foodPic,
       String foodCal,
       String foodProtein,
+      String foodCarb,
       String foodFat) async {
     Map<String, String> foodData = {
       "foodId": foodId,
@@ -82,6 +78,7 @@ class DatabaseService {
       "foodPic": foodPic,
       "foodCal": foodCal,
       "foodProtein": foodProtein,
+      "foodCarb": foodCarb,
       "foodFat": foodFat,
     };
 
@@ -111,6 +108,47 @@ class DatabaseService {
         .collection("favorite_foods")
         .doc(foodId)
         .delete();
+  }
+
+  addDailyFood(String userId, String foodId, String foodPic, String foodName,
+      String foodCal, String foodProtein, String foodCarb, String foodFat) {
+    String nowTimeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+    var nowDateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    int intfoodCal = int.parse(foodCal);
+    int intfoodProtein = int.parse(foodProtein);
+    int intfoodCarb = int.parse(foodCarb);
+    int intfoodFat = int.parse(foodFat);
+
+    Map<String, dynamic> foodData = {
+      "foodId": foodId,
+      "foodName": foodName,
+      "foodPic": foodPic,
+      "foodCal": intfoodCal,
+      "foodProtein": intfoodProtein,
+      "foodCarb": intfoodCarb,
+      "foodFat": intfoodFat,
+      "addedTime": nowDateTime
+    };
+
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection('daily_foods')
+        .doc(nowTimeStamp)
+        .set(foodData)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getDailyFoods(String userId) {
+    var nowDateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    return FirebaseFirestore.instance
+        .collection('user')
+        .doc(userId)
+        .collection('daily_foods')
+        .where("addedTime", isEqualTo: nowDateTime)
+        .snapshots();
   }
 
   Future addExercise(String userId, Map<String, String> exerciseData,
@@ -177,5 +215,14 @@ class DatabaseService {
         )
         .then((value) => print("Exercise Data Updated"))
         .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  removeAddedExercise(String userId, String addedExerciseId) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("user_exercises")
+        .doc(addedExerciseId)
+        .delete();
   }
 }

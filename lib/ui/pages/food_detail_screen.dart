@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:intl/intl.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final String foodId;
@@ -15,7 +16,7 @@ class FoodDetailScreen extends StatefulWidget {
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   DatabaseService databaseService = DatabaseService();
   bool dialVisible = true;
-  String foodName, foodPic, foodProtein, foodCal, foodFat;
+  String foodName, foodPic, foodCal, foodProtein, foodCarb, foodFat;
   String userId;
   bool isLiked = false;
 
@@ -60,8 +61,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               DocumentSnapshot items = snapshot.data.docs[0];
               foodName = items['food_name'];
               foodPic = items['food_pic'];
-              foodProtein = items['food_protein'];
               foodCal = items['food_cal'];
+              foodCarb = items['food_carb'];
+              foodProtein = items['food_protein'];
               foodFat = items['food_fat'];
               return CustomScrollView(
                 slivers: [
@@ -174,7 +176,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           onTap: () {
             if (isLiked == false) {
               databaseService.addFavoriteFood(userId, widget.foodId, foodName,
-                  foodPic, foodCal, foodProtein, foodFat);
+                  foodPic, foodCal, foodProtein, foodCarb, foodFat);
               setState(() {
                 isLiked = true;
               });
@@ -194,7 +196,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           child: Icon(Icons.add, color: Colors.white),
           backgroundColor: Colors.green,
           onTap: () {
-            print("Add Today's Meal");
+            databaseService.addDailyFood(userId, widget.foodId, foodPic,
+                foodName, foodCal, foodProtein, foodCarb, foodFat);
           },
           label: "Add Today's Meal",
           labelStyle:
