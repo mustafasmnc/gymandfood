@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:gymandfood/widgets/calorie_progress.dart';
 import 'package:gymandfood/widgets/favorite_food.dart';
 import 'package:gymandfood/widgets/widgets.dart';
-import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:intl/intl.dart';
 
 String userId;
@@ -43,6 +43,120 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       });
     });
+  }
+
+  showAddedFoods() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16.0))),
+            contentPadding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+            content: Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    StreamBuilder<QuerySnapshot>(
+                        stream: databaseService.getDailyFoods(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.data.docs.length == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Center(
+                                child: Text("Please add food",
+                                    style: TextStyle(
+                                      fontFamily: 'helvetica_neue_light',
+                                      fontSize: 20,
+                                    )),
+                              ),
+                            );
+                          } else {
+                            return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data.docs.length,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot auf =
+                                      snapshot.data.docs[index];
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: 5),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                      ),
+                                      //color: widget.color.withOpacity(.2),
+                                      child: GestureDetector(
+                                        child: ListTile(
+                                          trailing: GestureDetector(
+                                              onTap: () {
+                                                databaseService
+                                                    .removeDailyFoods(
+                                                        userId, auf.id);
+                                              },
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: Colors.black54,
+                                              )),
+                                          leading: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Image.network(
+                                              auf["foodPic"],
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            auf["foodName"],
+                                            style: TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          subtitle: Row(
+                                            children: [
+                                              Text(
+                                                "Calorie: ${auf["foodCal"]}",
+                                                style: TextStyle(
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                "Protein: ${auf["foodProtein"]}",
+                                                style: TextStyle(
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          }
+                        }),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -104,10 +218,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.only(left: 10),
                           child: Row(
                             children: [
-                              _CalorieProgress(
-                                width: width * 0.35,
-                                height: width * 0.35,
-                                progress: 0.7,
+                              GestureDetector(
+                                onTap: () {
+                                  showAddedFoods();
+                                },
+                                child: CalorieProgress(
+                                    width: width * 0.35,
+                                    height: width * 0.35,
+                                    progress: 0.7,
+                                    userDailyCalorie: userDailyCalorie,
+                                    userId: userId),
                               ),
                               SizedBox(width: 20),
                               Column(
@@ -250,81 +370,5 @@ class _IngredientProgress extends StatelessWidget {
         SizedBox(height: 6),
       ],
     );
-  }
-}
-
-class _CalorieProgress extends StatelessWidget {
-  final double height, width, progress;
-
-  _CalorieProgress({this.height, this.width, this.progress});
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: databaseService.getDailyFoods(userId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            var ds = snapshot.data.documents;
-            int sum = 0;
-            for (int i = 0; i < ds.length; i++) sum += (ds[i]['foodCal']);
-            return CustomPaint(
-              child: Container(
-                height: height,
-                width: width,
-                child: Center(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: sum.toString(),
-                          style: TextStyle(
-                            color: Color(0xFF200087),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      TextSpan(text: "\n"),
-                      TextSpan(
-                          text: "kcal",
-                          style: TextStyle(
-                            color: Color(0xFF200087),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ))
-                    ]),
-                  ),
-                ),
-              ),
-              painter: _ProgressPainter(sum: sum),
-            );
-          }
-        });
-  }
-}
-
-class _ProgressPainter extends CustomPainter {
-  final int sum;
-
-  _ProgressPainter({this.sum});
-  @override
-  void paint(Canvas canvas, Size size) {
-    double progress = (sum/userDailyCalorie); 
-    Paint paint = Paint()
-      ..strokeWidth = 8
-      ..color = Color(0xFF200087)
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    Offset center = Offset(size.height / 2, size.width / 2);
-    double relativeProgress = 360 * progress;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: size.width / 2),
-        math.radians(-90), math.radians(-relativeProgress), false, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    //throw UnimplementedError();
-    return true;
   }
 }

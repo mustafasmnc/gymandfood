@@ -151,6 +151,15 @@ class DatabaseService {
         .snapshots();
   }
 
+  removeDailyFoods(String userId, String addedFoodId) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("daily_foods")
+        .doc(addedFoodId)
+        .delete();
+  }
+
   Future addExercise(String userId, Map<String, String> exerciseData,
       String addedExerciseId) async {
     return await FirebaseFirestore.instance
