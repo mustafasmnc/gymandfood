@@ -6,14 +6,15 @@ import 'package:gymandfood/ui/pages/food_category.dart';
 import 'package:gymandfood/ui/pages/profile_screen.dart';
 
 class App extends StatefulWidget {
-  String userId;
-  App({this.userId});
+  bool loggedIn;
+  App({this.loggedIn});
   @override
-  State<StatefulWidget> createState() => AppState(this.userId);
+  State<StatefulWidget> createState() => AppState(this.loggedIn);
 }
 
 class AppState extends State<App> {
   static int currentTab = 2;
+
   final List<TabItem> tabs = [
     TabItem(
       tabName: "Workout",
@@ -31,7 +32,7 @@ class AppState extends State<App> {
       page: ProfileScreen(),
     ),
   ];
-  AppState(String userId) {
+  AppState(bool userId) {
     tabs.asMap().forEach((index, details) {
       details.setIndex(index);
     });
@@ -46,14 +47,13 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    //print(currentTab);
     return WillPopScope(
       onWillPop: () async {
         final isFirstRouteInCurrentTab =
             !await tabs[currentTab].key.currentState.maybePop();
         if (isFirstRouteInCurrentTab) {
           if (currentTab != 0) {
-            _selectTab(0);
+            //_selectTab(0);
             return false;
           }
         }
@@ -65,7 +65,7 @@ class AppState extends State<App> {
           children: tabs.map((e) => e.page).toList(),
         ),
         bottomNavigationBar:
-            ModalRoute.of(context).settings.name == "FoodDetailScreen"
+            widget.loggedIn == false
                 ? null
                 : BottomNavigation(
                     onSelectTab: _selectTab,

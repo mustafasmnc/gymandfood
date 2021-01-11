@@ -30,7 +30,7 @@ class _SignUpState extends State<SignUp> {
               context,
               MaterialPageRoute(
                   builder: (context) => App(
-                        userId: value,
+                        
                       )));
         } else {
           _scaffoldKey.currentState.showSnackBar(

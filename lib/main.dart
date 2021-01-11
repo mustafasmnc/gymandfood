@@ -27,6 +27,7 @@ class _MyAppState extends State<MyApp> {
   checkUserLoggedInStatus() async {
     HelperFunctions.getUserLoggedInDetails().then((value){
       setState(() {
+        print("vall: $value");
         _isUserLoggedIn=value;
       });
     });
@@ -44,6 +45,6 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: (_isUserLoggedIn ?? false) ? App() : SignIn(),);
+        home: _isUserLoggedIn == true ? App(loggedIn:_isUserLoggedIn) : SignIn(),);
   }
 }

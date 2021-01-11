@@ -24,7 +24,7 @@ class _SignInState extends State<SignIn> {
           HelperFunctions.saveUserLoggedInDetails(isLoggedIn: true, userId: value);
           print("User Id: "+value);
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => App(userId: value,)));
+              context, MaterialPageRoute(builder: (context) => App()));
         } else {
           _scaffoldKey.currentState.showSnackBar(
             SnackBar(
