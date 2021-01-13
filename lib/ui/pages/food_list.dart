@@ -22,18 +22,24 @@ class _FoodListState extends State<FoodList> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: databaseService.getFilteredFoods(widget.foodCatId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.only(
-                  top: 32, right: 16, left: 16, bottom: 0),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black54),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: databaseService.getFilteredFoods(widget.foodCatId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Padding(
+              padding:
+                  const EdgeInsets.only(top: 0, right: 16, left: 16, bottom: 0),
               child: Expanded(
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
@@ -104,10 +110,10 @@ class _FoodListState extends State<FoodList> {
                           });
                     }),
               ),
-            ),
-          );
-        }
-      },
+            );
+          }
+        },
+      ),
     );
   }
 }

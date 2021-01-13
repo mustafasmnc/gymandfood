@@ -176,52 +176,46 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     var formattedDate = DateFormat('EEEE, d MMM y').format(now);
     return Scaffold(
       backgroundColor: widget.color.withOpacity(.7),
+      appBar: AppBar(
+        backgroundColor: widget.color.withOpacity(.0),
+        toolbarHeight: 70,
+        elevation: 0.0,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    formattedDate,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    "Workouts",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: 1)
+            ],
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(top: 32, right: 16, left: 16, bottom: 0),
         child: Column(
           children: [
             SizedBox(height: 5),
-            ListTile(
-              title: Text(
-                formattedDate,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
-              ),
-              subtitle: Text(
-                "Workouts",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
-              ),
-              trailing: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.access_time, color: Colors.white),
-                        SizedBox(width: 5),
-                        Text(
-                          "60 mins",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                   stream: databaseService.getAddedExercises(

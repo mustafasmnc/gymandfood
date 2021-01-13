@@ -1,7 +1,7 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
-import 'package:gymandfood/main.dart';
 import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/signin.dart';
@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 
 String userId;
 int userDailyCalorie;
+bool logOut = false;
 
 DatabaseService databaseService = DatabaseService();
 
@@ -23,7 +24,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   List favoriteFoodsId;
   String userName;
-
   @override
   void initState() {
     HelperFunctions.getUserLoggedInID().then((value) {
@@ -228,8 +228,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: Container(
                   color: Colors.white,
-                  padding:
-                      EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 8),
+                  padding: EdgeInsets.only(
+                      top: 8, left: 16, right: 16, bottom: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -279,7 +279,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             SizedBox(width: 20),
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -402,13 +403,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               onTap: () {
-                HelperFunctions.saveUserLoggedInDetails(isLoggedIn: false, userId: null);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyApp()));
+                HelperFunctions.saveUserLoggedInDetails(
+                    isLoggedIn: false, userId: null);
+                setState(() {
+                  logOut = true;
+                });
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => SignIn()));
+                //App(loggedIn:false);
               },
             ),
           ],
         ),
       ),
+      
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/auth.dart';
-import 'package:gymandfood/ui/pages/app.dart';
+import 'package:gymandfood/ui/pages/navigation_page.dart';
 import 'package:gymandfood/ui/pages/signup.dart';
 import 'package:gymandfood/widgets/widgets.dart';
 
@@ -24,7 +24,7 @@ class _SignInState extends State<SignIn> {
           HelperFunctions.saveUserLoggedInDetails(isLoggedIn: true, userId: value);
           print("User Id: "+value);
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => App()));
+              context, MaterialPageRoute(builder: (context) => NavigationPage()));
         } else {
           _scaffoldKey.currentState.showSnackBar(
             SnackBar(

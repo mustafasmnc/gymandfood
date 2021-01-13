@@ -10,26 +10,15 @@ class FoodCategoryPage extends StatefulWidget {
 
 class _FoodCategoryPageState extends State<FoodCategoryPage> {
   DatabaseService databaseService = DatabaseService();
-  //QuerySnapshot foodCategorySnapshot;
-
   @override
   void initState() {
-    // databaseService.getFoodCategory().then((value) {
-    //   foodCategorySnapshot = value;
-    //   setState(() {});
-    // });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      // child: foodCategorySnapshot == null
-      //     ? Container(
-      //         child: Center(child: CircularProgressIndicator()),
-      //       )
-      //     : foodCategoryList(),
-      child: StreamBuilder<QuerySnapshot>(
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
         stream: databaseService.getFoodCategorySnapshot(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -40,23 +29,23 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               //child: Expanded(
-                //child: RefreshIndicator(
-                //  key: _refreshIndicatorKey,
-                // onRefresh: refreshList,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot fcs = snapshot.data.docs[index];
-                      return CategoryTile(
-                        foodCategoryImg: fcs["food_category_pic"],
-                        foodCategoryTitle: fcs["food_category_name"],
-                        foodCategoryDesc: fcs["food_category_desc"],
-                        foodCategoryId: fcs["food_category_id"],
-                      );
-                    }),
-                //),
+              //child: RefreshIndicator(
+              //  key: _refreshIndicatorKey,
+              // onRefresh: refreshList,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot fcs = snapshot.data.docs[index];
+                    return CategoryTile(
+                      foodCategoryImg: fcs["food_category_pic"],
+                      foodCategoryTitle: fcs["food_category_name"],
+                      foodCategoryDesc: fcs["food_category_desc"],
+                      foodCategoryId: fcs["food_category_id"],
+                    );
+                  }),
+              //),
               //),
             );
           }
