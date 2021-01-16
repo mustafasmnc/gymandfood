@@ -1,8 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
-import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/signin.dart';
 import 'package:gymandfood/widgets/calorie_progress.dart';
@@ -46,120 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  showAddedFoods() {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16.0))),
-            contentPadding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-            content: Container(
-              //height: MediaQuery.of(context).size.height * 0.6,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    StreamBuilder<QuerySnapshot>(
-                        stream: databaseService.getDailyFoods(userId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (snapshot.data.docs.length == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Center(
-                                child: Text("Please add food",
-                                    style: TextStyle(
-                                      fontFamily: 'helvetica_neue_light',
-                                      fontSize: 20,
-                                    )),
-                              ),
-                            );
-                          } else {
-                            return ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: snapshot.data.docs.length,
-                                itemBuilder: (context, index) {
-                                  DocumentSnapshot auf =
-                                      snapshot.data.docs[index];
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                      ),
-                                      //color: widget.color.withOpacity(.2),
-                                      child: GestureDetector(
-                                        child: ListTile(
-                                          trailing: GestureDetector(
-                                              onTap: () {
-                                                databaseService
-                                                    .removeDailyFoods(
-                                                        userId, auf.id);
-                                              },
-                                              child: Icon(
-                                                Icons.delete,
-                                                color: Colors.black54,
-                                              )),
-                                          leading: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: Image.network(
-                                              auf["foodPic"],
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          title: Text(
-                                            auf["foodName"],
-                                            style: TextStyle(
-                                              color: Colors.black54,
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          subtitle: Row(
-                                            children: [
-                                              Text(
-                                                "Calorie: ${auf["foodCal"]}",
-                                                style: TextStyle(
-                                                  color: Colors.black54,
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                "Protein: ${auf["foodProtein"]}",
-                                                style: TextStyle(
-                                                  color: Colors.black54,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
-                          }
-                        }),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -174,44 +58,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.black54),
         //centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  formattedDate,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black),
-                ),
-                StreamBuilder(
-                  stream: databaseService.getUserName(userId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("");
-                    } else {
-                      return Text(
-                        "Hello, " + snapshot.data['userName'],
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      );
-                    }
-                  },
-                )
-              ],
-            ),
-            CircleAvatar(
-              radius: 30.0,
-              backgroundImage: NetworkImage(user.userPhoto),
-              backgroundColor: Colors.transparent,
-            )
-          ],
-        ),
+        title: StreamBuilder(
+            stream: databaseService.getUserInfo(userId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text("Loading...");
+              } else
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          formattedDate,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        ),
+                        Text(
+                          "Hello, " + snapshot.data['userName'],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                    CircleAvatar(
+                      radius: 30.0,
+                      backgroundImage: NetworkImage(snapshot.data['userPic']),
+                      backgroundColor: Colors.transparent,
+                    )
+                  ],
+                );
+            }),
         actions: [],
       ),
       backgroundColor: const Color(0xFFE9E9E9),
@@ -228,8 +110,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: Container(
                   color: Colors.white,
-                  padding: EdgeInsets.only(
-                      top: 8, left: 16, right: 16, bottom: 8),
+                  padding:
+                      EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -266,21 +148,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.only(left: 10),
                         child: Row(
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                showAddedFoods();
-                              },
-                              child: CalorieProgress(
-                                  width: width * 0.35,
-                                  height: width * 0.35,
-                                  progress: 0.7,
-                                  userDailyCalorie: userDailyCalorie,
-                                  userId: userId),
-                            ),
+                            CalorieProgress(
+                                width: width * 0.35,
+                                height: width * 0.35,
+                                progress: 0.7,
+                                userDailyCalorie: userDailyCalorie,
+                                userId: userId),
                             SizedBox(width: 20),
                             Column(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -368,37 +244,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: EdgeInsets.zero,
           children: [
             drawerHeader(),
-            // ListTile(
-            //   title: Row(
-            //     children: [
-            //       Icon(
-            //         Icons.person,
-            //         size: 30,
-            //       ),
-            //       Padding(
-            //           padding: EdgeInsets.only(left: 8.0),
-            //           child: Text(
-            //             "Profile",
-            //             style: TextStyle(fontSize: 20),
-            //           ))
-            //     ],
-            //   ),
-            //   onTap: () {
-            //     Navigator.pop(context);
-            //   },
-            // ),
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.settings,
+                    size: 24,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "Profile Settings",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'helvetica_neue_light',
+                          color: Colors.black87,
+                        ),
+                      ))
+                ],
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                showUserSettingsScreen(context, userId);
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.fastfood,
+                    size: 24,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "Todays Foods",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'helvetica_neue_light',
+                          color: Colors.black87,
+                        ),
+                      ))
+                ],
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                showAddedFoods(context, userId);
+              },
+            ),
             ListTile(
               title: Row(
                 children: [
                   Icon(
                     Icons.logout,
-                    size: 30,
+                    size: 24,
                   ),
                   Padding(
                       padding: EdgeInsets.only(left: 8.0),
                       child: Text(
                         "Log Out",
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'helvetica_neue_light',
+                          color: Colors.black87,
+                        ),
                       ))
                 ],
               ),
@@ -416,7 +325,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      
     );
   }
 

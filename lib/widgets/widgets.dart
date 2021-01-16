@@ -1,9 +1,11 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gymandfood/model/user.dart';
 import 'package:gymandfood/model/user_exercises.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
+import 'package:gymandfood/widgets/favorite_food.dart';
 
 DatabaseService databaseService = DatabaseService();
 
@@ -24,14 +26,14 @@ Widget submitButton({BuildContext context, String text, buttonWith}) {
 }
 
 Widget dayCards(
-    String userId,
-    String dayName,
-    String dayId,
-    double height,
-    double width,
-    Color color1,
-    Color color2,
-    ) {
+  String userId,
+  String dayName,
+  String dayId,
+  double height,
+  double width,
+  Color color1,
+  Color color2,
+) {
   return OpenContainer(
     closedElevation: 0,
     transitionDuration: const Duration(milliseconds: 1500),
@@ -143,4 +145,408 @@ Widget dayCards(
       );
     },
   );
+}
+
+showAddedFoods(BuildContext context, String userId) {
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          contentPadding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+          content: Container(
+            //height: MediaQuery.of(context).size.height * 0.6,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  StreamBuilder<QuerySnapshot>(
+                      stream: databaseService.getDailyFoods(userId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.data.docs.length == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Center(
+                              child: Text("Please add food",
+                                  style: TextStyle(
+                                    fontFamily: 'helvetica_neue_light',
+                                    fontSize: 20,
+                                  )),
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data.docs.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot auf =
+                                    snapshot.data.docs[index];
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 5),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    //color: widget.color.withOpacity(.2),
+                                    child: GestureDetector(
+                                      child: ListTile(
+                                        trailing: GestureDetector(
+                                            onTap: () {
+                                              databaseService.removeDailyFoods(
+                                                  userId, auf.id);
+                                            },
+                                            child: Icon(
+                                              Icons.delete,
+                                              color: Colors.black54,
+                                            )),
+                                        leading: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.network(
+                                            auf["foodPic"],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        title: Text(
+                                          auf["foodName"],
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        subtitle: Row(
+                                          children: [
+                                            Text(
+                                              "Calorie: ${auf["foodCal"]}",
+                                              style: TextStyle(
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              "Protein: ${auf["foodProtein"]}",
+                                              style: TextStyle(
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                        }
+                      }),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+showUserSettingsScreen(BuildContext context, String userId) {
+  TextEditingController textUserName = TextEditingController();
+  TextEditingController textDailyCalorie = TextEditingController();
+  TextEditingController textDailyCarb = TextEditingController();
+  TextEditingController textDailyProtein = TextEditingController();
+  TextEditingController textDailyFat = TextEditingController();
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: EdgeInsets.only(top: 10.0),
+          content: Container(
+            width: 370.0,
+            child: SingleChildScrollView(
+              child: StreamBuilder(
+                  stream: databaseService.getUserInfo(userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ClipRRect(
+                                child: Image(
+                                  image: NetworkImage(
+                                    snapshot.data["userPic"],
+                                  ),
+                                  height: 80,
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: TextField(
+                                  decoration: new InputDecoration(
+                                    hintText:
+                                        snapshot.data["userName"].toString(),
+                                  ),
+                                  controller: textUserName,
+                                  maxLength: 25,
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.text,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5.0),
+                          new Container(
+                              alignment: Alignment.center,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        child: Text(
+                                          "Daily Calorie",
+                                          style: TextStyle(
+                                            fontFamily: 'helvetica_neue_light',
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                6,
+                                        child: TextField(
+                                          decoration: new InputDecoration(
+                                            border: new UnderlineInputBorder(
+                                                borderSide: new BorderSide(
+                                                    color: Colors.teal)),
+                                            hintText: snapshot
+                                                .data["userDailyCalorie"]
+                                                .toString(),
+                                          ),
+                                          controller: textDailyCalorie,
+                                          maxLength: 4,
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                          width: 100,
+                                          child: Text(
+                                            "Daily Carb",
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  'helvetica_neue_light',
+                                              fontSize: 20,
+                                            ),
+                                          )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                6,
+                                        child: TextField(
+                                          decoration: new InputDecoration(
+                                            border: new UnderlineInputBorder(
+                                                borderSide: new BorderSide(
+                                                    color: Colors.teal)),
+                                            hintText: snapshot
+                                                .data["userDailyCarb"]
+                                                .toString(),
+                                          ),
+                                          controller: textDailyCarb,
+                                          maxLength: 3,
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                          width: 100,
+                                          child: Text(
+                                            "Daily Protein",
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  'helvetica_neue_light',
+                                              fontSize: 20,
+                                            ),
+                                          )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                6,
+                                        child: TextField(
+                                          decoration: new InputDecoration(
+                                            border: new UnderlineInputBorder(
+                                                borderSide: new BorderSide(
+                                                    color: Colors.teal)),
+                                            hintText: snapshot
+                                                .data["userDailyProtein"]
+                                                .toString(),
+                                          ),
+                                          controller: textDailyProtein,
+                                          maxLength: 3,
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                          width: 100,
+                                          child: Text(
+                                            "Daily Fat",
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  'helvetica_neue_light',
+                                              fontSize: 20,
+                                            ),
+                                          )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                6,
+                                        child: TextField(
+                                          decoration: new InputDecoration(
+                                            border: new UnderlineInputBorder(
+                                                borderSide: new BorderSide(
+                                                    color: Colors.teal)),
+                                            hintText: snapshot
+                                                .data["userDailyFat"]
+                                                .toString(),
+                                          ),
+                                          controller: textDailyFat,
+                                          maxLength: 3,
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              )),
+                          InkWell(
+                            child: GestureDetector(
+                              onTap: () {
+                                String userName;
+                                int userDailyCalorie,
+                                    userDailyCarb,
+                                    userDailyProtein,
+                                    userDailyFat;
+                                if (textUserName.text == "")
+                                  userName = snapshot.data["userName"];
+                                else
+                                  userName = textUserName.text;
+                                if (textDailyCalorie.text == "")
+                                  userDailyCalorie =
+                                      snapshot.data["userDailyCalorie"];
+                                else
+                                  userDailyCalorie =
+                                      int.parse(textDailyCalorie.text);
+                                if (textDailyCarb.text == "")
+                                  userDailyCarb =
+                                      snapshot.data["userDailyCarb"];
+                                else
+                                  userDailyCarb = int.parse(textDailyCarb.text);
+                                if (textDailyProtein.text == "")
+                                  userDailyProtein =
+                                      snapshot.data["userDailyProtein"];
+                                else
+                                  userDailyProtein =
+                                      int.parse(textDailyProtein.text);
+                                if (textDailyFat.text == "")
+                                  userDailyFat = snapshot.data["userDailyFat"];
+                                else
+                                  userDailyFat = int.parse(textDailyFat.text);
+                                databaseService.updateUserInfo(
+                                    userId,
+                                    userName,
+                                    userDailyCalorie,
+                                    userDailyCarb,
+                                    userDailyProtein,
+                                    userDailyFat);
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              },
+                              child: Container(
+                                padding:
+                                    EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff00bfa5),
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(32.0),
+                                      bottomRight: Radius.circular(32.0)),
+                                ),
+                                child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  }),
+            ),
+          ),
+        );
+      });
 }

@@ -55,12 +55,29 @@ class DatabaseService {
         .snapshots();
   }
 
-  getUserName(String userId) {
+  getUserInfo(String userId) {
     return FirebaseFirestore.instance
         .collection("user")
         .doc(userId)
         .snapshots();
+  }
 
+  updateUserInfo(String userId, String userName,int userDailyCalorie, int userDailyCarb,
+      int userDailyProtein, int userDailyFat) {
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .update(
+          {
+            "userName":userName,
+            "userDailyCalorie": userDailyCalorie,
+            "userDailyCarb": userDailyCarb,
+            "userDailyProtein": userDailyProtein,
+            "userDailyFat": userDailyFat
+          },
+        )
+        .then((value) => print("Exercise Data Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Future addFavoriteFood(
