@@ -4,14 +4,13 @@ import 'package:vector_math/vector_math_64.dart' as math;
 
 class CalorieProgress extends StatelessWidget {
   DatabaseService databaseService = DatabaseService();
-  final double height, width, progress;
+  final double height, width;
   final int userDailyCalorie;
   final String userId;
 
   CalorieProgress(
       {this.height,
       this.width,
-      this.progress,
       this.userDailyCalorie,
       this.userId});
   @override

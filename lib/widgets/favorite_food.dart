@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/food_detail_screen.dart';
+import 'package:gymandfood/widgets/widgets.dart';
 
 DatabaseService databaseService = DatabaseService();
 
@@ -20,7 +21,7 @@ class FavoriteFood extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "MEALS FOR TODAY",
+            "FAVORITE FOODS",
             style: TextStyle(
                 color: Colors.blueGrey,
                 fontWeight: FontWeight.w700,
@@ -99,19 +100,40 @@ class _FoodCard extends StatelessWidget {
                                   transitionDuration:
                                       const Duration(milliseconds: 1500),
                                   openBuilder: (context, _) {
-                                    return FoodDetailScreen(foodId: uff['foodId']);
+                                    return FoodDetailScreen(
+                                        foodId: uff['foodId']);
                                   },
                                   closedBuilder: (context, openContainer) {
                                     return GestureDetector(
                                       onTap: openContainer,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                          const Radius.circular(20),
-                                        ),
-                                        child: Image.network(
-                                          uff['foodPic'],
-                                          width: 120,
-                                          fit: BoxFit.cover,
+                                      child: Container(
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.all(
+                                                const Radius.circular(20),
+                                              ),
+                                              child: Image.network(
+                                                uff['foodPic'],
+                                                width: 120,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 5,
+                                              right: 5,
+                                              child: GestureDetector(
+                                                onTap: () => databaseService
+                                                    .removeFavoriteFood(
+                                                        userId, uff['foodId']),
+                                                child: Icon(
+                                                  Icons.remove_circle,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     );

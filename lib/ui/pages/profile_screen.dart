@@ -5,6 +5,7 @@ import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/signin.dart';
 import 'package:gymandfood/widgets/calorie_progress.dart';
 import 'package:gymandfood/widgets/favorite_food.dart';
+import 'package:gymandfood/widgets/ingredient_process.dart';
 import 'package:gymandfood/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -146,45 +147,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
-                        child: Row(
-                          children: [
-                            CalorieProgress(
-                                width: width * 0.35,
-                                height: width * 0.35,
-                                progress: 0.7,
-                                userDailyCalorie: userDailyCalorie,
-                                userId: userId),
-                            SizedBox(width: 20),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _IngredientProgress(
-                                  width: width * 0.30,
-                                  ingredient: "Protein",
-                                  progress: 0.3,
-                                  progressColor: Colors.green,
-                                  leftAmount: 72,
-                                ),
-                                _IngredientProgress(
-                                  width: width * 0.30,
-                                  ingredient: "Carbs",
-                                  progress: 0.5,
-                                  progressColor: Colors.red,
-                                  leftAmount: 110,
-                                ),
-                                _IngredientProgress(
-                                  width: width * 0.30,
-                                  ingredient: "Fat",
-                                  progress: 0.7,
-                                  progressColor: Colors.yellow,
-                                  leftAmount: 27,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                        child: StreamBuilder(
+                            stream: databaseService.getUserInfo(userId),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                return Row(
+                                  children: [
+                                    CalorieProgress(
+                                        width: width * 0.35,
+                                        height: width * 0.35,
+                                        userDailyCalorie:
+                                            snapshot.data['userDailyCalorie'],
+                                        userId: userId),
+                                    SizedBox(width: 20),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        IngredientProgress(
+                                          userId:userId,
+                                          width: width * 0.30,
+                                          ingredient: "Protein",
+                                          progress: 0.3,
+                                          progressColor: Colors.green,
+                                          userDailyGoal:
+                                              snapshot.data['userDailyProtein'],
+                                        ),
+                                        IngredientProgress(
+                                          userId:userId,
+                                          width: width * 0.30,
+                                          ingredient: "Carb",
+                                          progress: 0.5,
+                                          progressColor: Colors.red,
+                                          userDailyGoal:
+                                              snapshot.data['userDailyCarb'],
+                                        ),
+                                        IngredientProgress(
+                                          userId:userId,
+                                          width: width * 0.30,
+                                          ingredient: "Fat",
+                                          progress: 0.7,
+                                          progressColor: Colors.yellow,
+                                          userDailyGoal:
+                                              snapshot.data['userDailyFat'],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              }
+                            }),
                       )
                     ],
                   ),
@@ -350,60 +370,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
             //     ))
           ],
         ));
-  }
-}
-
-class _IngredientProgress extends StatelessWidget {
-  final String ingredient;
-  final int leftAmount;
-  final double progress, width;
-  final Color progressColor;
-
-  const _IngredientProgress(
-      {this.ingredient,
-      this.leftAmount,
-      this.progress,
-      this.progressColor,
-      this.width});
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          ingredient.toUpperCase(),
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: 2),
-        Row(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: 10,
-                  width: width,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: Colors.grey[300]),
-                ),
-                Container(
-                  height: 10,
-                  width: width * progress,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: progressColor),
-                )
-              ],
-            ),
-            SizedBox(width: 5),
-            Text("${leftAmount}g left")
-          ],
-        ),
-        SizedBox(height: 6),
-      ],
-    );
   }
 }
