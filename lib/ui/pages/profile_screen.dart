@@ -10,7 +10,6 @@ import 'package:gymandfood/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
 String userId;
-int userDailyCalorie;
 bool logOut = false;
 
 DatabaseService databaseService = DatabaseService();
@@ -30,19 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         userId = value;
       });
     });
-    getData();
     super.initState();
-  }
-
-  void getData() async {
-    FirebaseFirestore.instance.collection("user").get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        print(result.data()["userDailyCalorie"]);
-        setState(() {
-          userDailyCalorie = result.data()["userDailyCalorie"];
-        });
-      });
-    });
   }
 
   @override
@@ -79,7 +66,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: Colors.black),
                         ),
                         Text(
-                          "Hello, " + snapshot.data['userName'],
+                          snapshot.data['userName'].length > 17
+                              ? snapshot.data['userName'].substring(0, 17) +
+                                  "..."
+                              : snapshot.data['userName'],
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 20,
@@ -104,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 10),
-              height: height * 0.25,
+              height: 180,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   bottom: const Radius.circular(40),
@@ -155,52 +145,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 return Center(
                                   child: CircularProgressIndicator(),
                                 );
+                              } else if (snapshot.data == null) {
+                                return Center(
+                                  child: Text("There is no data"),
+                                );
                               } else {
-                                return Row(
+                                return Column(
                                   children: [
-                                    CalorieProgress(
-                                        width: width * 0.35,
-                                        height: width * 0.35,
-                                        userDailyCalorie:
-                                            snapshot.data['userDailyCalorie'],
-                                        userId: userId),
-                                    SizedBox(width: 20),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    if (snapshot
+                                                .data['userDailyCalorie'] ==
+                                            0 ||
+                                        snapshot.data['userDailyProtein'] ==
+                                            0 ||
+                                        snapshot.data['userDailyCarb'] == 0 ||
+                                        snapshot.data['userDailyFat'] == 0)
+                                      Center(
+                                          child: Text(
+                                        "Please Add Daily Goals in Profile Settings",
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 12,
+                                        ),
+                                      )),
+                                    SizedBox(height: 5),
+                                    Row(
                                       children: [
-                                        IngredientProgress(
-                                          userId:userId,
-                                          width: width * 0.30,
-                                          ingredient: "Protein",
-                                          progress: 0.3,
-                                          progressColor: Colors.green,
-                                          userDailyGoal:
-                                              snapshot.data['userDailyProtein'],
-                                        ),
-                                        IngredientProgress(
-                                          userId:userId,
-                                          width: width * 0.30,
-                                          ingredient: "Carb",
-                                          progress: 0.5,
-                                          progressColor: Colors.red,
-                                          userDailyGoal:
-                                              snapshot.data['userDailyCarb'],
-                                        ),
-                                        IngredientProgress(
-                                          userId:userId,
-                                          width: width * 0.30,
-                                          ingredient: "Fat",
-                                          progress: 0.7,
-                                          progressColor: Colors.yellow,
-                                          userDailyGoal:
-                                              snapshot.data['userDailyFat'],
-                                        ),
+                                        CalorieProgress(
+                                            width: width * 0.35,
+                                            height: width * 0.35,
+                                            userDailyCalorie: snapshot
+                                                .data['userDailyCalorie'],
+                                            userId: userId),
+                                        SizedBox(width: 20),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            IngredientProgress(
+                                              userId: userId,
+                                              width: width * 0.30,
+                                              ingredient: "Protein",
+                                              progress: 0.3,
+                                              progressColor: Colors.green,
+                                              userDailyGoal: snapshot
+                                                  .data['userDailyProtein'],
+                                            ),
+                                            IngredientProgress(
+                                              userId: userId,
+                                              width: width * 0.30,
+                                              ingredient: "Carb",
+                                              progress: 0.5,
+                                              progressColor: Colors.red,
+                                              userDailyGoal: snapshot
+                                                  .data['userDailyCarb'],
+                                            ),
+                                            IngredientProgress(
+                                              userId: userId,
+                                              width: width * 0.30,
+                                              ingredient: "Fat",
+                                              progress: 0.7,
+                                              progressColor: Colors.yellow,
+                                              userDailyGoal:
+                                                  snapshot.data['userDailyFat'],
+                                            ),
+                                          ],
+                                        )
                                       ],
-                                    )
+                                    ),
                                   ],
                                 );
                               }

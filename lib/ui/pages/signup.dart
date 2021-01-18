@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/auth.dart';
 import 'package:gymandfood/ui/pages/navigation_page.dart';
@@ -50,10 +51,16 @@ class _SignUpState extends State<SignUp> {
 
   Future<void> setUserDataa(
       String userId, String userEmail, String userName) async {
-    Map<String, String> userData = {
+    Map<String, dynamic> userData = {
       "userId": userId,
       "userName": userName,
       "userEmail": userEmail,
+      "userType":"user",
+      "userPic":"https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/determined-face.png?alt=media&token=9525d1fe-d652-4708-9215-618873fa659a",
+      "userDailyCalorie":0,
+      "userDailyCarb":0,
+      "userDailyProtein":0,
+      "userDailyFat":0
     };
     if (userId != null) {
       try {
@@ -119,6 +126,7 @@ class _SignUpState extends State<SignUp> {
                   validator: (value) {
                     return value.isEmpty ? "Enter your email" : null;
                   },
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.email),
                     labelText: 'Email',

@@ -62,8 +62,8 @@ class _FoodListState extends State<FoodList> {
                             return GestureDetector(
                               onTap: openContainer,
                               child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                padding: EdgeInsets.all(10),
+                                margin: EdgeInsets.symmetric(vertical: 0),
+                                padding: EdgeInsets.only(left: 10, right: 10),
                                 width: MediaQuery.of(context).size.width,
                                 height: 120,
                                 child: Row(
@@ -88,7 +88,11 @@ class _FoodListState extends State<FoodList> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${fcs["food_name"]}",
+                                          fcs["food_name"].length > 32
+                                              ? fcs["food_name"]
+                                                      .substring(0, 32) +
+                                                  "..."
+                                              : fcs["food_name"],
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),

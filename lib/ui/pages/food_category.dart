@@ -1,17 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/food_list.dart';
 
 class FoodCategoryPage extends StatefulWidget {
+  String userType;
+
+  FoodCategoryPage({this.userType});
   @override
   _FoodCategoryPageState createState() => _FoodCategoryPageState();
 }
 
 class _FoodCategoryPageState extends State<FoodCategoryPage> {
   DatabaseService databaseService = DatabaseService();
+  String userId;
   @override
   void initState() {
+    HelperFunctions.getUserLoggedInID().then((value) {
+      setState(() {
+        userId = value;
+      });
+    });
     super.initState();
   }
 
@@ -51,6 +61,22 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
           }
         },
       ),
+      floatingActionButton: StreamBuilder(
+          stream: databaseService.getUserInfo(userId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("");
+            } else {
+              if (snapshot.data['userType'] == "admin")
+                return FloatingActionButton(
+                  onPressed: () {},
+                  child: Icon(Icons.add),
+                  backgroundColor: Colors.green,
+                );
+              else
+                return Text("");
+            }
+          }),
     );
   }
 }

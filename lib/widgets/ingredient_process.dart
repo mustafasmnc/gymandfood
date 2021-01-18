@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
 
@@ -11,13 +9,14 @@ class IngredientProgress extends StatelessWidget {
   final double progress, width;
   final Color progressColor;
 
-   IngredientProgress(
+  IngredientProgress(
       {this.ingredient,
       this.userDailyGoal,
       this.progress,
       this.progressColor,
-      this.width, this.userId});
-      
+      this.width,
+      this.userId});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -61,9 +60,11 @@ class IngredientProgress extends StatelessWidget {
                           ),
                           Container(
                             height: 10,
-                            width: sum / userDailyGoal < 1
-                                ? width * (sum / userDailyGoal)
-                                : width,
+                            width: userDailyGoal == 0
+                                ? 0
+                                : sum / userDailyGoal < 1
+                                    ? width * (sum / userDailyGoal)
+                                    : width,
                             decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),

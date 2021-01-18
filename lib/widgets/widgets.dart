@@ -106,6 +106,7 @@ Widget dayCards(
                           return Center(
                               child: Text(
                             "Sorry, no exercise found.\nPlease add exercise.",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

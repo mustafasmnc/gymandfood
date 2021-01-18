@@ -76,8 +76,8 @@ class DatabaseService {
             "userDailyFat": userDailyFat
           },
         )
-        .then((value) => print("Exercise Data Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
+        .then((value) => print("UserInfo Data Updated"))
+        .catchError((error) => print("Failed to Update UserInfo: $error"));
   }
 
   Future addFavoriteFood(
@@ -239,8 +239,8 @@ class DatabaseService {
         .update(
           {"exerciseSet": exerciseSet, "exerciseRepeat": exerciseRepeat},
         )
-        .then((value) => print("Exercise Data Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
+        .then((value) => print("User Exercises Updated"))
+        .catchError((error) => print("Failed to Update User Exercises: $error"));
   }
 
   removeAddedExercise(String userId, String addedExerciseId) {

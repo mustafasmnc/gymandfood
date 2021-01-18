@@ -9,10 +9,7 @@ class CalorieProgress extends StatelessWidget {
   final String userId;
 
   CalorieProgress(
-      {this.height,
-      this.width,
-      this.userDailyCalorie,
-      this.userId});
+      {this.height, this.width, this.userDailyCalorie, this.userId});
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -67,7 +64,7 @@ class _ProgressPainter extends CustomPainter {
   _ProgressPainter({this.userDailyCalorie, this.sum});
   @override
   void paint(Canvas canvas, Size size) {
-    double progress = (sum / userDailyCalorie);
+    double progress = userDailyCalorie == 0 ? 0 : (sum / userDailyCalorie);
     Paint paint = Paint()
       ..strokeWidth = 8
       ..color = Color(0xFF200087)

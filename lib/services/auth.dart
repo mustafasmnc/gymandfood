@@ -57,6 +57,8 @@ class AuthService {
           return "Error: Email already in use";
         case "weak-password":
           return "Error: Weak password";
+        case "invalid-email":
+          return "Error: Not a valid email";
       }
       return "Error: " + e.code;
     }

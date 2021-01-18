@@ -16,16 +16,19 @@ class FavoriteFood extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Container(
       height: height * 0.3,
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            "FAVORITE FOODS",
-            style: TextStyle(
-                color: Colors.blueGrey,
-                fontWeight: FontWeight.w700,
-                fontSize: 16),
+          Container(
+            child: Text(
+              "FAVORITE FOODS",
+              style: TextStyle(
+                  color: Colors.blueGrey,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16),
+            ),
           ),
           SizedBox(height: height / 150),
           Expanded(
@@ -75,6 +78,23 @@ class _FoodCard extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(),
               );
+            } else if (snapshot.data.docs.length == 0) {
+              return Column(
+                children: [
+                  SizedBox(height: 20),
+                  Image.asset(
+                    "assets/nodata.png",
+                    width: 50,
+                    fit: BoxFit.cover,
+                  ),
+                  Text("There is no data\nPlease add food to your favorites",
+                      style: TextStyle(
+                        color: Colors.red[300],
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center),
+                ],
+              );
             } else {
               return ListView.builder(
                   shrinkWrap: true,
@@ -83,7 +103,9 @@ class _FoodCard extends StatelessWidget {
                   itemBuilder: (context, index) {
                     DocumentSnapshot uff = snapshot.data.docs[index];
                     return Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: snapshot.data.docs.length == 1
+                          ? EdgeInsets.only(right: 0)
+                          : EdgeInsets.only(right: 8),
                       child: Material(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           elevation: 4,
