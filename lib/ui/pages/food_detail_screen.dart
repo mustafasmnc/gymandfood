@@ -90,14 +90,24 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       [
                         //SizedBox(height: 10),
                         ListTile(
-                          title: Text(
-                            items["food_cat_name"],
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black54,
-                            ),
-                          ),
+                          title: StreamBuilder(
+                              stream: databaseService
+                                  .getFoodCategoryName(items["food_cat_id"]),
+                              builder: (context, snapshotCatName) {
+                                if (snapshotCatName.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Text("Loading...");
+                                } else
+                                  return Text(
+                                    snapshotCatName.data.docs[0]
+                                        ["food_category_name"],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black54,
+                                    ),
+                                  );
+                              }),
                           subtitle: Text(
                             items["food_name"],
                             style: TextStyle(

@@ -4,17 +4,29 @@ import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/food_list.dart';
 
-class FoodCategoryPage extends StatefulWidget {
+String usertype;
+Future<String> updateAction() async {
   String userType;
+  await FirebaseFirestore.instance
+      .collection("user")
+      .doc(userId)
+      .get()
+      .then((value) {
+    userType = value.data()['userType'];
+    usertype = value.data()['userType'];
+  });
+  return Future.value(userType.toString());
+}
 
-  FoodCategoryPage({this.userType});
+class FoodCategoryPage extends StatefulWidget {
   @override
   _FoodCategoryPageState createState() => _FoodCategoryPageState();
 }
 
+String userId;
+
 class _FoodCategoryPageState extends State<FoodCategoryPage> {
   DatabaseService databaseService = DatabaseService();
-  String userId;
   @override
   void initState() {
     HelperFunctions.getUserLoggedInID().then((value) {
@@ -49,6 +61,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
                   itemBuilder: (context, index) {
                     DocumentSnapshot fcs = snapshot.data.docs[index];
                     return CategoryTile(
+                      foodCategoryDocId: fcs.id,
                       foodCategoryImg: fcs["food_category_pic"],
                       foodCategoryTitle: fcs["food_category_name"],
                       foodCategoryDesc: fcs["food_category_desc"],
@@ -61,27 +74,23 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
           }
         },
       ),
-      floatingActionButton: StreamBuilder(
-          stream: databaseService.getUserInfo(userId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("");
-            } else {
-              if (snapshot.data['userType'] == "admin")
-                return FloatingActionButton(
-                  onPressed: () {},
-                  child: Icon(Icons.add),
-                  backgroundColor: Colors.green,
-                );
-              else
-                return Text("");
-            }
+      floatingActionButton: FutureBuilder(
+          future: updateAction(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            return snapshot.data == "admin"
+                ? FloatingActionButton(
+                    onPressed: () {},
+                    child: Icon(Icons.add),
+                    backgroundColor: Colors.green,
+                  )
+                : Text("");
           }),
     );
   }
 }
 
 class CategoryTile extends StatefulWidget {
+  final String foodCategoryDocId;
   final String foodCategoryImg;
   final String foodCategoryTitle;
   final String foodCategoryDesc;
@@ -91,7 +100,8 @@ class CategoryTile extends StatefulWidget {
       {@required this.foodCategoryImg,
       @required this.foodCategoryTitle,
       @required this.foodCategoryDesc,
-      @required this.foodCategoryId});
+      @required this.foodCategoryId,
+      @required this.foodCategoryDocId});
   // final FoodCategory foodCategory;
 
   // const CategoryTile({Key key, this.foodCategory}) : super(key: key);
@@ -103,29 +113,41 @@ class CategoryTile extends StatefulWidget {
 class _CategoryTileState extends State<CategoryTile> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => FoodList(
-                      foodCatId: widget.foodCategoryId,
-                    )));
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 5),
-        height: MediaQuery.of(context).size.height / 4,
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                widget.foodCategoryImg,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      height: 160,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              widget.foodCategoryImg != null
+                  ? widget.foodCategoryImg
+                  : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-icons-loading-animation.gif?alt=media&token=1e80bbc0-78f4-4ecf-a6c0-7958b3cfc7e4",
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
             ),
-            Container(
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FoodList(
+                            foodCatId: widget.foodCategoryId,
+                          )));
+            },
+            onLongPress: () {
+              usertype == "admin"
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FoodCategoryEdit(
+                                foodCategoryDocId: widget.foodCategoryDocId,
+                              )))
+                  : null;
+            },
+            child: Container(
               decoration: BoxDecoration(
                 color: Colors.black26,
                 borderRadius: BorderRadius.circular(10),
@@ -153,9 +175,28 @@ class _CategoryTileState extends State<CategoryTile> {
                   ),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class FoodCategoryEdit extends StatefulWidget {
+  final String foodCategoryDocId;
+
+  const FoodCategoryEdit({this.foodCategoryDocId});
+  @override
+  _FoodCategoryEditState createState() => _FoodCategoryEditState();
+}
+
+class _FoodCategoryEditState extends State<FoodCategoryEdit> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        child: Center(child: Text(widget.foodCategoryDocId)),
       ),
     );
   }

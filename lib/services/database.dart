@@ -18,6 +18,15 @@ class DatabaseService {
         .snapshots();
   }
 
+  getFoodCategoryName(String catId) {
+    return FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_category")
+        .collection("food_categories")
+        .where("food_category_id", isEqualTo: catId)
+        .snapshots();
+  }
+
   getFilteredFoods(String foodCatId) {
     return FirebaseFirestore.instance
         .collection("food")
@@ -62,14 +71,14 @@ class DatabaseService {
         .snapshots();
   }
 
-  updateUserInfo(String userId, String userName,int userDailyCalorie, int userDailyCarb,
-      int userDailyProtein, int userDailyFat) {
+  updateUserInfo(String userId, String userName, int userDailyCalorie,
+      int userDailyCarb, int userDailyProtein, int userDailyFat) {
     return FirebaseFirestore.instance
         .collection("user")
         .doc(userId)
         .update(
           {
-            "userName":userName,
+            "userName": userName,
             "userDailyCalorie": userDailyCalorie,
             "userDailyCarb": userDailyCarb,
             "userDailyProtein": userDailyProtein,
@@ -240,7 +249,8 @@ class DatabaseService {
           {"exerciseSet": exerciseSet, "exerciseRepeat": exerciseRepeat},
         )
         .then((value) => print("User Exercises Updated"))
-        .catchError((error) => print("Failed to Update User Exercises: $error"));
+        .catchError(
+            (error) => print("Failed to Update User Exercises: $error"));
   }
 
   removeAddedExercise(String userId, String addedExerciseId) {
