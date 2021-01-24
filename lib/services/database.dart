@@ -2,14 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class DatabaseService {
-  // getFoodCategory() async {
-  //   return await FirebaseFirestore.instance
-  //       .collection("food")
-  //       .doc("food_category")
-  //       .collection("food_categories")
-  //       .get();
-  // }
-
   getFoodCategorySnapshot() {
     return FirebaseFirestore.instance
         .collection("food")
@@ -25,6 +17,34 @@ class DatabaseService {
         .collection("food_categories")
         .where("food_category_id", isEqualTo: catId)
         .snapshots();
+  }
+
+  getFoodCategoryInfo(String docId) {
+    return FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_category")
+        .collection("food_categories")
+        .doc(docId)
+        .snapshots();
+  }
+
+  updateFoodCategory(
+      {String docId, String foodCatPic, String foodCatName, String foodCatDesc})async {
+    if (foodCatPic == null)
+      foodCatPic =
+          "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-icons-loading-animation.gif?alt=media&token=1e80bbc0-78f4-4ecf-a6c0-7958b3cfc7e4";
+    return await FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_category")
+        .collection("food_categories")
+        .doc(docId)
+        .update(
+          {
+            //"food_category_pic": foodCatPic,
+            "food_category_name": foodCatName,
+            "food_category_desc": foodCatDesc,
+          },
+        );
   }
 
   getFilteredFoods(String foodCatId) {
