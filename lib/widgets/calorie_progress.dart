@@ -20,7 +20,7 @@ class CalorieProgress extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            var ds = snapshot.data.documents;
+            var ds = snapshot.data.docs;
             int sum = 0;
             for (int i = 0; i < ds.length; i++) sum += (ds[i]['foodCal']);
             return CustomPaint(

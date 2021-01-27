@@ -32,7 +32,7 @@ class DatabaseService {
       {String docId, String foodCatPic, String foodCatName, String foodCatDesc})async {
     if (foodCatPic == null)
       foodCatPic =
-          "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-icons-loading-animation.gif?alt=media&token=1e80bbc0-78f4-4ecf-a6c0-7958b3cfc7e4";
+          "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5";
     return await FirebaseFirestore.instance
         .collection("food")
         .doc("food_category")
@@ -40,7 +40,7 @@ class DatabaseService {
         .doc(docId)
         .update(
           {
-            //"food_category_pic": foodCatPic,
+            "food_category_pic": foodCatPic,
             "food_category_name": foodCatName,
             "food_category_desc": foodCatDesc,
           },

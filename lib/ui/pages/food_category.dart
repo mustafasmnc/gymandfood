@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
@@ -128,7 +129,7 @@ class _CategoryTileState extends State<CategoryTile> {
             child: Image.network(
               widget.foodCategoryImg != null
                   ? widget.foodCategoryImg
-                  : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-icons-loading-animation.gif?alt=media&token=1e80bbc0-78f4-4ecf-a6c0-7958b3cfc7e4",
+                  : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5",
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.cover,
             ),
@@ -150,7 +151,7 @@ class _CategoryTileState extends State<CategoryTile> {
                           builder: (context) => FoodCategoryEdit(
                                 foodCategoryDocId: widget.foodCategoryDocId,
                               )))
-                  : null;
+                  : print("Not Admin..!!");
             },
             child: Container(
               decoration: BoxDecoration(
@@ -237,7 +238,8 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
 
   void openCamera() async {
     final picker = ImagePicker();
-    PickedFile pickedFile = await picker.getImage(source: ImageSource.camera);
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 20);
 
     setState(() {
       imgFile = File(pickedFile.path);
@@ -247,7 +249,8 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
 
   void openGallery() async {
     final picker = ImagePicker();
-    PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery);
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 20);
 
     setState(() {
       imgFile = File(pickedFile.path);
@@ -260,41 +263,109 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
     super.initState();
   }
 
-  updateCat() async {
-    if (_formKey.currentState.validate()) {
-      databaseService
-          .updateFoodCategory(
-              docId: widget.foodCategoryDocId,
-              foodCatPic: "foodCatPic",
-              foodCatName: textCatName,
-              foodCatDesc: textCatDesc)
-          .then((value) {
-        _scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            duration: Duration(milliseconds: 1000),
-            backgroundColor: Theme.of(context).primaryColor,
-            content: Text(
-              "Category Updated",
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
+  Future<String> _pickSaveImage() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    String url;
+    var pieces = imgFile.path.split('/');
+    Reference ref = storage.ref().child('uploads/${pieces[pieces.length - 1]}');
+    UploadTask uploadTask = ref.putFile(imgFile);
+    uploadTask.whenComplete(() async {
+      url = await ref.getDownloadURL();
+      print("FILE PAThhh: $url");
+    }).catchError((onError) {
+      print(onError);
+    });
+    return url;
+  }
 
-        new Future.delayed(const Duration(milliseconds: 1000), () {
-          Navigator.of(context).pop();
-        });
-      }).catchError((error) {
-        _scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            duration: Duration(microseconds: 3000),
-            backgroundColor: Colors.red,
-            content: Text(
-              "Failed to Update Category: $error",
-              textAlign: TextAlign.center,
+  updateCat(String catPic) async {
+    if(imgFile!=null)
+    {
+      FirebaseStorage storage = FirebaseStorage.instance;
+
+    String downloadUrl;
+
+    var pieces = imgFile.path.split('/');
+    Reference ref = storage.ref().child('uploads/${pieces[pieces.length - 1]}');
+    UploadTask uploadTask = ref.putFile(imgFile);
+    uploadTask.whenComplete(() async {
+      downloadUrl = await ref.getDownloadURL();
+
+      if (_formKey.currentState.validate()) {
+        databaseService
+            .updateFoodCategory(
+                docId: widget.foodCategoryDocId,
+                foodCatPic: downloadUrl,
+                foodCatName: textCatName,
+                foodCatDesc: textCatDesc)
+            .then((value) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(milliseconds: 1000),
+              backgroundColor: Theme.of(context).primaryColor,
+              content: Text(
+                "Category Updated",
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        );
-      });
+          );
+
+          new Future.delayed(const Duration(milliseconds: 1000), () {
+            Navigator.of(context).pop();
+          });
+        }).catchError((error) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(microseconds: 3000),
+              backgroundColor: Colors.red,
+              content: Text(
+                "Failed to Update Category: $error",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        });
+      }
+    }).catchError((onError) {
+      print(onError);
+    });
+    }
+    else{
+      if (_formKey.currentState.validate()) {
+        databaseService
+            .updateFoodCategory(
+                docId: widget.foodCategoryDocId,
+                foodCatPic: catPic,
+                foodCatName: textCatName,
+                foodCatDesc: textCatDesc)
+            .then((value) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(milliseconds: 1000),
+              backgroundColor: Theme.of(context).primaryColor,
+              content: Text(
+                "Category Updated",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+
+          new Future.delayed(const Duration(milliseconds: 1000), () {
+            Navigator.of(context).pop();
+          });
+        }).catchError((error) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(microseconds: 3000),
+              backgroundColor: Colors.red,
+              content: Text(
+                "Failed to Update Category: $error",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        });
+      }
     }
   }
 
@@ -332,7 +403,7 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
                                           null
                                       ? snapshotFoodCat
                                           .data["food_category_pic"]
-                                      : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-icons-loading-animation.gif?alt=media&token=1e80bbc0-78f4-4ecf-a6c0-7958b3cfc7e4",
+                                      : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5",
                                   height: 200,
                                   fit: BoxFit.cover,
                                 )
@@ -435,7 +506,8 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
                                     textCatDesc = snapshotFoodCat
                                         .data["food_category_desc"]
                                         .toString();
-                                  updateCat();
+                                  updateCat(snapshotFoodCat
+                                      .data["food_category_pic"]);
                                 },
                                 child: Container(
                                   width: 120,

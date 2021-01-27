@@ -95,6 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               padding: EdgeInsets.only(bottom: 10),
               height: 180,
+              width: MediaQuery.of(context).size.width,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   bottom: const Radius.circular(40),
@@ -139,26 +140,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.only(left: 10),
                         child: StreamBuilder(
                             stream: databaseService.getUserInfo(userId),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
+                            builder: (BuildContext context, snapshotUserInfo) {
+                              if (snapshotUserInfo.connectionState ==
                                   ConnectionState.waiting) {
                                 return Center(
                                   child: CircularProgressIndicator(),
                                 );
-                              } else if (snapshot.data == null) {
+                              } else if (snapshotUserInfo.data == null) {
                                 return Center(
                                   child: Text("There is no data"),
+                                );
+                              } else if (snapshotUserInfo.hasError) {
+                                return Center(
+                                  child: Text("There is an error"),
                                 );
                               } else {
                                 return Column(
                                   children: [
-                                    if (snapshot
-                                                .data['userDailyCalorie'] ==
-                                            0 ||
-                                        snapshot.data['userDailyProtein'] ==
-                                            0 ||
-                                        snapshot.data['userDailyCarb'] == 0 ||
-                                        snapshot.data['userDailyFat'] == 0)
+                                    
+                                    if (snapshotUserInfo.data['userDailyCalorie'] ==0 ||
+                                        snapshotUserInfo.data['userDailyProtein'] ==0 ||
+                                        snapshotUserInfo.data['userDailyCarb'] ==0 ||
+                                        snapshotUserInfo.data['userDailyFat'] ==0)
                                       Center(
                                           child: Text(
                                         "Please Add Daily Goals in Profile Settings",
@@ -173,7 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         CalorieProgress(
                                             width: width * 0.35,
                                             height: width * 0.35,
-                                            userDailyCalorie: snapshot
+                                            userDailyCalorie: snapshotUserInfo
                                                 .data['userDailyCalorie'],
                                             userId: userId),
                                         SizedBox(width: 20),
@@ -190,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ingredient: "Protein",
                                               progress: 0.3,
                                               progressColor: Colors.green,
-                                              userDailyGoal: snapshot
+                                              userDailyGoal: snapshotUserInfo
                                                   .data['userDailyProtein'],
                                             ),
                                             IngredientProgress(
@@ -199,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ingredient: "Carb",
                                               progress: 0.5,
                                               progressColor: Colors.red,
-                                              userDailyGoal: snapshot
+                                              userDailyGoal: snapshotUserInfo
                                                   .data['userDailyCarb'],
                                             ),
                                             IngredientProgress(
@@ -208,13 +211,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ingredient: "Fat",
                                               progress: 0.7,
                                               progressColor: Colors.yellow,
-                                              userDailyGoal:
-                                                  snapshot.data['userDailyFat'],
+                                              userDailyGoal: snapshotUserInfo
+                                                  .data['userDailyFat'],
                                             ),
                                           ],
                                         )
                                       ],
                                     ),
+                                  
                                   ],
                                 );
                               }

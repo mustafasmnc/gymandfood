@@ -4,7 +4,7 @@ import 'package:gymandfood/model/user.dart';
 
 class AuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  UserModel _userFromFirebaseUser(FirebaseUser user) {
+  UserModel _userFromFirebaseUser(User user) {
     return user != null ? UserModel(userId: user.uid) : null;
   }
 
