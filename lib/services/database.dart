@@ -1,5 +1,14 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+
+String generateRandomString(int len) {
+  var r = Random();
+  const _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+}
 
 class DatabaseService {
   getFoodCategorySnapshot() {
@@ -29,7 +38,10 @@ class DatabaseService {
   }
 
   updateFoodCategory(
-      {String docId, String foodCatPic, String foodCatName, String foodCatDesc})async {
+      {String docId,
+      String foodCatPic,
+      String foodCatName,
+      String foodCatDesc}) async {
     if (foodCatPic == null)
       foodCatPic =
           "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5";
@@ -39,12 +51,33 @@ class DatabaseService {
         .collection("food_categories")
         .doc(docId)
         .update(
-          {
-            "food_category_pic": foodCatPic,
-            "food_category_name": foodCatName,
-            "food_category_desc": foodCatDesc,
-          },
-        );
+      {
+        "food_category_pic": foodCatPic,
+        "food_category_name": foodCatName,
+        "food_category_desc": foodCatDesc,
+      },
+    );
+  }
+
+  addFoodCategory(
+      {String foodCatPic, String foodCatName, String foodCatDesc}) async {
+    String random = generateRandomString(20);
+    Map<String, String> foodCatData = {
+      "food_category_id": random,
+      "food_category_pic": foodCatPic,
+      "food_category_name": foodCatName,
+      "food_category_desc": foodCatDesc,
+    };
+
+    return await FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_category")
+        .collection('food_categories')
+        .doc(random)
+        .set(foodCatData)
+        .catchError((e) {
+      print(e.toString());
+    });
   }
 
   getFilteredFoods(String foodCatId) {

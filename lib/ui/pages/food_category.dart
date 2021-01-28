@@ -85,7 +85,12 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             return snapshot.data == "admin"
                 ? FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddFoodCategory()));
+                    },
                     child: Icon(Icons.add),
                     backgroundColor: Colors.green,
                   )
@@ -279,58 +284,57 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
   }
 
   updateCat(String catPic) async {
-    if(imgFile!=null)
-    {
+    if (imgFile != null) {
       FirebaseStorage storage = FirebaseStorage.instance;
 
-    String downloadUrl;
+      String downloadUrl;
 
-    var pieces = imgFile.path.split('/');
-    Reference ref = storage.ref().child('uploads/${pieces[pieces.length - 1]}');
-    UploadTask uploadTask = ref.putFile(imgFile);
-    uploadTask.whenComplete(() async {
-      downloadUrl = await ref.getDownloadURL();
+      var pieces = imgFile.path.split('/');
+      Reference ref =
+          storage.ref().child('uploads/${pieces[pieces.length - 1]}');
+      UploadTask uploadTask = ref.putFile(imgFile);
+      uploadTask.whenComplete(() async {
+        downloadUrl = await ref.getDownloadURL();
 
-      if (_formKey.currentState.validate()) {
-        databaseService
-            .updateFoodCategory(
-                docId: widget.foodCategoryDocId,
-                foodCatPic: downloadUrl,
-                foodCatName: textCatName,
-                foodCatDesc: textCatDesc)
-            .then((value) {
-          _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              duration: Duration(milliseconds: 1000),
-              backgroundColor: Theme.of(context).primaryColor,
-              content: Text(
-                "Category Updated",
-                textAlign: TextAlign.center,
+        if (_formKey.currentState.validate()) {
+          databaseService
+              .updateFoodCategory(
+                  docId: widget.foodCategoryDocId,
+                  foodCatPic: downloadUrl,
+                  foodCatName: textCatName,
+                  foodCatDesc: textCatDesc)
+              .then((value) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(milliseconds: 1000),
+                backgroundColor: Theme.of(context).primaryColor,
+                content: Text(
+                  "Category Updated",
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-          );
+            );
 
-          new Future.delayed(const Duration(milliseconds: 1000), () {
-            Navigator.of(context).pop();
+            new Future.delayed(const Duration(milliseconds: 1000), () {
+              Navigator.of(context).pop();
+            });
+          }).catchError((error) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(microseconds: 3000),
+                backgroundColor: Colors.red,
+                content: Text(
+                  "Failed to Update Category: $error",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
           });
-        }).catchError((error) {
-          _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              duration: Duration(microseconds: 3000),
-              backgroundColor: Colors.red,
-              content: Text(
-                "Failed to Update Category: $error",
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        });
-      }
-    }).catchError((onError) {
-      print(onError);
-    });
-    }
-    else{
+        }
+      }).catchError((onError) {
+        print(onError);
+      });
+    } else {
       if (_formKey.currentState.validate()) {
         databaseService
             .updateFoodCategory(
@@ -529,6 +533,264 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
                         ],
                       );
                     })),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AddFoodCategory extends StatefulWidget {
+  @override
+  _AddFoodCategoryState createState() => _AddFoodCategoryState();
+}
+
+class _AddFoodCategoryState extends State<AddFoodCategory> {
+  String textCatName, textCatDesc;
+
+  final _formKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  File imgFile;
+  final imgPicker = ImagePicker();
+
+  Future<void> showOptionsDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Options"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  GestureDetector(
+                    child: Text("Capture Image From Camera"),
+                    onTap: () {
+                      openCamera();
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(10)),
+                  GestureDetector(
+                    child: Text("Take Image From Gallery"),
+                    onTap: () {
+                      openGallery();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void openCamera() async {
+    final picker = ImagePicker();
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 20);
+
+    setState(() {
+      imgFile = File(pickedFile.path);
+    });
+    Navigator.of(context).pop();
+  }
+
+  void openGallery() async {
+    final picker = ImagePicker();
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 20);
+
+    setState(() {
+      imgFile = File(pickedFile.path);
+    });
+    Navigator.of(context).pop();
+  }
+
+  addCat() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    String downloadUrl;
+
+    var pieces = imgFile.path.split('/');
+    Reference ref = storage.ref().child('uploads/${pieces[pieces.length - 1]}');
+    UploadTask uploadTask = ref.putFile(imgFile);
+    uploadTask.whenComplete(() async {
+      downloadUrl = await ref.getDownloadURL();
+
+      if (_formKey.currentState.validate()) {
+        databaseService
+            .addFoodCategory(
+                foodCatPic: downloadUrl,
+                foodCatName: textCatName,
+                foodCatDesc: textCatDesc)
+            .then((value) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(milliseconds: 1000),
+              backgroundColor: Theme.of(context).primaryColor,
+              content: Text(
+                "Category Updated",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+
+          new Future.delayed(const Duration(milliseconds: 1000), () {
+            Navigator.of(context).pop();
+          });
+        }).catchError((error) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(microseconds: 3000),
+              backgroundColor: Colors.red,
+              content: Text(
+                "Failed to Update Category: $error",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        });
+      }
+    }).catchError((onError) {
+      print(onError);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black54),
+      ),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Form(
+            key: _formKey,
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                child: Column(
+                  children: [
+                    imgFile == null
+                        ? Image.network(
+                            imgFile == null
+                                ? "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5"
+                                : imgFile,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            imgFile,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                    GestureDetector(
+                      onTap: () => showOptionsDialog(context),
+                      child: Icon(Icons.add_a_photo),
+                    ),
+                    SizedBox(height: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Category Name",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            )),
+                        TextFormField(
+                          onChanged: (value) {
+                            textCatName = value;
+                          },
+                          validator: (value) {
+                            return value.isEmpty ? "Enter category name" : null;
+                          },
+                          maxLength: 25,
+                          textAlign: TextAlign.left,
+                          keyboardType: TextInputType.text,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text("Category Desc",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            )),
+                        TextFormField(
+                          onChanged: (value) {
+                            textCatDesc = value;
+                          },
+                          validator: (value) {
+                            return value.isEmpty
+                                ? "Enter category description"
+                                : null;
+                          },
+                          maxLength: 50,
+                          textAlign: TextAlign.left,
+                          keyboardType: TextInputType.text,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            width: 120,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Text(
+                              "CANCEL",
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () {
+                            addCat();
+                          },
+                          child: Container(
+                            width: 120,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Text(
+                              "ADD",
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                )),
           ),
         ),
       ),
