@@ -3,6 +3,8 @@ import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:readmore/readmore.dart';
 
+DatabaseService databaseService = DatabaseService();
+
 class ExerciseTile extends StatefulWidget {
   final String exerciseId;
   final String exercisePic;
@@ -11,22 +13,20 @@ class ExerciseTile extends StatefulWidget {
   final String exerciseMuscleId;
   final String exerciseMuscle;
 
-  const ExerciseTile(
+  ExerciseTile(
       {Key key,
       this.exerciseId,
       this.exercisePic,
       this.exerciseName,
       this.exerciseDesc,
       this.exerciseMuscleId,
-      this.exerciseMuscle})
-      : super(key: key);
+      this.exerciseMuscle});
 
   @override
   _ExerciseTileState createState() => _ExerciseTileState();
 }
 
 class _ExerciseTileState extends State<ExerciseTile> {
-  DatabaseService databaseService = DatabaseService();
   TextEditingController exerciseSet = TextEditingController();
   TextEditingController exerciseRepeat = TextEditingController();
   String userId;
@@ -152,7 +152,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
 
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
           color: Colors.grey[300],
           shape: BoxShape.rectangle,
@@ -182,12 +182,15 @@ class _ExerciseTileState extends State<ExerciseTile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  widget.exerciseName,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  width: MediaQuery.of(context).size.width * .72,
+                  child: Text(
+                    widget.exerciseName,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 IconButton(

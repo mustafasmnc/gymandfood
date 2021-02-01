@@ -22,6 +22,26 @@ Widget submitButton({BuildContext context, String text, buttonWith}) {
   );
 }
 
+Widget noData(double height) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      SizedBox(height: height),
+      Image.asset(
+        "assets/nodata.png",
+        width: 50,
+        fit: BoxFit.cover,
+      ),
+      Text("There is no data",
+          style: TextStyle(
+            color: Colors.red[300],
+            fontSize: 14,
+          ),
+          textAlign: TextAlign.center),
+    ],
+  );
+}
+
 Widget dayCards(
   String userId,
   String dayName,

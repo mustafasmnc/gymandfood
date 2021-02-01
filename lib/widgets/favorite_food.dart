@@ -79,22 +79,7 @@ class _FoodCard extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.data.docs.length == 0) {
-              return Column(
-                children: [
-                  SizedBox(height: 20),
-                  Image.asset(
-                    "assets/nodata.png",
-                    width: 50,
-                    fit: BoxFit.cover,
-                  ),
-                  Text("There is no data\nPlease add food to your favorites",
-                      style: TextStyle(
-                        color: Colors.red[300],
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center),
-                ],
-              );
+              return noData(20);
             } else {
               return ListView.builder(
                   shrinkWrap: true,

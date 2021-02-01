@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:gymandfood/widgets/widgets.dart';
 
 import 'food_detail_screen.dart';
 
@@ -35,6 +36,10 @@ class _FoodListState extends State<FoodList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.data.docs.length == 0) {
+            return Center(
+              child: noData(0),
             );
           } else {
             return Padding(

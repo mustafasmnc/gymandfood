@@ -1,6 +1,6 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:gymandfood/ui/pages/exercises.dart';
+import 'package:gymandfood/ui/pages/body_parts.dart';
 import 'package:gymandfood/ui/pages/food_category.dart';
 import 'package:gymandfood/ui/pages/profile_screen.dart';
 
@@ -11,7 +11,7 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   int _selectedPage = 0;
-  final _pageOptions = [ProfileScreen(), FoodCategoryPage(), Exercises()];
+  final _pageOptions = [ProfileScreen(), FoodCategoryPage(), BodyParts()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

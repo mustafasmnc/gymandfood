@@ -12,7 +12,7 @@ String usertype;
 
 DatabaseService databaseService = DatabaseService();
 
-Future<String> updateAction() async {
+Future<String> getUserType() async {
   String userType;
   await FirebaseFirestore.instance
       .collection("user")
@@ -81,7 +81,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         },
       ),
       floatingActionButton: FutureBuilder(
-          future: updateAction(),
+          future: getUserType(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             return snapshot.data == "admin"
                 ? FloatingActionButton(
@@ -399,139 +399,145 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
                     stream: databaseService
                         .getFoodCategoryInfo(widget.foodCategoryDocId),
                     builder: (context, snapshotFoodCat) {
-                      return Column(
-                        children: [
-                          imgFile == null
-                              ? Image.network(
-                                  snapshotFoodCat.data["food_category_pic"] !=
-                                          null
-                                      ? snapshotFoodCat
-                                          .data["food_category_pic"]
-                                      : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5",
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.file(
-                                  imgFile,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                ),
-                          GestureDetector(
-                            onTap: () => showOptionsDialog(context),
-                            child: Icon(Icons.add_a_photo),
-                          ),
-                          SizedBox(height: 20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Category Name",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              TextFormField(
-                                initialValue: snapshotFoodCat
-                                    .data["food_category_name"]
-                                    .toString(),
-                                onChanged: (value) {
-                                  textCatName = value;
-                                },
-                                validator: (value) {
-                                  return value.isEmpty
-                                      ? "Enter category name"
-                                      : null;
-                                },
-                                maxLength: 25,
-                                textAlign: TextAlign.left,
-                                keyboardType: TextInputType.text,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Text("Category Desc",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              TextFormField(
-                                initialValue: snapshotFoodCat
-                                    .data["food_category_desc"]
-                                    .toString(),
-                                onChanged: (value) {
-                                  textCatDesc = value;
-                                },
-                                validator: (value) {
-                                  return value.isEmpty
-                                      ? "Enter category description"
-                                      : null;
-                                },
-                                maxLength: 50,
-                                textAlign: TextAlign.left,
-                                keyboardType: TextInputType.text,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Container(
-                                  width: 120,
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Text(
-                                    "CANCEL",
+                      if (snapshotFoodCat.hasError) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            imgFile == null
+                                ? Image.network(
+                                    snapshotFoodCat.data["food_category_pic"] !=
+                                            null
+                                        ? snapshotFoodCat
+                                            .data["food_category_pic"]
+                                        : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/food-loading-animation.gif?alt=media&token=623496c1-607c-4767-9170-47ce71755cc5",
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(
+                                    imgFile,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                            GestureDetector(
+                              onTap: () => showOptionsDialog(context),
+                              child: Icon(Icons.add_a_photo),
+                            ),
+                            SizedBox(height: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Category Name",
                                     style: TextStyle(
-                                        fontSize: 15, color: Colors.white),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                                TextFormField(
+                                  initialValue: snapshotFoodCat
+                                      .data["food_category_name"]
+                                      .toString(),
+                                  onChanged: (value) {
+                                    textCatName = value;
+                                  },
+                                  validator: (value) {
+                                    return value.isEmpty
+                                        ? "Enter category name"
+                                        : null;
+                                  },
+                                  maxLength: 25,
+                                  textAlign: TextAlign.left,
+                                  keyboardType: TextInputType.text,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: 20),
-                              GestureDetector(
-                                onTap: () {
-                                  if (textCatName == null)
-                                    textCatName = snapshotFoodCat
-                                        .data["food_category_name"]
-                                        .toString();
-                                  if (textCatDesc == null)
-                                    textCatDesc = snapshotFoodCat
-                                        .data["food_category_desc"]
-                                        .toString();
-                                  updateCat(snapshotFoodCat
-                                      .data["food_category_pic"]);
-                                },
-                                child: Container(
-                                  width: 120,
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Text(
-                                    "UPDATE",
+                                Text("Category Desc",
                                     style: TextStyle(
-                                        fontSize: 15, color: Colors.white),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                                TextFormField(
+                                  initialValue: snapshotFoodCat
+                                      .data["food_category_desc"]
+                                      .toString(),
+                                  onChanged: (value) {
+                                    textCatDesc = value;
+                                  },
+                                  validator: (value) {
+                                    return value.isEmpty
+                                        ? "Enter category description"
+                                        : null;
+                                  },
+                                  maxLength: 50,
+                                  textAlign: TextAlign.left,
+                                  keyboardType: TextInputType.text,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
-                      );
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    width: 120,
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Text(
+                                      "CANCEL",
+                                      style: TextStyle(
+                                          fontSize: 15, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (textCatName == null)
+                                      textCatName = snapshotFoodCat
+                                          .data["food_category_name"]
+                                          .toString();
+                                    if (textCatDesc == null)
+                                      textCatDesc = snapshotFoodCat
+                                          .data["food_category_desc"]
+                                          .toString();
+                                    updateCat(snapshotFoodCat
+                                        .data["food_category_pic"]);
+                                  },
+                                  child: Container(
+                                    width: 120,
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Text(
+                                      "UPDATE",
+                                      style: TextStyle(
+                                          fontSize: 15, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        );
+                      }
                     })),
           ),
         ),

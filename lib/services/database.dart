@@ -107,16 +107,6 @@ class DatabaseService {
         .snapshots();
   }
 
-  getExercises(String muscleId) {
-    return FirebaseFirestore.instance
-        .collection("exercise")
-        .doc("exercise_list")
-        .collection("exercise_info")
-        .where("exercise_muscle_id", isEqualTo: muscleId)
-        //.orderBy("exercise_id")
-        .snapshots();
-  }
-
   getUserInfo(String userId) {
     return FirebaseFirestore.instance
         .collection("user")
@@ -237,6 +227,25 @@ class DatabaseService {
         .collection("daily_foods")
         .doc(addedFoodId)
         .delete();
+  }
+
+  getExercises(String muscleId) {
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("exercise_list")
+        .collection("exercise_info")
+        .where("exercise_muscle_id", isEqualTo: muscleId)
+        //.orderBy("exercise_id")
+        .snapshots();
+  }
+
+  getExerciseInfo(String exerciseDocId) {
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("exercise_list")
+        .collection("exercise_info")
+        .doc(exerciseDocId)
+        .snapshots();
   }
 
   Future addExercise(String userId, Map<String, String> exerciseData,
