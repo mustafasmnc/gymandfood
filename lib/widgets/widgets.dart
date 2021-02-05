@@ -112,7 +112,7 @@ Widget dayCards(
               Container(
                   height: 60,
                   child: StreamBuilder<QuerySnapshot>(
-                      stream: databaseService.getAddedExercises(userId, dayId),
+                      stream: databaseService.getUserExercises(userId, dayId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {

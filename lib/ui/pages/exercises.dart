@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/exercises.dart';
 import 'package:gymandfood/widgets/exercise_tile.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Exercises extends StatefulWidget {
   final String exerciseMuscleId;
@@ -79,12 +83,11 @@ class _ExercisesState extends State<Exercises> {
                           }
                         },
                         child: ExerciseTile(
-                          exerciseId: els["exercise_id"],
+                          exerciseId: els.id,
                           exercisePic: els["exercise_pic"],
                           exerciseName: els["exercise_name"],
                           exerciseDesc: els["exercise_desc"],
                           exerciseMuscleId: els["exercise_muscle_id"],
-                          exerciseMuscle: els["exercise_muscle"],
                         ),
                       );
                     }),
@@ -115,9 +118,153 @@ class ExerciseEdit extends StatefulWidget {
 }
 
 class _ExerciseEditState extends State<ExerciseEdit> {
-  static GlobalKey<FormState> _formKeyy=GlobalKey<FormState>();
+  static GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  String textCatName, textCatDesc;
+  String textExerciseName, textExerciseDesc;
+  File imgFile;
+
+  final imgPicker = ImagePicker();
+
+  Future<void> showOptionsDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Options"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  GestureDetector(
+                    child: Text("Capture Image From Camera"),
+                    onTap: () {
+                      openCamera();
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(10)),
+                  GestureDetector(
+                    child: Text("Take Image From Gallery"),
+                    onTap: () {
+                      openGallery();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void openCamera() async {
+    final picker = ImagePicker();
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 20);
+
+    setState(() {
+      imgFile = File(pickedFile.path);
+    });
+    Navigator.of(context).pop();
+  }
+
+  void openGallery() async {
+    final picker = ImagePicker();
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 20);
+
+    setState(() {
+      imgFile = File(pickedFile.path);
+    });
+    Navigator.of(context).pop();
+  }
+
+  updateExercise(String exerciseExistingPic, String exerciseName,
+      String exerciseDesc) async {
+    if (imgFile != null) {
+      FirebaseStorage storage = FirebaseStorage.instance;
+
+      String downloadUrl;
+      var pieces = imgFile.path.split('/');
+      Reference ref =
+          storage.ref().child('uploads/${pieces[pieces.length - 1]}');
+      UploadTask uploadTask = ref.putFile(imgFile);
+      uploadTask.whenComplete(() async {
+        downloadUrl = await ref.getDownloadURL();
+
+        if (_formKey.currentState.validate()) {
+          databaseService
+              .updateExercise(
+                  exerciseDocId: widget.exerciseDocId,
+                  exercisePic: downloadUrl,
+                  exerciseName: exerciseName,
+                  exerciseDesc: exerciseDesc)
+              .then((value) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(milliseconds: 1000),
+                backgroundColor: Theme.of(context).primaryColor,
+                content: Text(
+                  "Exercise Updated",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+
+            new Future.delayed(const Duration(milliseconds: 1000), () {
+              Navigator.of(context).pop();
+            });
+          }).catchError((error) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(microseconds: 3000),
+                backgroundColor: Colors.red,
+                content: Text(
+                  "Failed to Update Exercise: $error",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          });
+        }
+      }).catchError((onError) {
+        print(onError);
+      });
+    } else if (imgFile == null) {
+      if (_formKey.currentState.validate()) {
+        databaseService
+            .updateExercise(
+                exerciseDocId: widget.exerciseDocId,
+                exercisePic: exerciseExistingPic,
+                exerciseName: exerciseName,
+                exerciseDesc: exerciseDesc)
+            .then((value) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(milliseconds: 1000),
+              backgroundColor: Theme.of(context).primaryColor,
+              content: Text(
+                "Exercise Updated",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+
+          new Future.delayed(const Duration(milliseconds: 1000), () {
+            Navigator.of(context).pop();
+          });
+        }).catchError((error) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(microseconds: 3000),
+              backgroundColor: Colors.red,
+              content: Text(
+                "Failed to Update Exercise: $error",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +283,7 @@ class _ExerciseEditState extends State<ExerciseEdit> {
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Form(
-            key: _formKeyy,
+            key: _formKey,
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
@@ -150,10 +297,29 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                     } else {
                       return Column(
                         children: [
-                          Image.network(
-                            snapshotExerciseInfo.data["exercise_pic"],
-                            height: 200,
-                            fit: BoxFit.cover,
+                          // Image.network(
+                          //   snapshotExerciseInfo.data["exercise_pic"],
+                          //   height: 200,
+                          //   fit: BoxFit.cover,
+                          // ),
+                          imgFile == null
+                              ? Image.network(
+                                  snapshotExerciseInfo.data["exercise_pic"] !=
+                                          null
+                                      ? snapshotExerciseInfo
+                                          .data["exercise_pic"]
+                                      : "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/exercise_loading_animation.gif?alt=media&token=84818a9f-18bc-4ad6-b8a4-3f7c3e45facd",
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  imgFile,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                          GestureDetector(
+                            onTap: () => showOptionsDialog(context),
+                            child: Icon(Icons.add_a_photo),
                           ),
                           SizedBox(height: 20),
                           Column(
@@ -169,7 +335,7 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                                     .data["exercise_name"]
                                     .toString(),
                                 onChanged: (value) {
-                                  textCatName = value;
+                                  textExerciseName = value;
                                 },
                                 validator: (value) {
                                   return value.isEmpty
@@ -194,7 +360,7 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                                     .data["exercise_desc"]
                                     .toString(),
                                 onChanged: (value) {
-                                  textCatDesc = value;
+                                  textExerciseDesc = value;
                                 },
                                 validator: (value) {
                                   return value.isEmpty
@@ -239,7 +405,23 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                               ),
                               SizedBox(width: 20),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  String exerciseName, exerciseDesc;
+                                  if (textExerciseName != null)
+                                    exerciseName = textExerciseName;
+                                  else
+                                    exerciseName = snapshotExerciseInfo
+                                        .data["exercise_name"];
+                                  if (textExerciseDesc != null)
+                                    exerciseDesc = textExerciseDesc;
+                                  else
+                                    exerciseDesc = snapshotExerciseInfo
+                                        .data["exercise_desc"];
+                                  updateExercise(
+                                      snapshotExerciseInfo.data["exercise_pic"],
+                                      exerciseName,
+                                      exerciseDesc);
+                                },
                                 child: Container(
                                   width: 120,
                                   alignment: Alignment.center,

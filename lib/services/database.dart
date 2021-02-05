@@ -248,7 +248,28 @@ class DatabaseService {
         .snapshots();
   }
 
-  Future addExercise(String userId, Map<String, String> exerciseData,
+  updateExercise(
+      {String exerciseDocId,
+      String exercisePic,
+      String exerciseName,
+      String exerciseDesc}) {
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("exercise_list")
+        .collection("exercise_info")
+        .doc(exerciseDocId)
+        .update(
+      {
+        "exercise_name": exerciseName,
+        "exercise_desc": exerciseDesc,
+        "exercise_pic": exercisePic
+      },
+    ).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future addUserExercise(String userId, Map<String, String> exerciseData,
       String addedExerciseId) async {
     return await FirebaseFirestore.instance
         .collection("user")
@@ -286,7 +307,7 @@ class DatabaseService {
     //     .catchError((error) => print("Failed to add user: $error"));
   }
 
-  getAddedExercises(String userId, String dayId) {
+  getUserExercises(String userId, String dayId) {
     return FirebaseFirestore.instance
         .collection("user")
         .doc(userId)
@@ -296,7 +317,7 @@ class DatabaseService {
         .snapshots();
   }
 
-  updateAddedExercises(
+  updateUserExercises(
     String userId,
     String addedExerciseId,
     String exerciseSet,
@@ -315,7 +336,7 @@ class DatabaseService {
             (error) => print("Failed to Update User Exercises: $error"));
   }
 
-  removeAddedExercise(String userId, String addedExerciseId) {
+  removeUserExercise(String userId, String addedExerciseId) {
     return FirebaseFirestore.instance
         .collection("user")
         .doc(userId)

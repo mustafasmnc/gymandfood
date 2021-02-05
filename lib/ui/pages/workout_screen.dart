@@ -142,7 +142,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           exrepeat = textExerciseRepeat.text;
                         }
 
-                        databaseService.updateAddedExercises(
+                        databaseService.updateUserExercises(
                             widget.userId, exerciseId, exset, exrepeat);
 
                         Navigator.of(context, rootNavigator: true).pop();
@@ -218,7 +218,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             SizedBox(height: 5),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                  stream: databaseService.getAddedExercises(
+                  stream: databaseService.getUserExercises(
                       widget.userId, widget.dayId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -266,7 +266,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                   child: ListTile(
                                     trailing: GestureDetector(
                                         onTap: () {
-                                          databaseService.removeAddedExercise(
+                                          databaseService.removeUserExercise(
                                               widget.userId, aue.id);
                                         },
                                         child: Icon(

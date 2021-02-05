@@ -63,12 +63,11 @@ class _ExerciseTileState extends State<ExerciseTile> {
         "exerciseName": exerciseName,
         "exerciseSet": exerciseSet,
         "exerciseRepeat": exerciseRepeat,
-        "exerciseMuscle": exerciseMuscle,
         "exerciseMuscleId": exerciseMuscleId,
         "exercisePic": exercisePic,
         "dayNumber": dayNumber,
       };
-      databaseService.addExercise(userId, exerciseData, dataId).then((value) {
+      databaseService.addUserExercise(userId, exerciseData, dataId).then((value) {
         if (value == "added") {
           showAlertDialog(context, "Added", "Exercise Added.");
         }
