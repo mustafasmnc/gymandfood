@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 
-DatabaseService databaseService = DatabaseService();
-
-Widget submitButton({BuildContext context, String text, buttonWith}) {
+Widget submitButton(
+    {BuildContext context,
+    String text,
+    double buttonWith,
+    double buttonheight,
+    Color buttoncolor}) {
   return Container(
-    height: 50,
+    height: buttonheight == null ? 50 : buttonheight,
     alignment: Alignment.center,
     width: buttonWith != null ? buttonWith : MediaQuery.of(context).size.width,
     decoration: BoxDecoration(
-      color: Theme.of(context).primaryColor,
+      color: buttoncolor == null ? Theme.of(context).primaryColor : buttoncolor,
       borderRadius: BorderRadius.circular(30),
     ),
     child: Text(
@@ -51,6 +54,8 @@ Widget dayCards(
   Color color1,
   Color color2,
 ) {
+  DatabaseService databaseService = DatabaseService();
+
   return OpenContainer(
     closedElevation: 0,
     transitionDuration: const Duration(milliseconds: 1500),
@@ -166,6 +171,8 @@ Widget dayCards(
 }
 
 showAddedFoods(BuildContext context, String userId) {
+  DatabaseService databaseService = DatabaseService();
+
   return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -283,6 +290,8 @@ showUserSettingsScreen(BuildContext context, String userId) {
   TextEditingController textDailyCarb = TextEditingController();
   TextEditingController textDailyProtein = TextEditingController();
   TextEditingController textDailyFat = TextEditingController();
+  DatabaseService databaseService = DatabaseService();
+
   return showDialog(
       context: context,
       builder: (BuildContext context) {

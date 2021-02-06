@@ -248,6 +248,30 @@ class DatabaseService {
         .snapshots();
   }
 
+  addExercise(
+      {String exerciseMuscleId,
+      String exercisePic,
+      String exerciseName,
+      String exerciseDesc}) {
+    String random = generateRandomString(20);
+    Map<String, dynamic> exerciseData = {
+      "exercise_muscle_id": exerciseMuscleId,
+      "exercise_name": exerciseName,
+      "exercise_desc": exerciseDesc,
+      "exercise_pic": exercisePic,
+    };
+
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("exercise_list")
+        .collection("exercise_info")
+        .doc(random)
+        .set(exerciseData)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
   updateExercise(
       {String exerciseDocId,
       String exercisePic,

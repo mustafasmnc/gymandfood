@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/food_list.dart';
+import 'package:gymandfood/widgets/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 String usertype;
@@ -758,40 +759,19 @@ class _AddFoodCategoryState extends State<AddFoodCategory> {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Container(
-                            width: 120,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Text(
-                              "CANCEL",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.white),
-                            ),
-                          ),
+                          child: submitButton(
+                              context: context,
+                              buttonWith: 120,
+                              text: "CANCEL",
+                              buttoncolor: Colors.red),
                         ),
                         SizedBox(width: 20),
                         GestureDetector(
                           onTap: () {
                             addCat();
                           },
-                          child: Container(
-                            width: 120,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Text(
-                              "ADD",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.white),
-                            ),
-                          ),
+                          child: submitButton(
+                              context: context, buttonWith: 120, text: "ADD"),
                         ),
                       ],
                     )

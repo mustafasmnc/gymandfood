@@ -7,7 +7,10 @@ import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/model/exercises.dart';
 import 'package:gymandfood/widgets/exercise_tile.dart';
 import 'package:gymandfood/services/database.dart';
+import 'package:gymandfood/widgets/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+
+String exercise_muscle_id;
 
 class Exercises extends StatefulWidget {
   final String exerciseMuscleId;
@@ -72,6 +75,7 @@ class _ExercisesState extends State<Exercises> {
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
                       DocumentSnapshot els = snapshot.data.docs[index];
+                      exercise_muscle_id = els["exercise_muscle_id"];
                       return GestureDetector(
                         onLongPress: () {
                           if (userTypeSend == "admin") {
@@ -99,7 +103,12 @@ class _ExercisesState extends State<Exercises> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             return snapshot.data == "admin"
                 ? FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddExercise()));
+                    },
                     child: Icon(Icons.add),
                     backgroundColor: Colors.green,
                   )
@@ -339,7 +348,7 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                                 },
                                 validator: (value) {
                                   return value.isEmpty
-                                      ? "Enter category name"
+                                      ? "Enter exercise name"
                                       : null;
                                 },
                                 maxLength: 50,
@@ -364,7 +373,7 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                                 },
                                 validator: (value) {
                                   return value.isEmpty
-                                      ? "Enter category description"
+                                      ? "Enter exercise description"
                                       : null;
                                 },
                                 minLines: null,
@@ -388,20 +397,11 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                                 onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Container(
-                                  width: 120,
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Text(
-                                    "CANCEL",
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.white),
-                                  ),
-                                ),
+                                child: submitButton(
+                                    context: context,
+                                    buttonWith: 120,
+                                    text: "CANCEL",
+                                    buttoncolor: Colors.red),
                               ),
                               SizedBox(width: 20),
                               GestureDetector(
@@ -422,20 +422,10 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                                       exerciseName,
                                       exerciseDesc);
                                 },
-                                child: Container(
-                                  width: 120,
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Text(
-                                    "UPDATE",
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.white),
-                                  ),
-                                ),
+                                child: submitButton(
+                                    context: context,
+                                    buttonWith: 120,
+                                    text: "UPDATE"),
                               ),
                             ],
                           ),
@@ -444,6 +434,276 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                       );
                     }
                   }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AddExercise extends StatefulWidget {
+  @override
+  _AddExerciseState createState() => _AddExerciseState();
+}
+
+class _AddExerciseState extends State<AddExercise> {
+  static GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  String textExerciseName, textExerciseDesc;
+  File imgFile;
+
+  final imgPicker = ImagePicker();
+
+  Future<void> showOptionsDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Options"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  GestureDetector(
+                    child: Text("Capture Image From Camera"),
+                    onTap: () {
+                      openCamera();
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(10)),
+                  GestureDetector(
+                    child: Text("Take Image From Gallery"),
+                    onTap: () {
+                      openGallery();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void openCamera() async {
+    final picker = ImagePicker();
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 20);
+
+    setState(() {
+      imgFile = File(pickedFile.path);
+    });
+    Navigator.of(context).pop();
+  }
+
+  void openGallery() async {
+    final picker = ImagePicker();
+    PickedFile pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 20);
+
+    setState(() {
+      imgFile = File(pickedFile.path);
+    });
+    Navigator.of(context).pop();
+  }
+
+  addExercise() {
+    if (imgFile != null) {
+      FirebaseStorage storage = FirebaseStorage.instance;
+
+      String downloadUrl;
+      var pieces = imgFile.path.split('/');
+      Reference ref =
+          storage.ref().child('uploads/${pieces[pieces.length - 1]}');
+      UploadTask uploadTask = ref.putFile(imgFile);
+      uploadTask.whenComplete(() async {
+        downloadUrl = await ref.getDownloadURL();
+
+        if (_formKey.currentState.validate()) {
+          databaseService
+              .addExercise(
+                  exerciseMuscleId: exercise_muscle_id,
+                  exercisePic: downloadUrl,
+                  exerciseName: textExerciseName,
+                  exerciseDesc: textExerciseName)
+              .then((value) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(milliseconds: 1000),
+                backgroundColor: Theme.of(context).primaryColor,
+                content: Text(
+                  "Exercise Added",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+
+            new Future.delayed(const Duration(milliseconds: 1000), () {
+              Navigator.of(context).pop();
+            });
+          }).catchError((error) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(microseconds: 3000),
+                backgroundColor: Colors.red,
+                content: Text(
+                  "Failed to Add Exercise: $error",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          });
+        }
+      }).catchError((onError) {
+        print(onError);
+      });
+    } else {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: 1000),
+          backgroundColor: Theme.of(context).primaryColor,
+          content: Text(
+            "Pick a Picture",
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black54),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Form(
+            key: _formKey,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  imgFile == null
+                      ? Text(
+                          "Pick a Picture",
+                          style: TextStyle(fontSize: 25, color: Colors.black54),
+                        )
+                      : Image.file(
+                          imgFile,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                  GestureDetector(
+                    onTap: () => showOptionsDialog(context),
+                    child: Icon(Icons.add_a_photo),
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Exercise Name",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          )),
+                      TextFormField(
+                        decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 15, bottom: 11, top: 11, right: 15),
+                            hintText: "Enter Exercise Name"),
+                        onChanged: (value) {
+                          textExerciseName = value;
+                        },
+                        validator: (value) {
+                          return value.isEmpty ? "Enter exercise name" : null;
+                        },
+                        maxLength: 50,
+                        textAlign: TextAlign.left,
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text("Exercise Desc",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          )),
+                      TextFormField(
+                        decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 15, bottom: 11, top: 11, right: 15),
+                            hintText: "Enter Exercise Description"),
+                        onChanged: (value) {
+                          textExerciseDesc = value;
+                        },
+                        validator: (value) {
+                          return value.isEmpty
+                              ? "Enter exercise description"
+                              : null;
+                        },
+                        minLines: null,
+                        maxLines: null,
+                        maxLength: 1000,
+                        expands: false,
+                        textAlign: TextAlign.left,
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: submitButton(
+                            context: context,
+                            buttonWith: 120,
+                            text: "CANCEL",
+                            buttoncolor: Colors.red),
+                      ),
+                      SizedBox(width: 20),
+                      GestureDetector(
+                        onTap: () {
+                          addExercise();
+                        },
+                        child: submitButton(
+                            context: context, buttonWith: 120, text: "ADD"),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
