@@ -293,6 +293,15 @@ class DatabaseService {
     });
   }
 
+  deleteExercise(String exerciseDocId) {
+    return FirebaseFirestore.instance
+        .collection("exercise")
+        .doc("exercise_list")
+        .collection("exercise_info")
+        .doc(exerciseDocId)
+        .delete();
+  }
+
   Future addUserExercise(String userId, Map<String, String> exerciseData,
       String addedExerciseId) async {
     return await FirebaseFirestore.instance
