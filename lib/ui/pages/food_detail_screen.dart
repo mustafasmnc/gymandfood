@@ -50,121 +50,126 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: StreamBuilder<QuerySnapshot>(
-          stream: databaseService.getFoodDetail(widget.foodId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              DocumentSnapshot items = snapshot.data.docs[0];
-              foodName = items['food_name'];
-              foodPic = items['food_pic'];
-              foodCal = items['food_cal'];
-              foodCarb = items['food_carb'];
-              foodProtein = items['food_protein'];
-              foodFat = items['food_fat'];
-              return CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    snap: true,
-                    floating: true,
-                    backgroundColor: const Color(0xFF200087),
-                    expandedHeight: 250,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40))),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: ClipRRect(
-                        borderRadius:
-                            BorderRadius.vertical(bottom: Radius.circular(40)),
-                        child: Image.network(
-                          items["food_pic"],
-                          fit: BoxFit.cover,
+      body: SafeArea(
+        child: StreamBuilder<QuerySnapshot>(
+            stream: databaseService.getFoodDetail(widget.foodId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                DocumentSnapshot items = snapshot.data.docs[0];
+                foodName = items['food_name'];
+                foodPic = items['food_pic'];
+                foodCal = items['food_cal'];
+                foodCarb = items['food_carb'];
+                foodProtein = items['food_protein'];
+                foodFat = items['food_fat'];
+                return CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      iconTheme: IconThemeData(color: Colors.black),
+                      elevation: 0,
+                      snap: true,
+                      pinned: false,
+                      floating: true,
+                      backgroundColor: const Color(0xFF200087),
+                      expandedHeight: 250,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40))),
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(40)),
+                          child: Image.network(
+                            items["food_pic"],
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        //SizedBox(height: 10),
-                        ListTile(
-                          title: StreamBuilder(
-                              stream: databaseService
-                                  .getFoodCategoryName(items["food_cat_id"]),
-                              builder: (context, snapshotCatName) {
-                                if (snapshotCatName.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Text("Loading...");
-                                } else
-                                  return Text(
-                                    snapshotCatName.data.docs[0]
-                                        ["food_category_name"],
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black54,
-                                    ),
-                                  );
-                              }),
-                          subtitle: Text(
-                            items["food_name"],
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Calorie: " + items["food_cal"],
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black54,
-                                ),
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          //SizedBox(height: 10),
+                          ListTile(
+                            title: StreamBuilder(
+                                stream: databaseService
+                                    .getFoodCategoryName(items["food_cat_id"]),
+                                builder: (context, snapshotCatName) {
+                                  if (snapshotCatName.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Text("Loading...");
+                                  } else
+                                    return Text(
+                                      snapshotCatName.data.docs[0]
+                                          ["food_category_name"],
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black54,
+                                      ),
+                                    );
+                                }),
+                            subtitle: Text(
+                              items["food_name"],
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black87,
                               ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _IngredientProgress(
-                                    width: 50,
-                                    ingredient: "Health",
-                                    progress: items["food_health"],
-                                    progressColor: Colors.green,
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Calorie: " + items["food_cal"],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black54,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 16,
-                            right: 16,
-                            bottom: 32,
-                          ),
-                          child: Text(
-                            items["food_desc"],
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black54,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    _IngredientProgress(
+                                      width: 50,
+                                      ingredient: "Health",
+                                      progress: items["food_health"],
+                                      progressColor: Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              bottom: 32,
+                            ),
+                            child: Text(
+                              items["food_desc"],
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              );
-            }
-          }),
+                  ],
+                );
+              }
+            }),
+      ),
       floatingActionButton: buildSpeedDial(),
     );
   }

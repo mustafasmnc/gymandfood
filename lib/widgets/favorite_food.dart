@@ -135,8 +135,8 @@ class _FoodCard extends StatelessWidget {
                                                         userId, uff['foodId']),
                                                 child: Icon(
                                                   Icons.remove_circle,
-                                                  color: Colors.white,
-                                                  size: 20,
+                                                  color: Colors.red[300],
+                                                  size: 17,
                                                 ),
                                               ),
                                             ),

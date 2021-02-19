@@ -6,6 +6,8 @@ import 'package:gymandfood/widgets/widgets.dart';
 
 import 'food_detail_screen.dart';
 
+DatabaseService databaseService = DatabaseService();
+
 class FoodList extends StatefulWidget {
   final String foodCatId;
 
@@ -15,12 +17,194 @@ class FoodList extends StatefulWidget {
 }
 
 class _FoodListState extends State<FoodList> {
-  DatabaseService databaseService = DatabaseService();
   @override
   void initState() {
     super.initState();
   }
 
+  String textSearch;
+  var _controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black54),
+        title: Container(
+          width: MediaQuery.of(context).size.width / 1.5,
+          child: TextField(
+            controller: _controller,
+            decoration: new InputDecoration(
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchItem(
+                                searchKey: textSearch,
+                                foodCatId: widget.foodCatId,
+                              )))),
+              contentPadding:
+                  EdgeInsets.only(left: 10, bottom: 0, top: 15, right: 10),
+              hintText: "Search",
+            ),
+            onChanged: (value) {
+              textSearch = value;
+            },
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.text,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.search,
+        //       color: Colors.blue,
+        //     ),
+        //     onPressed: () {
+        //       Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (context) =>
+        //                   SearchItem(arama: textExerciseName)));
+        //     },
+        //   ),
+        // ],
+      ),
+      body: Container(
+        child: StreamBuilder<QuerySnapshot>(
+          stream: databaseService.getFilteredFoods(widget.foodCatId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.data.docs.length == 0) {
+              return Center(
+                child: noData(0),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.only(
+                    top: 0, right: 16, left: 16, bottom: 0),
+                child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    //physics: NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot fcs = snapshot.data.docs[index];
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FoodDetailScreen(
+                                        foodId: fcs["food_id"]))),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.centerRight,
+                                    end: Alignment.centerLeft,
+                                    colors: [
+                                      Color(0xFF636FA4),
+                                      Color(0xFFE8CBC0)
+                                    ]),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 2,
+                                    offset: Offset(
+                                        5, 5), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              margin: EdgeInsets.symmetric(vertical: 0),
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              width: MediaQuery.of(context).size.width,
+                              height: 120,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    width: 90,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(fcs["food_pic"]),
+                                            fit: BoxFit.cover),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        fcs["food_name"].length > 32
+                                            ? fcs["food_name"]
+                                                    .substring(0, 32) +
+                                                "..."
+                                            : fcs["food_name"],
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Container(
+                                        //width: MediaQuery.of(context).size.width / 1.65,
+                                        child: Text(
+                                          "Calorie: ${fcs["food_cal"]}",
+                                          maxLines: 2,
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      );
+                    }),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SearchItem extends StatefulWidget {
+  final String searchKey, foodCatId;
+
+  const SearchItem({Key key, this.searchKey, this.foodCatId}) : super(key: key);
+  @override
+  _SearchItemState createState() => _SearchItemState();
+}
+
+class _SearchItemState extends State<SearchItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,22 +214,23 @@ class _FoodListState extends State<FoodList> {
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.black54),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: databaseService.getFilteredFoods(widget.foodCatId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.data.docs.length == 0) {
-            return Center(
-              child: noData(0),
-            );
-          } else {
-            return Padding(
-              padding:
-                  const EdgeInsets.only(top: 0, right: 16, left: 16, bottom: 0),
-              child: Expanded(
+      body: Container(
+        child: StreamBuilder<QuerySnapshot>(
+          stream:
+              databaseService.searchItem(widget.searchKey, widget.foodCatId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.data.docs.length == 0) {
+              return Center(
+                child: noData(0),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.only(
+                    top: 0, right: 16, left: 16, bottom: 0),
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
@@ -53,75 +238,93 @@ class _FoodListState extends State<FoodList> {
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
                       DocumentSnapshot fcs = snapshot.data.docs[index];
-                      return OpenContainer(
-                          closedColor: Colors.grey[200],
-                          closedShape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          transitionDuration:
-                              const Duration(milliseconds: 1500),
-                          openBuilder: (context, _) {
-                            return FoodDetailScreen(foodId: fcs["food_id"]);
-                          },
-                          closedBuilder: (context, openContainer) {
-                            return GestureDetector(
-                              onTap: openContainer,
-                              child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 0),
-                                padding: EdgeInsets.only(left: 10, right: 10),
-                                width: MediaQuery.of(context).size.width,
-                                height: 120,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      width: 90,
-                                      height: 90,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image:
-                                                  NetworkImage(fcs["food_pic"]),
-                                              fit: BoxFit.cover),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          fcs["food_name"].length > 32
-                                              ? fcs["food_name"]
-                                                      .substring(0, 32) +
-                                                  "..."
-                                              : fcs["food_name"],
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Container(
-                                          //width: MediaQuery.of(context).size.width / 1.65,
-                                          child: Text(
-                                            "Calorie: ${fcs["food_cal"]}",
-                                            maxLines: 2,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FoodDetailScreen(
+                                        foodId: fcs["food_id"]))),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.centerRight,
+                                    end: Alignment.centerLeft,
+                                    colors: [
+                                      Color(0xFF636FA4),
+                                      Color(0xFFE8CBC0)
+                                    ]),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 2,
+                                    offset: Offset(
+                                        5, 5), // changes position of shadow
+                                  ),
+                                ],
                               ),
-                            );
-                          });
+                              margin: EdgeInsets.symmetric(vertical: 0),
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              width: MediaQuery.of(context).size.width,
+                              height: 120,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    width: 90,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(fcs["food_pic"]),
+                                            fit: BoxFit.cover),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        fcs["food_name"].length > 32
+                                            ? fcs["food_name"]
+                                                    .substring(0, 32) +
+                                                "..."
+                                            : fcs["food_name"],
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Container(
+                                        //width: MediaQuery.of(context).size.width / 1.65,
+                                        child: Text(
+                                          "Calorie: ${fcs["food_cal"]}",
+                                          maxLines: 2,
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      );
                     }),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
     );
   }

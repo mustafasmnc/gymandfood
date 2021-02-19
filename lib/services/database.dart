@@ -377,4 +377,17 @@ class DatabaseService {
         .doc(addedExerciseId)
         .delete();
   }
+
+  searchItem(String searchKey, String foodCatId) {
+    String key = searchKey[0].toUpperCase() + searchKey.substring(1);
+    return FirebaseFirestore.instance
+        .collection("food")
+        .doc("food_list")
+        .collection("food_info")
+        // .where("food_cat_id",isEqualTo: foodCatId)
+        .where("food_name", isGreaterThanOrEqualTo: key)
+        .where("food_name", isLessThan: key + 'z')
+        .orderBy("food_name", descending: false)
+        .snapshots();
+  }
 }
