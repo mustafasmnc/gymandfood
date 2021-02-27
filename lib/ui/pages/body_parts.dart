@@ -21,22 +21,29 @@ class _BodyPartsState extends State<BodyParts> {
                 child: CircularProgressIndicator(),
               );
             } else {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot bms = snapshot.data.docs[index];
-                      return BodyMuscleTile(
-                        bodyMuscleImage: bms["muscle_pic"],
-                        bodyMuscleName: bms["muscle_name"],
-                        bodyMuscleDesc: bms["muscle_desc"],
-                        bodyMuscleId: bms["muscle_id"],
-                      );
-                    }),
-              );
+              try {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot bms = snapshot.data.docs[index];
+                        return BodyMuscleTile(
+                          bodyMuscleImage: bms["muscle_pic"],
+                          bodyMuscleName: bms["muscle_name"],
+                          bodyMuscleDesc: bms["muscle_desc"],
+                          bodyMuscleId: bms["muscle_id"],
+                        );
+                      }),
+                );
+              } catch (e) {
+                print(e);
+                return Center(
+                  child: Text("Error"),
+                );
+              }
             }
           }),
     );

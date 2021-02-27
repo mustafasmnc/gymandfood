@@ -94,100 +94,109 @@ class _FoodListState extends State<FoodList> {
                 child: noData(0),
               );
             } else {
-              return Padding(
-                padding: const EdgeInsets.only(
-                    top: 0, right: 16, left: 16, bottom: 0),
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    //physics: NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot fcs = snapshot.data.docs[index];
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FoodDetailScreen(
-                                        foodId: fcs["food_id"]))),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.centerRight,
-                                    end: Alignment.centerLeft,
-                                    colors: [
-                                      Color(0xFF636FA4),
-                                      Color(0xFFE8CBC0)
-                                    ]),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 2,
-                                    offset: Offset(
-                                        5, 5), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              margin: EdgeInsets.symmetric(vertical: 0),
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              width: MediaQuery.of(context).size.width,
-                              height: 120,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10),
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image:
-                                                NetworkImage(fcs["food_pic"]),
-                                            fit: BoxFit.cover),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        fcs["food_name"].length > 32
-                                            ? fcs["food_name"]
-                                                    .substring(0, 32) +
-                                                "..."
-                                            : fcs["food_name"],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Container(
-                                        //width: MediaQuery.of(context).size.width / 1.65,
-                                        child: Text(
-                                          "Calorie: ${fcs["food_cal"]}",
-                                          maxLines: 2,
-                                          style: TextStyle(color: Colors.white),
+              try {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0, right: 16, left: 16, bottom: 0),
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      //physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot fcs = snapshot.data.docs[index];
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FoodDetailScreen(
+                                          foodId: fcs["food_id"]))),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerRight,
+                                      end: Alignment.centerLeft,
+                                      colors: [
+                                        Color(0xFF636FA4),
+                                        Color(0xFFE8CBC0)
+                                      ]),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      offset: Offset(
+                                          5, 5), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                margin: EdgeInsets.symmetric(vertical: 0),
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                width: MediaQuery.of(context).size.width,
+                                height: 120,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      width: 90,
+                                      height: 90,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image:
+                                                  NetworkImage(fcs["food_pic"]),
+                                              fit: BoxFit.cover),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          fcs["food_name"].length > 32
+                                              ? fcs["food_name"]
+                                                      .substring(0, 32) +
+                                                  "..."
+                                              : fcs["food_name"],
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                        SizedBox(height: 10),
+                                        Container(
+                                          //width: MediaQuery.of(context).size.width / 1.65,
+                                          child: Text(
+                                            "Calorie: ${fcs["food_cal"]}",
+                                            maxLines: 2,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      );
-                    }),
-              );
+                            SizedBox(height: 10),
+                          ],
+                        );
+                      }),
+                );
+              } catch (e) {
+                print(e);
+                return Center(
+                  child: Text("Error"),
+                );
+              }
             }
           },
         ),
@@ -228,100 +237,109 @@ class _SearchItemState extends State<SearchItem> {
                 child: noData(0),
               );
             } else {
-              return Padding(
-                padding: const EdgeInsets.only(
-                    top: 0, right: 16, left: 16, bottom: 0),
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    //physics: NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot fcs = snapshot.data.docs[index];
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FoodDetailScreen(
-                                        foodId: fcs["food_id"]))),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.centerRight,
-                                    end: Alignment.centerLeft,
-                                    colors: [
-                                      Color(0xFF636FA4),
-                                      Color(0xFFE8CBC0)
-                                    ]),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 2,
-                                    offset: Offset(
-                                        5, 5), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              margin: EdgeInsets.symmetric(vertical: 0),
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              width: MediaQuery.of(context).size.width,
-                              height: 120,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10),
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image:
-                                                NetworkImage(fcs["food_pic"]),
-                                            fit: BoxFit.cover),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        fcs["food_name"].length > 32
-                                            ? fcs["food_name"]
-                                                    .substring(0, 32) +
-                                                "..."
-                                            : fcs["food_name"],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Container(
-                                        //width: MediaQuery.of(context).size.width / 1.65,
-                                        child: Text(
-                                          "Calorie: ${fcs["food_cal"]}",
-                                          maxLines: 2,
-                                          style: TextStyle(color: Colors.white),
+              try {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0, right: 16, left: 16, bottom: 0),
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      //physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot fcs = snapshot.data.docs[index];
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FoodDetailScreen(
+                                          foodId: fcs["food_id"]))),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerRight,
+                                      end: Alignment.centerLeft,
+                                      colors: [
+                                        Color(0xFF636FA4),
+                                        Color(0xFFE8CBC0)
+                                      ]),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      offset: Offset(
+                                          5, 5), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                margin: EdgeInsets.symmetric(vertical: 0),
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                width: MediaQuery.of(context).size.width,
+                                height: 120,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      width: 90,
+                                      height: 90,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image:
+                                                  NetworkImage(fcs["food_pic"]),
+                                              fit: BoxFit.cover),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          fcs["food_name"].length > 32
+                                              ? fcs["food_name"]
+                                                      .substring(0, 32) +
+                                                  "..."
+                                              : fcs["food_name"],
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                        SizedBox(height: 10),
+                                        Container(
+                                          //width: MediaQuery.of(context).size.width / 1.65,
+                                          child: Text(
+                                            "Calorie: ${fcs["food_cal"]}",
+                                            maxLines: 2,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      );
-                    }),
-              );
+                            SizedBox(height: 10),
+                          ],
+                        );
+                      }),
+                );
+              } catch (e) {
+                print(e);
+                return Center(
+                  child: Text("Error"),
+                );
+              }
             }
           },
         ),

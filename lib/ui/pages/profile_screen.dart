@@ -52,38 +52,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Text("Loading...");
               } else
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          formattedDate,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
-                        ),
-                        Text(
-                          snapshot.data['userName'].length > 17
-                              ? snapshot.data['userName'].substring(0, 17) +
-                                  "..."
-                              : snapshot.data['userName'],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
-                    CircleAvatar(
-                      radius: 30.0,
-                      backgroundImage: NetworkImage(snapshot.data['userPic']),
-                      backgroundColor: Colors.transparent,
-                    )
-                  ],
-                );
+                try {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            formattedDate,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                          ),
+                          Text(
+                            snapshot.data['userName'].length > 17
+                                ? snapshot.data['userName'].substring(0, 17) +
+                                    "..."
+                                : snapshot.data['userName'],
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                      CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage: NetworkImage(snapshot.data['userPic']),
+                        backgroundColor: Colors.transparent,
+                      )
+                    ],
+                  );
+                } catch (e) {
+                  print(e);
+                  return Center(
+                    child: Text("Error"),
+                  );
+                }
             }),
         actions: [],
       ),
@@ -155,72 +162,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Text("There is an error"),
                                 );
                               } else {
-                                return Column(
-                                  children: [
-                                    
-                                    if (snapshotUserInfo.data['userDailyCalorie'] ==0 ||
-                                        snapshotUserInfo.data['userDailyProtein'] ==0 ||
-                                        snapshotUserInfo.data['userDailyCarb'] ==0 ||
-                                        snapshotUserInfo.data['userDailyFat'] ==0)
-                                      Center(
-                                          child: Text(
-                                        "Please Add Daily Goals in Profile Settings",
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 12,
-                                        ),
-                                      )),
-                                    SizedBox(height: 5),
-                                    Row(
-                                      children: [
-                                        CalorieProgress(
-                                            width: width * 0.35,
-                                            height: width * 0.35,
-                                            userDailyCalorie: snapshotUserInfo
-                                                .data['userDailyCalorie'],
-                                            userId: userId),
-                                        SizedBox(width: 20),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            IngredientProgress(
-                                              userId: userId,
-                                              width: width * 0.30,
-                                              ingredient: "Protein",
-                                              progress: 0.3,
-                                              progressColor: Colors.green,
-                                              userDailyGoal: snapshotUserInfo
-                                                  .data['userDailyProtein'],
-                                            ),
-                                            IngredientProgress(
-                                              userId: userId,
-                                              width: width * 0.30,
-                                              ingredient: "Carb",
-                                              progress: 0.5,
-                                              progressColor: Colors.red,
-                                              userDailyGoal: snapshotUserInfo
-                                                  .data['userDailyCarb'],
-                                            ),
-                                            IngredientProgress(
-                                              userId: userId,
-                                              width: width * 0.30,
-                                              ingredient: "Fat",
-                                              progress: 0.7,
-                                              progressColor: Colors.yellow,
-                                              userDailyGoal: snapshotUserInfo
-                                                  .data['userDailyFat'],
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  
-                                  ],
-                                );
+                                try {
+                                  return Column(
+                                    children: [
+                                      if (snapshotUserInfo
+                                                  .data['userDailyCalorie'] ==
+                                              0 ||
+                                          snapshotUserInfo
+                                                  .data['userDailyProtein'] ==
+                                              0 ||
+                                          snapshotUserInfo
+                                                  .data['userDailyCarb'] ==
+                                              0 ||
+                                          snapshotUserInfo
+                                                  .data['userDailyFat'] ==
+                                              0)
+                                        Center(
+                                            child: Text(
+                                          "Please Add Daily Goals in Profile Settings",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 12,
+                                          ),
+                                        )),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        children: [
+                                          CalorieProgress(
+                                              width: width * 0.35,
+                                              height: width * 0.35,
+                                              userDailyCalorie: snapshotUserInfo
+                                                  .data['userDailyCalorie'],
+                                              userId: userId),
+                                          SizedBox(width: 20),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              IngredientProgress(
+                                                userId: userId,
+                                                width: width * 0.30,
+                                                ingredient: "Protein",
+                                                progress: 0.3,
+                                                progressColor: Colors.green,
+                                                userDailyGoal: snapshotUserInfo
+                                                    .data['userDailyProtein'],
+                                              ),
+                                              IngredientProgress(
+                                                userId: userId,
+                                                width: width * 0.30,
+                                                ingredient: "Carb",
+                                                progress: 0.5,
+                                                progressColor: Colors.red,
+                                                userDailyGoal: snapshotUserInfo
+                                                    .data['userDailyCarb'],
+                                              ),
+                                              IngredientProgress(
+                                                userId: userId,
+                                                width: width * 0.30,
+                                                ingredient: "Fat",
+                                                progress: 0.7,
+                                                progressColor: Colors.yellow,
+                                                userDailyGoal: snapshotUserInfo
+                                                    .data['userDailyFat'],
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                } catch (e) {
+                                  print(e);
+                                  return Center(
+                                    child: Text("Error"),
+                                  );
+                                }
                               }
                             }),
                       )

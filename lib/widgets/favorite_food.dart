@@ -81,135 +81,143 @@ class _FoodCard extends StatelessWidget {
             } else if (snapshot.data.docs.length == 0) {
               return noData(20);
             } else {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot uff = snapshot.data.docs[index];
-                    return Padding(
-                      padding: snapshot.data.docs.length == 1
-                          ? EdgeInsets.only(right: 0)
-                          : EdgeInsets.only(right: 8),
-                      child: Material(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          elevation: 4,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Flexible(
-                                fit: FlexFit.tight,
-                                child: OpenContainer(
-                                  closedShape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(20))),
-                                  transitionDuration:
-                                      const Duration(milliseconds: 1500),
-                                  openBuilder: (context, _) {
-                                    return FoodDetailScreen(
-                                        foodId: uff['foodId']);
-                                  },
-                                  closedBuilder: (context, openContainer) {
-                                    return GestureDetector(
-                                      onTap: openContainer,
-                                      child: Container(
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.all(
-                                                const Radius.circular(20),
-                                              ),
-                                              child: Image.network(
-                                                uff['foodPic'],
-                                                width: 120,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Positioned(
-                                              top: 5,
-                                              right: 5,
-                                              child: GestureDetector(
-                                                onTap: () => databaseService
-                                                    .removeFavoriteFood(
-                                                        userId, uff['foodId']),
-                                                child: Icon(
-                                                  Icons.remove_circle,
-                                                  color: Colors.red[300],
-                                                  size: 17,
+              try {
+                return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot uff = snapshot.data.docs[index];
+                      return Padding(
+                        padding: snapshot.data.docs.length == 1
+                            ? EdgeInsets.only(right: 0)
+                            : EdgeInsets.only(right: 8),
+                        child: Material(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            elevation: 4,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Flexible(
+                                  fit: FlexFit.tight,
+                                  child: OpenContainer(
+                                    closedShape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20))),
+                                    transitionDuration:
+                                        const Duration(milliseconds: 1500),
+                                    openBuilder: (context, _) {
+                                      return FoodDetailScreen(
+                                          foodId: uff['foodId']);
+                                    },
+                                    closedBuilder: (context, openContainer) {
+                                      return GestureDetector(
+                                        onTap: openContainer,
+                                        child: Container(
+                                          child: Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.all(
+                                                  const Radius.circular(20),
+                                                ),
+                                                child: Image.network(
+                                                  uff['foodPic'],
+                                                  width: 120,
+                                                  fit: BoxFit.cover,
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              Positioned(
+                                                top: 5,
+                                                right: 5,
+                                                child: GestureDetector(
+                                                  onTap: () => databaseService
+                                                      .removeFavoriteFood(
+                                                          userId,
+                                                          uff['foodId']),
+                                                  child: Icon(
+                                                    Icons.remove_circle,
+                                                    color: Colors.red[300],
+                                                    size: 17,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                              Flexible(
-                                  fit: FlexFit.tight,
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                      left: 5,
-                                      top: 5,
-                                      right: 5,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          uff['foodName'].length > 16
-                                              ? uff['foodName']
-                                                      .substring(0, 16) +
-                                                  ".."
-                                              : uff['foodName'],
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w700,
+                                Flexible(
+                                    fit: FlexFit.tight,
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                        left: 5,
+                                        top: 5,
+                                        right: 5,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            uff['foodName'].length > 16
+                                                ? uff['foodName']
+                                                        .substring(0, 16) +
+                                                    ".."
+                                                : uff['foodName'],
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            maxLines: 1,
                                           ),
-                                          maxLines: 1,
-                                        ),
-                                        //SizedBox(height: height / 150),
-                                        Text(
-                                          "Calorie: " + uff['foodCal'],
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.blueGrey,
-                                            fontWeight: FontWeight.w500,
+                                          //SizedBox(height: height / 150),
+                                          Text(
+                                            "Calorie: " + uff['foodCal'],
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.blueGrey,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            maxLines: 1,
                                           ),
-                                          maxLines: 1,
-                                        ),
-                                        Text(
-                                          "Protein: " + uff['foodProtein'],
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.blueGrey,
-                                            fontWeight: FontWeight.w500,
+                                          Text(
+                                            "Protein: " + uff['foodProtein'],
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.blueGrey,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            maxLines: 1,
                                           ),
-                                          maxLines: 1,
-                                        ),
-                                        Text(
-                                          "Fat: " + uff['foodFat'],
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.blueGrey,
-                                            fontWeight: FontWeight.w500,
+                                          Text(
+                                            "Fat: " + uff['foodFat'],
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.blueGrey,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            maxLines: 1,
                                           ),
-                                          maxLines: 1,
-                                        ),
-                                        SizedBox(height: height / 100),
-                                      ],
-                                    ),
-                                  )),
-                            ],
-                          )),
-                    );
-                  });
+                                          SizedBox(height: height / 100),
+                                        ],
+                                      ),
+                                    )),
+                              ],
+                            )),
+                      );
+                    });
+              } catch (e) {
+                print(e);
+                return Center(
+                  child: Text("Error"),
+                );
+              }
             }
           }),
     );

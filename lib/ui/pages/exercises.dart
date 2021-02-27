@@ -66,36 +66,43 @@ class _ExercisesState extends State<Exercises> {
                 child: CircularProgressIndicator(),
               );
             } else {
-              return Padding(
-                padding:
-                    const EdgeInsets.only(top: 0, right: 0, left: 0, bottom: 0),
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot els = snapshot.data.docs[index];
-                      exercise_muscle_id = els["exercise_muscle_id"];
-                      return GestureDetector(
-                        onLongPress: () {
-                          if (userTypeSend == "admin") {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ExerciseEdit(exerciseDocId: els.id)));
-                          }
-                        },
-                        child: ExerciseTile(
-                          exerciseId: els.id,
-                          exercisePic: els["exercise_pic"],
-                          exerciseName: els["exercise_name"],
-                          exerciseDesc: els["exercise_desc"],
-                          exerciseMuscleId: els["exercise_muscle_id"],
-                        ),
-                      );
-                    }),
-              );
+              try {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0, right: 0, left: 0, bottom: 0),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot els = snapshot.data.docs[index];
+                        exercise_muscle_id = els["exercise_muscle_id"];
+                        return GestureDetector(
+                          onLongPress: () {
+                            if (userTypeSend == "admin") {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ExerciseEdit(exerciseDocId: els.id)));
+                            }
+                          },
+                          child: ExerciseTile(
+                            exerciseId: els.id,
+                            exercisePic: els["exercise_pic"],
+                            exerciseName: els["exercise_name"],
+                            exerciseDesc: els["exercise_desc"],
+                            exerciseMuscleId: els["exercise_muscle_id"],
+                          ),
+                        );
+                      }),
+                );
+              } catch (e) {
+                print(e);
+                return Center(
+                  child: Text("Error"),
+                );
+              }
             }
           }),
       floatingActionButton: FutureBuilder(
@@ -345,7 +352,7 @@ class _ExerciseEditState extends State<ExerciseEdit> {
                             Navigator.of(context, rootNavigator: true).pop();
                             databaseService
                                 .deleteExercise(widget.exerciseDocId);
-                                Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
                           child: Container(
                             width: 140,

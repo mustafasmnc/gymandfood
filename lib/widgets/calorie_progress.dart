@@ -23,36 +23,43 @@ class CalorieProgress extends StatelessWidget {
             var ds = snapshot.data.docs;
             int sum = 0;
             for (int i = 0; i < ds.length; i++) sum += (ds[i]['foodCal']);
-            return CustomPaint(
-              child: Container(
-                height: height,
-                width: width,
-                child: Center(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: sum.toString(),
-                          style: TextStyle(
-                            color: Color(0xFF200087),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      TextSpan(text: "\n"),
-                      TextSpan(
-                          text: "kcal",
-                          style: TextStyle(
-                            color: Color(0xFF200087),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ))
-                    ]),
+            try {
+              return CustomPaint(
+                child: Container(
+                  height: height,
+                  width: width,
+                  child: Center(
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: sum.toString(),
+                            style: TextStyle(
+                              color: Color(0xFF200087),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            )),
+                        TextSpan(text: "\n"),
+                        TextSpan(
+                            text: "kcal",
+                            style: TextStyle(
+                              color: Color(0xFF200087),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ))
+                      ]),
+                    ),
                   ),
                 ),
-              ),
-              painter: _ProgressPainter(
-                  sum: sum, userDailyCalorie: userDailyCalorie),
-            );
+                painter: _ProgressPainter(
+                    sum: sum, userDailyCalorie: userDailyCalorie),
+              );
+            } catch (e) {
+              print(e);
+              return Center(
+                child: Text("Error"),
+              );
+            }
           }
         });
   }

@@ -16,6 +16,7 @@ class DatabaseService {
         .collection("food")
         .doc("food_category")
         .collection("food_categories")
+        .orderBy("food_category_id")
         .snapshots();
   }
 
