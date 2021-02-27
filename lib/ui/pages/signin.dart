@@ -21,10 +21,11 @@ class _SignInState extends State<SignIn> {
     if (_formKey.currentState.validate()) {
       await authService.singInEmailAndPass(email, password).then((value) {
         if (value.substring(0, 5) != 'Error') {
-          HelperFunctions.saveUserLoggedInDetails(isLoggedIn: true, userId: value);
-          print("User Id: "+value);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => NavigationPage()));
+          HelperFunctions.saveUserLoggedInDetails(
+              isLoggedIn: true, userId: value);
+          print("User Id: " + value);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => NavigationPage()));
         } else {
           _scaffoldKey.currentState.showSnackBar(
             SnackBar(
@@ -56,10 +57,18 @@ class _SignInState extends State<SignIn> {
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: Column(
             children: [
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               Flexible(
                   flex: 5,
-                  child: Image(image: AssetImage('assets/logo.jpg'))),
-              SizedBox(height: MediaQuery.of(context).size.height / 50),
+                  child: Image(
+                    image: AssetImage('assets/logo.png'),
+                    height: 120,
+                  )),
+              fitFoodText(
+                  color: Colors.black,
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.w900),
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               Flexible(
                 flex: 2,
                 child: TextFormField(

@@ -27,8 +27,8 @@ class _SignUpState extends State<SignUp> {
               isLoggedIn: true, userId: value);
           print("User ID: $value");
           setUserDataa(value, email, userName);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => NavigationPage()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => NavigationPage()));
         } else {
           _scaffoldKey.currentState.showSnackBar(
             SnackBar(
@@ -55,12 +55,13 @@ class _SignUpState extends State<SignUp> {
       "userId": userId,
       "userName": userName,
       "userEmail": userEmail,
-      "userType":"user",
-      "userPic":"https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/determined-face.png?alt=media&token=9525d1fe-d652-4708-9215-618873fa659a",
-      "userDailyCalorie":0,
-      "userDailyCarb":0,
-      "userDailyProtein":0,
-      "userDailyFat":0
+      "userType": "user",
+      "userPic":
+          "https://firebasestorage.googleapis.com/v0/b/gymandfood-e71d1.appspot.com/o/determined-face.png?alt=media&token=9525d1fe-d652-4708-9215-618873fa659a",
+      "userDailyCalorie": 0,
+      "userDailyCarb": 0,
+      "userDailyProtein": 0,
+      "userDailyFat": 0
     };
     if (userId != null) {
       try {
@@ -97,9 +98,18 @@ class _SignUpState extends State<SignUp> {
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: Column(
             children: [
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               Flexible(
-                  flex: 5, child: Image(image: AssetImage('assets/logo.jpg'))),
-              SizedBox(height: MediaQuery.of(context).size.height / 50),
+                  flex: 5,
+                  child: Image(
+                    image: AssetImage('assets/logo.png'),
+                    height: 120,
+                  )),
+              fitFoodText(
+                  color: Colors.black,
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.w900),
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               Flexible(
                 flex: 2,
                 child: TextFormField(

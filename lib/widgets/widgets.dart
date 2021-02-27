@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 
@@ -677,4 +678,14 @@ showUserSettingsScreen(BuildContext context, String userId) {
           ),
         );
       });
+}
+
+Widget fitFoodText({Color color,double fontSize,FontWeight fontWeight}) {
+  return Text("Fit & Food",
+      style: GoogleFonts.gruppo(
+          textStyle: TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      )));
 }
