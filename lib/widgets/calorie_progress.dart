@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
+DatabaseService databaseService = DatabaseService();
+
 class CalorieProgress extends StatelessWidget {
-  DatabaseService databaseService = DatabaseService();
   final double height, width;
   final int userDailyCalorie;
   final String userId;

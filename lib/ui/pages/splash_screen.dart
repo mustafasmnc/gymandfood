@@ -37,24 +37,18 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: new BoxDecoration(
-          gradient: new LinearGradient(
-              colors: [
-                const Color(0xFF3366FF),
-                const Color(0xFF00CCFF),
-              ],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(1.0, 0.0),
-              stops: [1.0, 1.0],
-              tileMode: TileMode.clamp),
-        ),
+        decoration: new BoxDecoration(color: Colors.white),
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-              Image.asset('assets/logo.png'),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+              Image(
+                image: AssetImage('assets/logoWhite.jpg'),
+                height: 100,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               fitFoodText(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 50.0,
                   fontWeight: FontWeight.w100),
               SizedBox(height: MediaQuery.of(context).size.height / 30),

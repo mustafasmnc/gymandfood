@@ -212,7 +212,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 32, right: 16, left: 16, bottom: 0),
+        padding:
+            const EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 16),
         child: Column(
           children: [
             SizedBox(height: 5),
@@ -237,82 +238,88 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       ));
                     } else {
                       try {
-                        return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data.docs.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot aue = snapshot.data.docs[index];
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: 5),
-                                child: Card(
-                                  color: widget.color.withOpacity(.2),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      showExerciseUpdateScreen(
-                                          aue.id,
-                                          aue["exercisePic"],
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data.docs.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot aue =
+                                    snapshot.data.docs[index];
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 5),
+                                  child: Card(
+                                    color: widget.color.withOpacity(.2),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showExerciseUpdateScreen(
+                                            aue.id,
+                                            aue["exercisePic"],
+                                            aue["exerciseName"],
+                                            aue["exerciseSet"],
+                                            aue["exerciseRepeat"]);
+                                      },
+                                      onLongPress: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(builder: (_) {
+                                          return FullPicScreen(
+                                              exercisePic: aue["exercisePic"]);
+                                        }));
+                                      },
+                                      child: ListTile(
+                                        trailing: GestureDetector(
+                                            onTap: () {
+                                              databaseService
+                                                  .removeUserExercise(
+                                                      widget.userId, aue.id);
+                                            },
+                                            child: Icon(
+                                              Icons.delete,
+                                              color: Colors.white,
+                                            )),
+                                        leading: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.network(
+                                            aue["exercisePic"],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        title: Text(
                                           aue["exerciseName"],
-                                          aue["exerciseSet"],
-                                          aue["exerciseRepeat"]);
-                                    },
-                                    onLongPress: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (_) {
-                                        return FullPicScreen(
-                                            exercisePic: aue["exercisePic"]);
-                                      }));
-                                    },
-                                    child: ListTile(
-                                      trailing: GestureDetector(
-                                          onTap: () {
-                                            databaseService.removeUserExercise(
-                                                widget.userId, aue.id);
-                                          },
-                                          child: Icon(
-                                            Icons.delete,
+                                          style: TextStyle(
                                             color: Colors.white,
-                                          )),
-                                      leading: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          aue["exercisePic"],
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      title: Text(
-                                        aue["exerciseName"],
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      subtitle: Row(
-                                        children: [
-                                          Text(
-                                            "Set: ${aue["exerciseSet"]}",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 18,
                                           ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            "Repeat: ${aue["exerciseRepeat"]}",
-                                            style: TextStyle(
-                                              color: Colors.white,
+                                        ),
+                                        subtitle: Row(
+                                          children: [
+                                            Text(
+                                              "Set: ${aue["exerciseSet"]}",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(width: 10),
+                                            Text(
+                                              "Repeat: ${aue["exerciseRepeat"]}",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            });
+                                );
+                              }),
+                        );
                       } catch (e) {
                         print(e);
                         return Center(

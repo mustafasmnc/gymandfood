@@ -261,6 +261,7 @@ showAddedFoods(BuildContext context, String userId) {
           contentPadding: EdgeInsets.only(top: 10.0, bottom: 10.0),
           content: Container(
             //height: MediaQuery.of(context).size.height * 0.6,
+            width: double.maxFinite,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -286,7 +287,7 @@ showAddedFoods(BuildContext context, String userId) {
                                   )),
                             ),
                           );
-                        } else {
+                        } else if (snapshot.data.docs.length > 0) {
                           try {
                             return ListView.builder(
                                 scrollDirection: Axis.vertical,
@@ -408,14 +409,14 @@ showUserSettingsScreen(BuildContext context, String userId) {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                ClipRRect(
-                                  child: Image(
-                                    image: NetworkImage(
-                                      snapshot.data["userPic"],
-                                    ),
-                                    height: 80,
-                                  ),
-                                ),
+                                // ClipRRect(
+                                //   child: Image(
+                                //     image: NetworkImage(
+                                //       snapshot.data["userPic"],
+                                //     ),
+                                //     height: 80,
+                                //   ),
+                                // ),
                                 SizedBox(height: 10.0),
                                 Container(
                                   width: MediaQuery.of(context).size.width / 2,
@@ -681,7 +682,7 @@ showUserSettingsScreen(BuildContext context, String userId) {
 }
 
 Widget fitFoodText({Color color,double fontSize,FontWeight fontWeight}) {
-  return Text("Fit & Food",
+  return Text("Gym & Food",
       style: GoogleFonts.gruppo(
           textStyle: TextStyle(
         color: color,

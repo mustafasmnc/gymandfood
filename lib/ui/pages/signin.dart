@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/auth.dart';
@@ -18,24 +20,37 @@ class _SignInState extends State<SignIn> {
   AuthService authService = new AuthService();
 
   signIn() async {
-    if (_formKey.currentState.validate()) {
-      await authService.singInEmailAndPass(email, password).then((value) {
-        if (value.substring(0, 5) != 'Error') {
-          HelperFunctions.saveUserLoggedInDetails(
-              isLoggedIn: true, userId: value);
-          print("User Id: " + value);
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => NavigationPage()));
-        } else {
-          _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              duration: Duration(seconds: 3),
-              backgroundColor: Colors.red,
-              content: Text(value),
-            ),
-          );
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        if (_formKey.currentState.validate()) {
+          await authService.singInEmailAndPass(email, password).then((value) {
+            if (value.substring(0, 5) != 'Error') {
+              HelperFunctions.saveUserLoggedInDetails(
+                  isLoggedIn: true, userId: value);
+              print("User Id: " + value);
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => NavigationPage()));
+            } else {
+              _scaffoldKey.currentState.showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 3),
+                  backgroundColor: Colors.red,
+                  content: Text(value),
+                ),
+              );
+            }
+          });
         }
-      });
+      }
+    } on SocketException catch (_) {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+          content: Text("There is no internet connection!"),
+        ),
+      );
     }
   }
 
@@ -57,18 +72,19 @@ class _SignInState extends State<SignIn> {
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height / 30),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               Flexible(
                   flex: 5,
                   child: Image(
-                    image: AssetImage('assets/logo.png'),
-                    height: 120,
+                    image: AssetImage('assets/logoWhite.jpg'),
+                    height: 100,
                   )),
+              SizedBox(height: 15),
               fitFoodText(
                   color: Colors.black,
                   fontSize: 40.0,
-                  fontWeight: FontWeight.w900),
-              SizedBox(height: MediaQuery.of(context).size.height / 30),
+                  fontWeight: FontWeight.w500),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Flexible(
                 flex: 2,
                 child: TextFormField(
@@ -89,7 +105,7 @@ class _SignInState extends State<SignIn> {
                   },
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 60),
+              SizedBox(height: 10),
               Flexible(
                 flex: 2,
                 child: TextFormField(
@@ -118,17 +134,18 @@ class _SignInState extends State<SignIn> {
                   },
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 30),
+              SizedBox(height: 20),
               Flexible(
                 flex: 2,
                 child: GestureDetector(
                   onTap: () {
+                    print("email: $email, password: $password");
                     signIn();
                   },
                   child: submitButton(context: context, text: "Sign In"),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 60),
+              SizedBox(height: 10),
               Flexible(
                 flex: 1,
                 child: Row(

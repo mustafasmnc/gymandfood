@@ -13,9 +13,8 @@ class FavoriteFood extends StatelessWidget {
   const FavoriteFood({Key key, this.userId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     return Container(
-      height: height * 0.3,
+      height: 200,
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
@@ -30,7 +29,7 @@ class FavoriteFood extends StatelessWidget {
                   fontSize: 16),
             ),
           ),
-          SizedBox(height: height / 150),
+          SizedBox(height: 5),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -58,17 +57,6 @@ class _FoodCard extends StatelessWidget {
   const _FoodCard({Key key, this.userId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-
-    // return Container(
-    //     child: StreamBuilder<QuerySnapshot>(
-    //   stream: databaseService.getFoodDetail(foodId),
-    //   builder: (context, snapshot) {
-    //     DocumentSnapshot bms = snapshot.data.docs[0];
-    //     return Text(bms['food_name']);
-    //   },
-    // ));
-
     return Container(
       margin: const EdgeInsets.only(right: 10, bottom: 10),
       child: StreamBuilder<QuerySnapshot>(
@@ -123,7 +111,7 @@ class _FoodCard extends StatelessWidget {
                                                 ),
                                                 child: Image.network(
                                                   uff['foodPic'],
-                                                  width: 120,
+                                                  width: 128,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -176,7 +164,7 @@ class _FoodCard extends StatelessWidget {
                                             ),
                                             maxLines: 1,
                                           ),
-                                          //SizedBox(height: height / 150),
+                                          //SizedBox(height: 5),
                                           Text(
                                             "Calorie: " + uff['foodCal'],
                                             style: const TextStyle(
@@ -204,7 +192,7 @@ class _FoodCard extends StatelessWidget {
                                             ),
                                             maxLines: 1,
                                           ),
-                                          SizedBox(height: height / 100),
+                                          SizedBox(height: 5),
                                         ],
                                       ),
                                     )),

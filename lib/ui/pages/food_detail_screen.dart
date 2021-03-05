@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
-import 'package:intl/intl.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final String foodId;

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gymandfood/services/database.dart';
 
+DatabaseService databaseService = DatabaseService();
+
 class IngredientProgress extends StatelessWidget {
-  DatabaseService databaseService = DatabaseService();
   final String userId;
   final String ingredient;
   final int userDailyGoal;

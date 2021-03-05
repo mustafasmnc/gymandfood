@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gymandfood/helper/functions.dart';
 import 'package:gymandfood/services/database.dart';
@@ -24,12 +25,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userName;
   @override
   void initState() {
+    checkInternetConnection();
     HelperFunctions.getUserLoggedInID().then((value) {
       setState(() {
         userId = value;
       });
     });
+    databaseService.removeYesterdayDailyFoods(userId);
     super.initState();
+  }
+
+  checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        //print('connected');
+      }
+    } on SocketException catch (_) {
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              contentPadding: EdgeInsets.only(top: 10.0),
+              content: Container(
+                width: 200.0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    new Container(
+                        alignment: Alignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Error",
+                              style: TextStyle(
+                                fontFamily: 'helvetica_neue_light',
+                                fontSize: 20,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Divider(color: Colors.black54),
+                            SizedBox(height: 10),
+                            Text(
+                              "There is no internet connection",
+                              style: TextStyle(
+                                fontFamily: 'helvetica_neue_light',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        )),
+                    InkWell(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {});
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                          decoration: BoxDecoration(
+                            color: Color(0xff00bfa5),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(32.0),
+                                bottomRight: Radius.circular(32.0)),
+                          ),
+                          child: Text(
+                            "Okay",
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+    }
   }
 
   @override
@@ -78,11 +159,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           )
                         ],
                       ),
-                      CircleAvatar(
-                        radius: 30.0,
-                        backgroundImage: NetworkImage(snapshot.data['userPic']),
-                        backgroundColor: Colors.transparent,
-                      )
+                      // CircleAvatar(
+                      //   radius: 30.0,
+                      //   backgroundImage: NetworkImage(snapshot.data['userPic']),
+                      //   backgroundColor: Colors.transparent,
+                      // )
                     ],
                   );
                 } catch (e) {
@@ -258,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.white,
               ),
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              height: height * 1.85,
+              //height: height * 1.85,
               width: MediaQuery.of(context).size.width,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,7 +474,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         decoration: BoxDecoration(
             image: DecorationImage(
                 fit: BoxFit.fill,
-                image: AssetImage('assets/drawer_header_background.png'))),
+                image: AssetImage('assets/drawer_header_background2.png'))),
         child: Stack(
           children: [
             // Positioned(

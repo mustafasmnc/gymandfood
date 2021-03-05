@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,32 +22,58 @@ class _SignUpState extends State<SignUp> {
   AuthService authService = new AuthService();
 
   signUp() async {
-    if (_formKey.currentState.validate()) {
-      authService.signUpWithEmailAndPass(email, password).then((value) {
-        if (value.substring(0, 5) != 'Error') {
-          HelperFunctions.saveUserLoggedInDetails(
-              isLoggedIn: true, userId: value);
-          print("User ID: $value");
-          setUserDataa(value, email, userName);
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => NavigationPage()));
-        } else {
-          _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              duration: Duration(seconds: 3),
-              backgroundColor: Colors.red,
-              content: Text(value),
-            ),
-          );
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        if (_formKey.currentState.validate()) {
+          authService.signUpWithEmailAndPass(email, password).then((value) {
+            if (value.substring(0, 5) != 'Error') {
+              HelperFunctions.saveUserLoggedInDetails(
+                  isLoggedIn: true, userId: value);
+              print("User ID: $value");
+              setUserDataa(value, email, userName);
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => NavigationPage()));
+            } else {
+              _scaffoldKey.currentState.showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 3),
+                  backgroundColor: Colors.red,
+                  content: Text(value),
+                ),
+              );
+            }
+          });
         }
-      });
-
-      // FirebaseFirestore.instance
-      //     .collection("User")
-      //     .snapshots()
-      //     .listen((snapshot) {
-      //   snapshot.docs.forEach((doc)  {debugPrint(doc.data()["userEmail"]);});
-      // });
+      }
+      if (_formKey.currentState.validate()) {
+        authService.signUpWithEmailAndPass(email, password).then((value) {
+          if (value.substring(0, 5) != 'Error') {
+            HelperFunctions.saveUserLoggedInDetails(
+                isLoggedIn: true, userId: value);
+            print("User ID: $value");
+            setUserDataa(value, email, userName);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => NavigationPage()));
+          } else {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 3),
+                backgroundColor: Colors.red,
+                content: Text(value),
+              ),
+            );
+          }
+        });
+      }
+    } on SocketException catch (_) {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+          content: Text("There is no internet connection!"),
+        ),
+      );
     }
   }
 
@@ -98,18 +126,19 @@ class _SignUpState extends State<SignUp> {
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height / 30),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.07),
               Flexible(
                   flex: 5,
                   child: Image(
-                    image: AssetImage('assets/logo.png'),
-                    height: 120,
+                    image: AssetImage('assets/logoWhite.jpg'),
+                    height: 100,
                   )),
+              SizedBox(height: 10),
               fitFoodText(
                   color: Colors.black,
                   fontSize: 40.0,
-                  fontWeight: FontWeight.w900),
-              SizedBox(height: MediaQuery.of(context).size.height / 30),
+                  fontWeight: FontWeight.w500),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Flexible(
                 flex: 2,
                 child: TextFormField(
@@ -129,7 +158,7 @@ class _SignUpState extends State<SignUp> {
                   },
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 60),
+              SizedBox(height: 10),
               Flexible(
                 flex: 2,
                 child: TextFormField(
@@ -150,7 +179,7 @@ class _SignUpState extends State<SignUp> {
                   },
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 60),
+              SizedBox(height: 10),
               Flexible(
                 flex: 2,
                 child: TextFormField(
@@ -179,7 +208,7 @@ class _SignUpState extends State<SignUp> {
                   },
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 50),
+              SizedBox(height: 20),
               Flexible(
                 flex: 2,
                 child: GestureDetector(
@@ -189,7 +218,7 @@ class _SignUpState extends State<SignUp> {
                   child: submitButton(context: context, text: "Sign Up"),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 50),
+              SizedBox(height: 10),
               Flexible(
                 flex: 1,
                 child: Row(

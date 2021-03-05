@@ -230,6 +230,22 @@ class DatabaseService {
         .delete();
   }
 
+  removeYesterdayDailyFoods(String userId) {
+    var nowDateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    return FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .collection("daily_foods")
+        .where("addedTime", isNotEqualTo: nowDateTime)
+        .get()
+        .then((snapshots) {
+      for (int i = 0; i < snapshots.docs.length; i++) {
+        //snapshots.docs.first.reference.delete();
+        snapshots.docs[i].reference.delete();
+      }
+    });
+  }
+
   getExercises(String muscleId) {
     return FirebaseFirestore.instance
         .collection("exercise")
