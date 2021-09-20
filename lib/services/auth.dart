@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:gymandfood/model/user.dart';
+import 'package:gymandfood/widgets/widgets.dart';
 
 class AuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -8,14 +10,38 @@ class AuthService {
     return user != null ? UserModel(userId: user.uid) : null;
   }
 
-  Future createUser(String userId, String name,String email,String password) async {
+  Future updateUserPassword(
+      BuildContext context, String currentPassword, String newPassword) async {
+    try {
+      final user = await FirebaseAuth.instance.currentUser;
+      final cred = EmailAuthProvider.credential(
+          email: user.email, password: currentPassword);
+      user.reauthenticateWithCredential(cred).then((value) {
+        user.updatePassword(newPassword).then((valuee) {
+          showAlertDialog(context, "Changed", "Password Changed");
+          print("Password Changed");
+        }).catchError((error) {
+          print("Errorr");
+        });
+      }).catchError((err) {
+        showAlertDialog(context, "Error", "Check Passwords");
+        print("Errorreee");
+      });
+    } catch (e) {
+      showAlertDialog(context, "Error", "Check Passwords");
+      print("Errorreeerrrr");
+    }
+  }
+
+  Future createUser(
+      String userId, String name, String email, String password) async {
     Map<String, String> userData = {
-        "userId": userId,
-        "userName": name,
-        "userEmail": email,
-        "userPassword": password
-      };
-    
+      "userId": userId,
+      "userName": name,
+      "userEmail": email,
+      "userPassword": password
+    };
+
     return await FirebaseFirestore.instance
         .collection("user")
         //.doc('user_info')

@@ -180,7 +180,7 @@ class _CategoryTileState extends State<CategoryTile> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
-                      fontSize: 24,
+                      fontSize: 22,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -190,7 +190,7 @@ class _CategoryTileState extends State<CategoryTile> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
-                      fontSize: 22,
+                      fontSize: 16,
                     ),
                   ),
                 ],
@@ -384,7 +384,6 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       appBar: AppBar(
@@ -481,7 +480,7 @@ class _FoodCategoryEditState extends State<FoodCategoryEdit> {
                                           ? "Enter category description"
                                           : null;
                                     },
-                                    maxLength: 50,
+                                    maxLength: 200,
                                     textAlign: TextAlign.left,
                                     keyboardType: TextInputType.text,
                                     style: TextStyle(
@@ -680,7 +679,6 @@ class _AddFoodCategoryState extends State<AddFoodCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       appBar: AppBar(

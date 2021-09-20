@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gymandfood/services/auth.dart';
 import 'package:gymandfood/services/database.dart';
 import 'package:gymandfood/ui/pages/workout_screen.dart';
 
@@ -681,7 +682,149 @@ showUserSettingsScreen(BuildContext context, String userId) {
       });
 }
 
-Widget fitFoodText({Color color,double fontSize,FontWeight fontWeight}) {
+changePassword(BuildContext context, String userId) {
+  TextEditingController textConfirmNewPassword = TextEditingController();
+  TextEditingController textNewPassword = TextEditingController();
+  TextEditingController textcurrentPassword = TextEditingController();
+  DatabaseService databaseService = DatabaseService();
+  AuthService authService = new AuthService();
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: EdgeInsets.only(top: 10.0),
+          content: Container(
+            width: 370.0,
+            child: SingleChildScrollView(
+              child: StreamBuilder(
+                  stream: databaseService.getUserInfo(userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      try {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                SizedBox(height: 10.0),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Column(
+                                    children: [
+                                      TextField(
+                                        decoration: new InputDecoration(
+                                            hintText: "Current Password",
+                                            counterText: ""),
+                                        controller: textcurrentPassword,
+                                        maxLength: 25,
+                                        obscureText: true,
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(height: 20.0),
+                                      TextField(
+                                        decoration: new InputDecoration(
+                                            hintText: "New Password",
+                                            counterText: ""),
+                                        controller: textNewPassword,
+                                        maxLength: 25,
+                                        obscureText: true,
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      TextField(
+                                        decoration: new InputDecoration(
+                                            hintText: "Retype New Password",
+                                            counterText: ""),
+                                        controller: textConfirmNewPassword,
+                                        maxLength: 25,
+                                        obscureText: true,
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10.0),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            InkWell(
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (textNewPassword.text ==
+                                      textConfirmNewPassword.text) {
+                                    authService
+                                        .updateUserPassword(context,
+                                      textcurrentPassword.text,
+                                      textNewPassword.text,
+                                    )
+                                        .then((value) async {
+                                      print("VaLuE..." + value.toString());
+                                    });
+
+                                    // Navigator.of(context, rootNavigator: true)
+                                    //     .pop();
+                                  } else {
+                                    showAlertDialog(context, "Error",
+                                        "Passwords are not same");
+                                  }
+                                },
+                                child: Container(
+                                  padding:
+                                      EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff00bfa5),
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(32.0),
+                                        bottomRight: Radius.circular(32.0)),
+                                  ),
+                                  child: Text(
+                                    "Update",
+                                    style: TextStyle(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } catch (e) {
+                        print(e);
+                        return Center(
+                          child: Text("Error"),
+                        );
+                      }
+                    }
+                  }),
+            ),
+          ),
+        );
+      });
+}
+
+Widget fitFoodText({Color color, double fontSize, FontWeight fontWeight}) {
   return Text("Gym & Food",
       style: GoogleFonts.gruppo(
           textStyle: TextStyle(

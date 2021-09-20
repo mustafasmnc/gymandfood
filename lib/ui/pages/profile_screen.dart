@@ -411,6 +411,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Row(
                 children: [
                   Icon(
+                    Icons.lock,
+                    size: 24,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "Change Password",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'helvetica_neue_light',
+                          color: Colors.black87,
+                        ),
+                      ))
+                ],
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                changePassword(context, userId);
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(
                     Icons.fastfood,
                     size: 24,
                   ),

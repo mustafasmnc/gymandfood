@@ -382,7 +382,6 @@ class _ExerciseEditState extends State<ExerciseEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       appBar: AppBar(
@@ -697,7 +696,6 @@ class _AddExerciseState extends State<AddExercise> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       appBar: AppBar(
