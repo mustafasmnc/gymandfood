@@ -42,13 +42,17 @@ class _FoodListState extends State<FoodList> {
               disabledBorder: InputBorder.none,
               suffixIcon: IconButton(
                   icon: Icon(Icons.search),
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchItem(
-                                searchKey: textSearch,
-                                foodCatId: widget.foodCatId,
-                              )))),
+                  onPressed: () {
+                    if (textSearch != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SearchItem(
+                                    searchKey: textSearch,
+                                    foodCatId: widget.foodCatId,
+                                  )));
+                    }
+                  }),
               contentPadding:
                   EdgeInsets.only(left: 10, bottom: 0, top: 15, right: 10),
               hintText: "Search",
@@ -119,7 +123,7 @@ class _FoodListState extends State<FoodList> {
                                       end: Alignment.centerLeft,
                                       colors: [
                                         Color(0xFF636FA4),
-                                        Color(0xFFE8CBC0)
+                                        Color(0xFFFFFFFF)
                                       ]),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
@@ -127,30 +131,32 @@ class _FoodListState extends State<FoodList> {
                                     BoxShadow(
                                       color: Colors.grey.withOpacity(0.3),
                                       spreadRadius: 2,
-                                      blurRadius: 2,
+                                      blurRadius: 4,
                                       offset: Offset(
                                           5, 5), // changes position of shadow
                                     ),
                                   ],
                                 ),
                                 margin: EdgeInsets.symmetric(vertical: 0),
-                                padding: EdgeInsets.only(left: 10, right: 10),
+                                padding: EdgeInsets.only(left: 00, right: 10),
                                 width: MediaQuery.of(context).size.width,
-                                height: 120,
+                                height: 80,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
                                       margin: EdgeInsets.only(right: 10),
-                                      width: 90,
-                                      height: 90,
+                                      width: 80,
+                                      height: 80,
                                       decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image:
-                                                  NetworkImage(fcs["food_pic"]),
-                                              fit: BoxFit.cover),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(fcs["food_pic"]),
+                                            fit: BoxFit.cover),
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)),
+                                      ),
                                     ),
                                     Column(
                                       mainAxisAlignment:
@@ -167,7 +173,7 @@ class _FoodListState extends State<FoodList> {
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                              color: Colors.black54),
                                         ),
                                         SizedBox(height: 10),
                                         Container(
@@ -175,8 +181,8 @@ class _FoodListState extends State<FoodList> {
                                           child: Text(
                                             "Calorie: ${fcs["food_cal"]}",
                                             maxLines: 2,
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                            style: TextStyle(
+                                                color: Colors.black45),
                                           ),
                                         ),
                                       ],
@@ -262,7 +268,7 @@ class _SearchItemState extends State<SearchItem> {
                                       end: Alignment.centerLeft,
                                       colors: [
                                         Color(0xFF636FA4),
-                                        Color(0xFFE8CBC0)
+                                        Color(0xFFFFFFFF)
                                       ]),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
@@ -270,30 +276,32 @@ class _SearchItemState extends State<SearchItem> {
                                     BoxShadow(
                                       color: Colors.grey.withOpacity(0.3),
                                       spreadRadius: 2,
-                                      blurRadius: 2,
+                                      blurRadius: 4,
                                       offset: Offset(
                                           5, 5), // changes position of shadow
                                     ),
                                   ],
                                 ),
                                 margin: EdgeInsets.symmetric(vertical: 0),
-                                padding: EdgeInsets.only(left: 10, right: 10),
+                                padding: EdgeInsets.only(left: 0, right: 10),
                                 width: MediaQuery.of(context).size.width,
-                                height: 120,
+                                height: 80,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
                                       margin: EdgeInsets.only(right: 10),
-                                      width: 90,
-                                      height: 90,
+                                      width: 80,
+                                      height: 80,
                                       decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image:
-                                                  NetworkImage(fcs["food_pic"]),
-                                              fit: BoxFit.cover),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(fcs["food_pic"]),
+                                            fit: BoxFit.cover),
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)),
+                                      ),
                                     ),
                                     Column(
                                       mainAxisAlignment:
@@ -310,7 +318,7 @@ class _SearchItemState extends State<SearchItem> {
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                              color: Colors.black54),
                                         ),
                                         SizedBox(height: 10),
                                         Container(
@@ -318,8 +326,8 @@ class _SearchItemState extends State<SearchItem> {
                                           child: Text(
                                             "Calorie: ${fcs["food_cal"]}",
                                             maxLines: 2,
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                            style: TextStyle(
+                                                color: Colors.black45),
                                           ),
                                         ),
                                       ],

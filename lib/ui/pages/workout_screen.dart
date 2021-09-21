@@ -250,69 +250,171 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                     snapshot.data.docs[index];
                                 return Padding(
                                   padding: EdgeInsets.only(bottom: 5),
-                                  child: Card(
-                                    color: widget.color.withOpacity(.2),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showExerciseUpdateScreen(
-                                            aue.id,
-                                            aue["exercisePic"],
-                                            aue["exerciseName"],
-                                            aue["exerciseSet"],
-                                            aue["exerciseRepeat"]);
-                                      },
-                                      onLongPress: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(builder: (_) {
-                                          return FullPicScreen(
-                                              exercisePic: aue["exercisePic"]);
-                                        }));
-                                      },
-                                      child: ListTile(
-                                        trailing: GestureDetector(
-                                            onTap: () {
-                                              databaseService
-                                                  .removeUserExercise(
-                                                      widget.userId, aue.id);
-                                            },
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                            )),
-                                        leading: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Image.network(
-                                            aue["exercisePic"],
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        title: Text(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showExerciseUpdateScreen(
+                                          aue.id,
+                                          aue["exercisePic"],
                                           aue["exerciseName"],
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 18,
+                                          aue["exerciseSet"],
+                                          aue["exerciseRepeat"]);
+                                    },
+                                    // onLongPress: () {
+                                    //   Navigator.push(context,
+                                    //       MaterialPageRoute(builder: (_) {
+                                    //     return FullPicScreen(
+                                    //         exercisePic: aue["exercisePic"]);
+                                    //   }));
+                                    // },
+
+                                    // child: ListTile(
+                                    //   trailing: GestureDetector(
+                                    //       onTap: () {
+                                    //         databaseService
+                                    //             .removeUserExercise(
+                                    //                 widget.userId, aue.id);
+                                    //       },
+                                    //       child: Icon(
+                                    //         Icons.delete,
+                                    //         color: Colors.white,
+                                    //       )),
+                                    //   leading: GestureDetector(
+                                    //     onTap: () {
+                                    //       Navigator.push(context,
+                                    //           MaterialPageRoute(builder: (_) {
+                                    //         return FullPicScreen(
+                                    //             exercisePic:
+                                    //                 aue["exercisePic"]);
+                                    //       }));
+                                    //     },
+                                    //     child: ClipRRect(
+                                    //       borderRadius:
+                                    //           BorderRadius.circular(10),
+                                    //       child: Image.network(
+                                    //         aue["exercisePic"],
+                                    //         width: 80,
+                                    //         height: 80,
+                                    //         fit: BoxFit.cover,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    //   title: Text(
+                                    //     aue["exerciseName"],
+                                    //     style: TextStyle(
+                                    //       color: Colors.white,
+                                    //       fontWeight: FontWeight.w800,
+                                    //       fontSize: 18,
+                                    //     ),
+                                    //   ),
+                                    //   subtitle: Row(
+                                    //     children: [
+                                    //       Text(
+                                    //         "Set: ${aue["exerciseSet"]}",
+                                    //         style: TextStyle(
+                                    //           color: Colors.white,
+                                    //         ),
+                                    //       ),
+                                    //       SizedBox(width: 10),
+                                    //       Text(
+                                    //         "Repeat: ${aue["exerciseRepeat"]}",
+                                    //         style: TextStyle(
+                                    //           color: Colors.white,
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 5.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          height: 70,
+                                          color: widget.color.withOpacity(.2),
+                                          child: Container(
+                                            height: 70,
+                                            color: widget.color.withOpacity(.2),
+                                            child: Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (_) {
+                                                      return FullPicScreen(
+                                                          exercisePic: aue[
+                                                              "exercisePic"]);
+                                                    }));
+                                                  },
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(10),
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    10)),
+                                                    child: Image.network(
+                                                      aue["exercisePic"],
+                                                      width: 80,
+                                                      height: 80,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      aue["exerciseName"],
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "Set: ${aue["exerciseSet"]}",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          "Repeat: ${aue["exerciseRepeat"]}",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )),
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      databaseService
+                                                          .removeUserExercise(
+                                                              widget.userId,
+                                                              aue.id);
+                                                    },
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                    )),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        subtitle: Row(
-                                          children: [
-                                            Text(
-                                              "Set: ${aue["exerciseSet"]}",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              "Repeat: ${aue["exerciseRepeat"]}",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
                                         ),
                                       ),
                                     ),
